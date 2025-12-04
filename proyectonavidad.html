@@ -89,14 +89,15 @@
         /* --- Hero Section --- */
         .hero {
             position: relative;
-            height: 90vh; /* AJUSTE: Cambiado de 100vh a 90vh para prevenir el corte */
+            /* AJUSTE CLAVE: Usamos min-height y reducimos el padding para comprimir */
+            min-height: 80vh; 
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; 
             align-items: center;
             text-align: center;
             color: var(--color-white-cream);
-            padding: 20px;
+            padding: 40px 20px; /* Padding reducido */
             overflow: hidden; 
         }
 
@@ -117,8 +118,9 @@
 
         .hero h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 5em; /* Título más impactante */
-            margin-bottom: 20px;
+            font-size: 5em; 
+            /* Margen drásticamente reducido */
+            margin-bottom: 10px; 
             color: var(--color-gold-accent);
             text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
             line-height: 1.1;
@@ -132,24 +134,28 @@
             background-color: rgba(255, 255, 255, 0.9);
             padding: 10px 20px;
             border-radius: 5px;
-            margin-bottom: 10px;
+            /* Margen drásticamente reducido */
+            margin-top: 5px; 
+            margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
         
         /* Estilo para el contenedor de fecha y lugar */
         .hero .info-box {
-            background-color: rgba(15, 35, 35, 0.8); /* Fondo verde oscuro semitransparente */
-            padding: 15px 30px;
+            background-color: rgba(15, 35, 35, 0.8); 
+            /* Padding reducido */
+            padding: 12px 25px; 
             border-radius: 10px;
-            margin-top: 35px; 
-            margin-bottom: 50px; 
+            /* Márgenes reducidos */
+            margin-top: 15px; 
+            margin-bottom: 20px; 
             border: 2px solid var(--color-gold-accent);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); /* Sombra dorada */
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); 
         }
 
         .hero .info-box p {
-            font-size: 1.6em;
-            margin: 10px 0;
+            font-size: 1.5em; /* Ligeramente más pequeño */
+            margin: 8px 0; /* Menor espacio entre líneas */
             font-weight: 700;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
             color: var(--color-white-cream);
@@ -162,25 +168,26 @@
         }
 
         .hero p {
-            font-size: 1.6em;
-            margin-bottom: 50px; 
+            font-size: 1.5em; /* Ligeramente más pequeño */
             max-width: 800px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
             font-weight: 400;
             letter-spacing: 0.5px;
+            /* Margen drásticamente reducido */
+            margin-bottom: 20px; 
         }
 
-        /* AJUSTE: Añadido margen inferior al botón para empujar el contenido hacia arriba dentro del 90vh */
+        /* Margen ajustado para el botón */
         .hero .cta-button {
-            margin-bottom: 50px; 
+            margin-bottom: 20px; 
         }
 
         /* --- Section: Destacados/Cards --- */
         .featured-section {
-            background-color: var(--color-white-cream); /* Fondo claro para contrastar */
+            background-color: var(--color-white-cream); 
             padding: 80px 40px;
             text-align: center;
-            color: #333; /* Texto oscuro para el fondo claro */
+            color: #333; 
         }
 
         .featured-section h2 {
@@ -204,9 +211,9 @@
             background-color: var(--color-white-cream);
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 350px; /* Ancho un poco más grande */
+            width: 350px; 
             padding: 30px;
-            text-align: center; /* Texto centrado para un look limpio */
+            text-align: center; 
             border: 3px solid var(--color-snow); 
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
         }
@@ -357,14 +364,33 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero {
-                height: 80vh; /* AJUSTE: Altura más conservadora para móvil */
+                /* Quitamos height fijo, el contenido lo define con márgenes minimizados */
+                min-height: 70vh; 
+                padding: 20px 10px; /* Padding muy reducido en móvil */
             }
             .hero h1 {
                 font-size: 3em;
+                margin-bottom: 5px;
+            }
+            .hero h2 {
+                font-size: 1.5em;
+                margin-bottom: 10px;
             }
             .hero p {
+                font-size: 1em;
+                margin-bottom: 10px; 
+            }
+            .hero .info-box {
+                padding: 10px 20px;
+                margin-top: 10px;
+                margin-bottom: 15px; 
+            }
+            .hero .info-box p {
                 font-size: 1.1em;
-                margin-bottom: 30px; 
+                margin: 5px 0;
+            }
+            .hero .cta-button {
+                margin-bottom: 15px; 
             }
             .card-container {
                 flex-direction: column;
@@ -383,15 +409,6 @@
             .audio-controls {
                 bottom: 10px;
                 right: 10px;
-            }
-            .hero .info-box p {
-                font-size: 1.2em;
-            }
-            .hero .info-box {
-                margin-bottom: 30px; 
-            }
-            .hero .cta-button {
-                margin-bottom: 30px; /* Ajuste para móvil */
             }
         }
     </style>
