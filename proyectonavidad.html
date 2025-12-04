@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gran Chocolatada Navideña 2025 - Hermandad del Carmen de Lima</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-red-primary: #C0392B; /* Rojo de túnica/capa */
+            --color-green-dark: #0f2323;  /* Verde pino oscuro, casi terciopelo */
+            --color-gold-accent: #FFD700; /* Dorado brillante */
+            --color-white-cream: #FDFEFE; /* Blanco cremoso */
+            --color-snow: #ECF0F1;        /* Gris claro para la nieve/fondos sutiles */
+        }
+
+        /* ------------------------------------------------------------------ */
+        /* EFECTO DE NIEVE (SNOW) */
+        /* ------------------------------------------------------------------ */
+        .snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .snow {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 0.5; }
+            100% { transform: translateY(100vh) translateX(5vw); opacity: 0.9; }
+        }
+
+        /* Generamos 3 capas de nieve para un efecto 3D */
+        .snow:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+        .snow:nth-child(2) { left: 20%; animation-duration: 18s; animation-delay: 2s; }
+        .snow:nth-child(3) { left: 30%; animation-duration: 12s; animation-delay: 4s; }
+        .snow:nth-child(4) { left: 40%; animation-duration: 20s; animation-delay: 1s; }
+        .snow:nth-child(5) { left: 50%; animation-duration: 16s; animation-delay: 3s; }
+        .snow:nth-child(6) { left: 60%; animation-duration: 14s; animation-delay: 5s; }
+        .snow:nth-child(7) { left: 70%; animation-duration: 19s; animation-delay: 0.5s; }
+        .snow:nth-child(8) { left: 80%; animation-duration: 13s; animation-delay: 2.5s; }
+        .snow:nth-child(9) { left: 90%; animation-duration: 17s; animation-delay: 4.5s; }
+        .snow:nth-child(10) { left: 5%; animation-duration: 11s; animation-delay: 6s; width: 3px; height: 3px; }
+        .snow:nth-child(11) { left: 95%; animation-duration: 14s; animation-delay: 8s; width: 6px; height: 6px; }
+
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-green-dark); /* Fondo oscuro como el cielo nocturno */
+            color: var(--color-white-cream);
+            line-height: 1.6;
+            overflow-x: hidden; /* Evita scroll horizontal */
+        }
+
+        /* --- Global CTA Button (kept for reference/reused from header) --- */
+        .cta-button {
+            background-color: var(--color-red-primary);
+            color: var(--color-white-cream);
+            padding: 12px 30px;
+            border-radius: 8px; /* Esquinas más definidas */
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--color-gold-accent);
+        }
+
+        .cta-button:hover {
+            background-color: #A93226;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            height: 90vh; /* AJUSTE: Cambiado de 100vh a 90vh para prevenir el corte */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--color-white-cream);
+            padding: 20px;
+            overflow: hidden; 
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Usamos una imagen de fondo que evoca la caridad/evento navideño. */
+            background-image: url('https://placehold.co/1920x1080/1A3E38/FDFEFE?text=Virgen+del+Carmen+y+Niños');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5) contrast(1.1); /* Oscurece y resalta */
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 5em; /* Título más impactante */
+            margin-bottom: 20px;
+            color: var(--color-gold-accent);
+            text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
+            line-height: 1.1;
+        }
+        
+        .hero h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--color-red-primary);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Estilo para el contenedor de fecha y lugar */
+        .hero .info-box {
+            background-color: rgba(15, 35, 35, 0.8); /* Fondo verde oscuro semitransparente */
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-top: 35px; 
+            margin-bottom: 50px; 
+            border: 2px solid var(--color-gold-accent);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); /* Sombra dorada */
+        }
+
+        .hero .info-box p {
+            font-size: 1.6em;
+            margin: 10px 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            color: var(--color-white-cream);
+        }
+        
+        .hero .info-box .icon {
+            font-size: 1.2em;
+            margin-right: 10px;
+            color: var(--color-red-primary);
+        }
+
+        .hero p {
+            font-size: 1.6em;
+            margin-bottom: 50px; 
+            max-width: 800px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        /* AJUSTE: Añadido margen inferior al botón para empujar el contenido hacia arriba dentro del 90vh */
+        .hero .cta-button {
+            margin-bottom: 50px; 
+        }
+
+        /* --- Section: Destacados/Cards --- */
+        .featured-section {
+            background-color: var(--color-white-cream); /* Fondo claro para contrastar */
+            padding: 80px 40px;
+            text-align: center;
+            color: #333; /* Texto oscuro para el fondo claro */
+        }
+
+        .featured-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            color: var(--color-green-dark);
+            margin-bottom: 60px;
+            border-bottom: 3px solid var(--color-red-primary);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background-color: var(--color-white-cream);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 350px; /* Ancho un poco más grande */
+            padding: 30px;
+            text-align: center; /* Texto centrado para un look limpio */
+            border: 3px solid var(--color-snow); 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--color-gold-accent);
+        }
+        
+        .card .icon-container {
+            font-size: 3em;
+            color: var(--color-red-primary);
+            margin-bottom: 15px;
+        }
+
+
+        .card h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--color-red-primary);
+            font-size: 2em;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .card .learn-more {
+            color: var(--color-green-dark);
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 3px solid var(--color-gold-accent);
+            padding-bottom: 5px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card .learn-more:hover {
+            color: var(--color-red-primary);
+            border-color: var(--color-red-primary);
+        }
+
+        /* --- Map Section --- */
+        .map-section {
+            background-color: var(--color-green-dark);
+            padding: 60px 40px;
+            text-align: center;
+            color: var(--color-white-cream);
+        }
+
+        .map-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            color: var(--color-gold-accent);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .map-section iframe {
+            width: 100%;
+            max-width: 900px;
+            height: 450px;
+            border: 5px solid var(--color-red-primary);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .address-info {
+            font-size: 1.4em;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--color-green-dark);
+            color: var(--color-snow);
+            padding: 40px;
+            text-align: center;
+            border-top: 3px solid var(--color-red-primary);
+        }
+
+        .footer .social-icons a {
+            color: var(--color-gold-accent);
+            font-size: 1.8em;
+            margin: 0 15px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer .social-icons a:hover {
+            color: var(--color-white-cream);
+        }
+
+        .footer .footer-links {
+            margin-top: 20px;
+        }
+
+        .footer .footer-links a {
+            color: var(--color-snow);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .footer .footer-links a:hover {
+            color: var(--color-gold-accent);
+        }
+
+        .footer p {
+            margin-top: 25px;
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Audio Controller Styling */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--color-red-primary);
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+        
+        .audio-controls button {
+            background: var(--color-gold-accent);
+            color: var(--color-green-dark);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.2s, transform 0.2s;
+        }
+        
+        .audio-controls button:hover {
+            background: var(--color-white-cream);
+            transform: scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                height: 80vh; /* AJUSTE: Altura más conservadora para móvil */
+            }
+            .hero h1 {
+                font-size: 3em;
+            }
+            .hero p {
+                font-size: 1.1em;
+                margin-bottom: 30px; 
+            }
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .card {
+                width: 95%;
+            }
+            .map-section {
+                padding: 40px 20px;
+            }
+            .map-section iframe {
+                height: 300px;
+            }
+            .audio-controls {
+                bottom: 10px;
+                right: 10px;
+            }
+            .hero .info-box p {
+                font-size: 1.2em;
+            }
+            .hero .info-box {
+                margin-bottom: 30px; 
+            }
+            .hero .cta-button {
+                margin-bottom: 30px; /* Ajuste para móvil */
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Contenedor de la Nieve -->
+    <div class="snow-container">
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+        <div class="snow"></div>
+    </div>
+
+    <!-- Se eliminó el encabezado <header class="header"> -->
+
+    <section class="hero">
+        <h1>Gran Chocolatada Navideña 2025</h1>
+        <h2>Hermandad de la Santísima Virgen del Carmen de Lima</h2>
+        <p>Los esperamos para compartir un momento de fe, fraternidad y alegría navideña. ¡Ven con tu familia!</p>
+        
+        <!-- Contenedor para la información de fecha y lugar con iconos -->
+        <div class="info-box">
+            <p><span class="icon">📅</span> Sábado 20 de Diciembre | 11:00 AM</p>
+            <p><span class="icon">📍</span> Local Institucional: Jr. Junín 1145, Lima</p>
+        </div>
+
+        <a href="#detalles" class="cta-button">Ver Detalles del Evento</a>
+    </section>
+
+    <section id="detalles" class="featured-section">
+        <h2>El Corazón de la Celebración</h2>
+        <div class="card-container">
+            <!-- CARD 1: Detalles de la Chocolatada -->
+            <div class="card">
+                <div class="icon-container">☕</div>
+                <h3>Fraternidad y Chocolate Caliente</h3>
+                <p>Compartiremos la tradicional y deliciosa chocolatada, acompañada de panetón y dulces. Un encuentro para fortalecer nuestros lazos de hermandad.</p>
+                <p class="address-info" style="color: var(--color-red-primary);">¡Te esperamos en Jr. Junín 1145!</p>
+                <a href="#mapa" class="learn-more">Cómo Llegar</a>
+            </div>
+
+            <!-- CARD 2: El Verdadero Significado (Adviento) -->
+            <div class="card">
+                <div class="icon-container">🙏</div>
+                <h3>El Verdadero Significado: Adviento</h3>
+                <p>La Navidad es más que regalos. Es la espera gozosa de Jesús. Reflexionemos juntos sobre el Adviento, preparando nuestros corazones para el nacimiento de Cristo.</p>
+                <a href="#" class="learn-more">Mensaje del Hno. Mayor</a>
+            </div>
+
+            <!-- CARD 3: Contacto y Colaboración -->
+            <div class="card">
+                <div class="icon-container">🎁</div>
+                <h3>Apoyo y Colaboración</h3>
+                <p>Si deseas colaborar con donaciones de juguetes, panetones o insumos para nuestra Chocolatada, contacta con secretaría. Tu generosidad ilumina la Navidad.</p>
+                <p>Horario de apoyo: 9am a 1pm (Lun - Vie)</p>
+                <a href="#" class="learn-more">Contáctanos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION MAPA/UBICACIÓN -->
+    <section id="mapa" class="map-section">
+        <h2>Ubicación: Nuestro Local Institucional</h2>
+        <div style="margin-bottom: 20px; font-style: italic; color: var(--color-snow);">Jr. Junín 1145, Lima (Cercado)</div>
+        
+        <!-- Iframe de Google Maps para Jr. Junín 1145, Lima, Perú -->
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.1328906917637!2d-77.02700872659353!3d-12.049447241857644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c5f498c48443%3A0xc3b5a191f63a3d54!2zSnIuIEp1bsOtbiAxMTQ1LCBMaW1hIDE1MDAx!5e0!3m2!1ses!2spe!4v1701710400000!5m2!1ses!2spe" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Ubicación de la Hermandad - Jr. Junín 1145">
+        </iframe>
+        <p class="address-info">¡Te esperamos cerca del Centro Histórico de Lima!</p>
+    </section>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="#">F</a> <!-- Placeholder for Facebook Icon -->
+            <a href="#">I</a> <!-- Placeholder for Instagram Icon -->
+            <a href="#">W</a> <!-- Placeholder for WhatsApp Icon -->
+        </div>
+        <div class="footer-links">
+            <a href="#">Acerca de la Hermandad</a>
+            <a href="#">Historia</a>
+            <a href="#">Estatutos</a>
+        </div>
+        <p>&copy; 2025 Hermandad de la Santísima Virgen del Carmen de Lima. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Controles de Audio -->
+    <div class="audio-controls">
+        <p style="font-size: 0.8em; margin: 0 0 5px; color: var(--color-white-cream);">Música Navideña</p>
+        <button id="play-pause-btn">Reproducir Música</button>
+        <!-- Audio tag con un placeholder para la canción -->
+        <audio id="christmas-music" loop>
+            <!-- Nota: Debes reemplazar 'URL_DE_TU_CANCIÓN.mp3' con un enlace público real de una canción navideña. -->
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+    </div>
+    
+    <script>
+        // Script para controlar la reproducción de la música
+        const music = document.getElementById('christmas-music');
+        const btn = document.getElementById('play-pause-btn');
+        let isPlaying = false;
+
+        btn.addEventListener('click', () => {
+            if (isPlaying) {
+                music.pause();
+                btn.textContent = 'Reproducir Música';
+            } else {
+                music.play().catch(error => {
+                    console.error("No se pudo reproducir el audio automáticamente. Asegúrate de que el archivo MP3 sea accesible y que el usuario haya interactuado con la página.", error);
+                    // Usamos un modal o mensaje personalizado en lugar de alert()
+                    const message = document.createElement('div');
+                    message.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #C0392B; color: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 2000; font-family: 'Montserrat', sans-serif;";
+                    message.innerHTML = "<strong>Atención:</strong> El navegador bloqueó la reproducción automática. Haz clic de nuevo en el botón para iniciar la música.";
+                    document.body.appendChild(message);
+                    setTimeout(() => message.remove(), 4000); // Quitar mensaje después de 4 segundos
+                    
+                    btn.textContent = 'Reproducir Música';
+                    isPlaying = false;
+                });
+                btn.textContent = 'Pausar Música';
+            }
+            isPlaying = !isPlaying;
+        });
+    </script>
+</body>
+</html>
