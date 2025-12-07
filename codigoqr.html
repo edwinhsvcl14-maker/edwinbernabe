@@ -27,7 +27,7 @@
 
     <div class="w-full max-w-lg bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-100">
         <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">
-            Escaner de Código QR111
+            Escaner de Código QR
         </h1>
 
         <!-- Opción 1: Botón de Inicio (Visible por defecto) -->
@@ -38,7 +38,7 @@
             <button id="start-button" 
                     class="w-full max-w-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg transform hover:scale-105"
                     onclick="startScanning()">
-                Escanear Código QR111
+                Escanear Código QR
             </button>
         </div>
 
@@ -175,7 +175,7 @@
             checkLibraryLoaded();
         }
         
-        // --- FUNCIÓN QUE INICIA EL ESCANEO CON IDENTIFICACIÓN EXPLÍCITA DE CÁMARA ---
+        // --- FUNCIÓN QUE INICIA EL ESCANEO CON IDENTIFICACIÓN EXPLÍCITA DE CÁMARA Y RESOLUCIÓN ---
         async function startCameraScan() {
             // Aseguramos que la instancia anterior esté detenida
             if (html5Qrcode) {
@@ -184,7 +184,7 @@
             
             html5Qrcode = new Html5Qrcode("qr-reader");
 
-            const config = { fps: 10, qrbox: 250 }; // Configuración básica
+            const config = { fps: 10, qrbox: 250 }; // Configuración básica de la librería
 
             try {
                 // 1. Obtener la lista de cámaras disponibles
@@ -193,18 +193,17 @@
                 if (cameras && cameras.length) {
                     let cameraId = null;
                     
-                    // Buscar la cámara trasera (criterios comunes: 'back', 'environment', o la última en la lista)
+                    // Buscar la cámara trasera por etiqueta
                     const rearCamera = cameras.find(camera => 
                         camera.label.toLowerCase().includes('back') || 
                         camera.label.toLowerCase().includes('environment')
                     );
 
                     if (rearCamera) {
-                        // Usar el ID explícito de la cámara trasera encontrada
                         cameraId = rearCamera.id;
                         console.log(`Usando cámara trasera por label: ${rearCamera.label}`);
                     } else if (cameras.length > 1) {
-                         // Si hay más de una, la última suele ser la trasera en móviles
+                         // Fallback: Si hay más de una, la última suele ser la trasera en móviles
                         cameraId = cameras[cameras.length - 1].id;
                         console.log("Usando última cámara detectada como fallback.");
                     } else {
@@ -213,16 +212,23 @@
                         console.log("Usando la única cámara detectada.");
                     }
                     
-                    // 2. Iniciar el escaneo con el ID explícito de la cámara
-                    // La resolución ya no es necesaria, la librería la negocia.
+                    // 2. Construir las restricciones de video, incluyendo el ID y la resolución ideal
+                    const videoConstraints = {
+                        deviceId: { exact: cameraId },
+                        // Usamos ideal para que el navegador negocie una resolución cercana (alta compatibilidad)
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    };
+
+                    // 3. Iniciar el escaneo con las restricciones explícitas
                     await html5Qrcode.start(
-                        cameraId, 
+                        videoConstraints, // Pasamos el objeto de restricciones completo
                         config, 
                         onScanSuccess, 
                         onScanFailure
                     );
                     
-                    console.log("Escáner iniciado con ID explícito.");
+                    console.log("Escáner iniciado con ID y resolución explícita.");
 
                 } else {
                     showError("No se detectó ninguna cámara en este dispositivo. Asegúrate de que los permisos estén habilitados.");
@@ -230,10 +236,30 @@
                     return;
                 }
             } catch (err) {
-                showError("Error crítico al iniciar la cámara. Puede que otra aplicación esté usándola o que haya un problema de compatibilidad.");
-                console.error("Fallo total al iniciar cámara:", err);
-                stopScanning();
-                return;
+                // Si falla por ID o resolución, intentamos un fallback genérico con facingMode
+                console.error("Fallo con ID explícito. Intentando fallback con facingMode.", err);
+                
+                try {
+                    // Fallback: Intentar con facingMode: environment y resolución estándar
+                    const fallbackConstraints = {
+                        facingMode: "environment",
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    };
+                    await html5Qrcode.start(
+                        fallbackConstraints, 
+                        config, 
+                        onScanSuccess, 
+                        onScanFailure
+                    );
+                    console.log("Escáner iniciado con facingMode fallback.");
+                } catch (e2) {
+                    // 4. Fallo total
+                    showError("Error crítico al iniciar el video de la cámara. Causa probable: Problema de compatibilidad de resolución o cámara ocupada.");
+                    console.error("Fallo total al iniciar cámara:", e2);
+                    stopScanning();
+                    return;
+                }
             }
             
             // Chequeo de estado después de 4 segundos (para detectar fallo de renderizado)
