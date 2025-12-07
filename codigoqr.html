@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lector de Códigos QR Simple</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración del tema de Tailwind -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* Estilo para que el contenedor del escáner sea visible cuando se active */
+        .scanner-container {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-lg bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-100">
+        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">
+            Escaner de Código QR
+        </h1>
+
+        <!-- Opción 1: Botón de Inicio (Visible por defecto) -->
+        <div id="start-screen" class="text-center p-8">
+            <p class="text-gray-600 mb-8">
+                Presiona el botón para activar tu cámara y comenzar a escanear.
+            </p>
+            <button id="start-button" 
+                    class="w-full max-w-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg transform hover:scale-105"
+                    onclick="startScanning()">
+                Escanear Código QR
+            </button>
+        </div>
+
+        <!-- Opción 2: Contenedor del Lector QR (Inicialmente oculto) -->
+        <div id="scanner-view" class="scanner-container">
+            <p class="text-center text-gray-500 mb-6">
+                Apunta la cámara al código.
+            </p>
+            <div id="qr-reader" class="w-full rounded-lg overflow-hidden shadow-inner bg-gray-100 p-2 border border-gray-300">
+                <!-- El video del escáner se insertará aquí -->
+            </div>
+
+            <!-- Sección de Resultados -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-3 border-b pb-2">Resultado del Escaneo</h2>
+                
+                <div id="qr-reader-results" class="bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300 min-h-[5rem] flex items-center justify-center">
+                    <p id="result-text" class="text-gray-500 italic">Esperando escaneo...</p>
+                </div>
+
+                <!-- Botón para copiar resultado -->
+                <button id="copy-button" 
+                        class="hidden mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-150 ease-in-out shadow-md"
+                        onclick="copyToClipboard()">
+                    Copiar Texto Escaneado
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mensaje de Error (Inicialmente oculto) -->
+        <div id="error-message" class="hidden mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Error:</strong>
+            <span id="error-details" class="block sm:inline">No se pudo acceder a la cámara. Asegúrate de otorgar permisos.</span>
+        </div>
+    </div>
+
+    <!-- Script de la Librería html5-qrcode -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+
+    <!--
+        Lógica:
+        1. Al hacer clic en "Escanear Código QR", se llama a startScanning().
+        2. startScanning() oculta la pantalla inicial y muestra la vista del escáner.
+        3. Luego, llama a initializeScanner() para iniciar la cámara (con el mecanismo de espera robusto).
+    -->
+    <script>
+        // Inicialización de constantes y elementos
+        const startScreen = document.getElementById('start-screen');
+        const scannerView = document.getElementById('scanner-view');
+        const qrCodeResultDiv = document.getElementById('qr-reader-results');
+        const resultTextElement = document.getElementById('result-text');
+        const copyButton = document.getElementById('copy-button');
+        const errorMessageDiv = document.getElementById('error-message');
+        const errorDetailsSpan = document.getElementById('error-details');
+        let html5QrcodeScanner;
+
+        // Función que se ejecuta al escanear un código con éxito
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Scan result: ${decodedText}`, decodedResult);
+            
+            // 1. Mostrar el resultado
+            resultTextElement.innerHTML = `<a href="${decodedText}" target="_blank" class="text-indigo-600 hover:text-indigo-800 break-words">${decodedText}</a>`;
+            qrCodeResultDiv.classList.add('bg-green-50');
+            
+            // 2. Mostrar botón de copiar
+            copyButton.classList.remove('hidden');
+            copyButton.setAttribute('data-text', decodedText);
+        }
+
+        // Función que se ejecuta si hay un error de escaneo
+        function onScanFailure(error) {
+            // Manejo de errores de escaneo
+        }
+
+        // Función de Manejo de Errores de la Cámara
+        function showError(message) {
+            errorDetailsSpan.textContent = message;
+            errorMessageDiv.classList.remove('hidden');
+        }
+
+        // Función para copiar al portapapeles
+        window.copyToClipboard = function() {
+            const textToCopy = copyButton.getAttribute('data-text');
+            const tempInput = document.createElement('textarea');
+            document.body.appendChild(tempInput);
+            tempInput.value = textToCopy;
+            tempInput.select();
+            
+            try {
+                document.execCommand('copy');
+                copyButton.textContent = '¡Copiado!';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copiar Texto Escaneado';
+                }, 1500);
+            } catch (err) {
+                console.error('No se pudo copiar el texto:', err);
+                copyButton.textContent = 'Error al Copiar';
+            } finally {
+                document.body.removeChild(tempInput);
+            }
+        }
+        
+        // --- INICIALIZACIÓN DEL ESCÁNER CON ESPERA GARANTIZADA ---
+        function initializeScanner() {
+            if (typeof Html5QrcodeScanner === 'undefined') {
+                // Si la clase no está definida, esperamos 100ms y reintentamos.
+                console.log("Esperando carga de Html5QrcodeScanner...");
+                setTimeout(initializeScanner, 100);
+                return;
+            }
+
+            // La clase está definida. Procedemos con la inicialización.
+            try {
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "qr-reader", 
+                    { 
+                        fps: 10, 
+                        qrbox: {width: 250, height: 250},
+                        disableFlip: false 
+                    },
+                    /* verbose= */ false
+                );
+
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+                
+                // Un check temporal después de 2 segundos para ver si la cámara inició correctamente
+                setTimeout(() => {
+                    const videoElement = document.querySelector('#qr-reader video');
+                    if (!videoElement) {
+                        showError("Error de inicialización de cámara. Revisa que tu navegador tenga acceso.");
+                    }
+                }, 2000);
+
+            } catch (e) {
+                showError("Error inesperado durante la inicialización del escáner.");
+                console.error("Error al inicializar Html5QrcodeScanner:", e);
+            }
+        }
+
+        // Función llamada al hacer clic en el botón
+        window.startScanning = function() {
+            startScreen.style.display = 'none'; // Oculta el botón
+            scannerView.style.display = 'block'; // Muestra la vista del escáner
+            initializeScanner(); // Inicia el proceso de activación de la cámara
+        }
+
+        // Ocultar la vista del escáner al cargar la página, solo si el script se carga después de que el DOM está listo
+        document.addEventListener('DOMContentLoaded', () => {
+            scannerView.style.display = 'none';
+        });
+
+    </script>
+
+</body>
+</html>
