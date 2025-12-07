@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner de Código QR con Preload (CORREGIDO)</title>
+    <title>Escáner de Código QR Flexible</title>
     
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
+        /* ... (Tus estilos CSS) ... */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -19,7 +20,6 @@
         h1 {
             color: #333;
         }
-        /* Estilo para el mensaje de carga */
         #preload_message {
             display: flex;
             flex-direction: column;
@@ -37,10 +37,8 @@
             font-size: 1.1em;
             text-align: center;
         }
-        
-        /* Estilo para la cámara (OCULTA por defecto) */
         #reader {
-            display: none; /* Se oculta por defecto y se muestra en JavaScript al iniciar */
+            display: none; 
             width: 100%;
             max-width: 500px; 
             height: auto;
@@ -77,7 +75,7 @@
     <p>Apunta la cámara a un código QR. Recuerda conceder permiso de acceso.</p>
 
     <div id="preload_message">
-        <p>Cargando cámara... Por favor, **permite el acceso**.123</p>
+        <p>Cargando cámara... Por favor, **permite el acceso**.</p>
         <span style="font-size: 0.9em; opacity: 0.7;">(Esto puede tardar unos segundos)</span>
     </div>
     
@@ -89,7 +87,6 @@
     <div id="result">Esperando escaneo...</div>
 
     <script>
-        // Obtiene las referencias a los elementos HTML
         const resultElement = document.getElementById('result');
         const readerElement = document.getElementById('reader');
         const preloadElement = document.getElementById('preload_message');
@@ -100,38 +97,34 @@
         }
 
         function onScanFailure(error) {
-            // Manejo de errores silencioso (se esperan errores mientras escanea)
+            // Manejo de errores silencioso
         }
 
-        // 1. ⭐️ CORRECCIÓN CLAVE: Inicializar con la clase Html5Qrcode
-        //    Esta clase tiene el método .start()
         let html5QrcodeCode = new Html5Qrcode("reader"); 
 
-        // 2. Opciones de configuración del escáner
         const config = {
             fps: 10,
             qrbox: {width: 250, height: 250}
         };
         
-        // 3. Llamar al método .start()
+        // ⭐️ CAMBIO CLAVE: Usamos {} en lugar de { facingMode: "environment" }
         html5QrcodeCode.start(
-            // Opción para la cámara: "environment" (cámara trasera) es ideal para móviles
-            { facingMode: "environment" }, 
+            {}, // Configuración más flexible. Le dice al navegador: usa la cámara que encuentres.
             config, 
             onScanSuccess, 
             onScanFailure 
         ).then(() => {
-            // Este código se ejecuta CUANDO LA CÁMARA INICIA con éxito
-            preloadElement.style.display = 'none'; // Oculta el mensaje de carga
-            readerElement.style.display = 'block'; // Muestra el contenedor de la cámara
+            // Éxito al iniciar el stream
+            preloadElement.style.display = 'none'; 
+            readerElement.style.display = 'block'; 
             
         }).catch((err) => {
-            // Manejo de errores si falla la inicialización (ej. permisos denegados)
+            // Falla al iniciar la cámara
             console.error("Error al iniciar la cámara:", err);
             preloadElement.style.backgroundColor = '#f8d7da';
             preloadElement.style.color = '#721c24';
-            preloadElement.innerHTML = `⚠️ **Error al cargar la cámara:** Asegúrate de haber **permitido el acceso** y de estar en un servidor HTTPS.`;
-            readerElement.style.display = 'none'; // Asegura que la caja de la cámara no aparezca si falla
+            preloadElement.innerHTML = `⚠️ **Error al cargar la cámara:** (${err.name}). Asegúrate de haber permitido el acceso y que la cámara no esté siendo usada por otra aplicación.`;
+            readerElement.style.display = 'none';
         });
     </script>
 
