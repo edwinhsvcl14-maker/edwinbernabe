@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner de Código QR Web con Preload</title>
+    <title>Escáner de Código QR con Preload (CORREGIDO)</title>
     
     <script src="https://unpkg.com/html5-qrcode"></script>
     
@@ -19,7 +19,7 @@
         h1 {
             color: #333;
         }
-        /* 🌟 Preload Style */
+        /* Estilo para el mensaje de carga */
         #preload_message {
             display: flex;
             flex-direction: column;
@@ -38,9 +38,9 @@
             text-align: center;
         }
         
-        /* 🌟 Camera Style (Oculta por defecto) */
+        /* Estilo para la cámara (OCULTA por defecto) */
         #reader {
-            display: none; /* OCULTO por defecto hasta que el script lo muestre */
+            display: none; /* Se oculta por defecto y se muestra en JavaScript al iniciar */
             width: 100%;
             max-width: 500px; 
             height: auto;
@@ -63,12 +63,18 @@
             font-weight: bold;
             word-wrap: break-word;
         }
+        hr {
+            width: 80%;
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+        }
     </style>
 </head>
 <body>
 
     <h1>📸 Escáner de Código QR Web</h1>
-    <p>Apunta la cámara a un código QR. Recuerda conceder permiso de acceso a la cámara.</p>
+    <p>Apunta la cámara a un código QR. Recuerda conceder permiso de acceso.</p>
 
     <div id="preload_message">
         <p>Cargando cámara... Por favor, **permite el acceso**.</p>
@@ -83,6 +89,7 @@
     <div id="result">Esperando escaneo...</div>
 
     <script>
+        // Obtiene las referencias a los elementos HTML
         const resultElement = document.getElementById('result');
         const readerElement = document.getElementById('reader');
         const preloadElement = document.getElementById('preload_message');
@@ -93,42 +100,39 @@
         }
 
         function onScanFailure(error) {
-            // Manejo de errores silencioso mientras se intenta escanear
+            // Manejo de errores silencioso (se esperan errores mientras escanea)
         }
 
-        // Inicializa el objeto Html5QrcodeScanner
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", // ID del contenedor
-            { 
-                fps: 10,
-                qrbox: {width: 250, height: 250}
-            },
-            false
-        );
+        // 1. ⭐️ CORRECCIÓN CLAVE: Inicializar con la clase Html5Qrcode
+        //    Esta clase tiene el método .start()
+        let html5QrcodeCode = new Html5Qrcode("reader"); 
 
-        // Utilizamos .start() en lugar de .render() para un mejor control del inicio
-        html5QrcodeScanner.start(
-            { facingMode: "environment" }, // Prioriza la cámara trasera en móviles
-            {
-                fps: 10,
-                qrbox: {width: 250, height: 250}
-            },
-            onScanSuccess, // Función para cuando se escanea un código
-            onScanFailure // Función para errores
+        // 2. Opciones de configuración del escáner
+        const config = {
+            fps: 10,
+            qrbox: {width: 250, height: 250}
+        };
+        
+        // 3. Llamar al método .start()
+        html5QrcodeCode.start(
+            // Opción para la cámara: "environment" (cámara trasera) es ideal para móviles
+            { facingMode: "environment" }, 
+            config, 
+            onScanSuccess, 
+            onScanFailure 
         ).then(() => {
-            // ⭐️ ESTE CÓDIGO SE EJECUTA CUANDO LA CÁMARA ESTÁ LISTA ⭐️
+            // Este código se ejecuta CUANDO LA CÁMARA INICIA con éxito
             preloadElement.style.display = 'none'; // Oculta el mensaje de carga
             readerElement.style.display = 'block'; // Muestra el contenedor de la cámara
             
         }).catch((err) => {
-            // Si hay un error grave (ej. usuario deniega el permiso)
+            // Manejo de errores si falla la inicialización (ej. permisos denegados)
+            console.error("Error al iniciar la cámara:", err);
             preloadElement.style.backgroundColor = '#f8d7da';
             preloadElement.style.color = '#721c24';
-            preloadElement.style.border = '2px solid #f5c6cb';
-            preloadElement.innerHTML = `⚠️ **Error al cargar la cámara:** Asegúrate de haber **permitido el acceso** o de tener una cámara conectada.`;
-            readerElement.style.display = 'none';
+            preloadElement.innerHTML = `⚠️ **Error al cargar la cámara:** Asegúrate de haber **permitido el acceso** y de estar en un servidor HTTPS.`;
+            readerElement.style.display = 'none'; // Asegura que la caja de la cámara no aparezca si falla
         });
-
     </script>
 
 </body>
