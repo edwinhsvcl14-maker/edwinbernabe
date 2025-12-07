@@ -96,7 +96,7 @@
         const errorMessageDiv = document.getElementById('error-message');
         const errorDetailsSpan = document.getElementById('error-details');
         
-        // CAMBIO CLAVE: Usamos el objeto Html5Qrcode directamente (más control)
+        // Usamos el objeto Html5Qrcode directamente (más control)
         let html5Qrcode = null; 
 
         // --- FUNCIONES DE LÓGICA ---
@@ -175,7 +175,7 @@
             checkLibraryLoaded();
         }
         
-        // --- FUNCIÓN QUE INICIA EL ESCANEO CON LÓGICA DE FALLO DE CÁMARA ---
+        // --- FUNCIÓN QUE INICIA EL ESCANEO CON IDENTIFICACIÓN EXPLÍCITA DE CÁMARA ---
         async function startCameraScan() {
             // Aseguramos que la instancia anterior esté detenida
             if (html5Qrcode) {
@@ -186,36 +186,54 @@
 
             const config = { fps: 10, qrbox: 250 }; // Configuración básica
 
-            // *** CAMBIO CLAVE: Definir las restricciones de video con resolución explícita para máxima compatibilidad ***
-            const videoConstraints = {
-                // Resolución baja y estándar para maximizar la compatibilidad en móviles
-                width: 640,
-                height: 480
-            };
-
-            // 1. Intentar la cámara trasera estricta ('environment') con resolución fija
-            let constraints = { video: { ...videoConstraints, facingMode: { exact: "environment" } } };
-
             try {
-                // Intenta iniciar el escaneo con la cámara trasera
-                await html5Qrcode.start(constraints, config, onScanSuccess, onScanFailure);
-                console.log("Cámara trasera iniciada con éxito.");
-            } catch (e1) {
-                console.warn("Fallo al usar cámara trasera estricta. Intentando genérica.", e1);
+                // 1. Obtener la lista de cámaras disponibles
+                const cameras = await Html5Qrcode.getCameras();
+                
+                if (cameras && cameras.length) {
+                    let cameraId = null;
+                    
+                    // Buscar la cámara trasera (criterios comunes: 'back', 'environment', o la última en la lista)
+                    const rearCamera = cameras.find(camera => 
+                        camera.label.toLowerCase().includes('back') || 
+                        camera.label.toLowerCase().includes('environment')
+                    );
 
-                // 2. Si falla la estricta, intenta una cámara genérica con resolución fija (puede ser frontal)
-                constraints = { video: videoConstraints }; 
+                    if (rearCamera) {
+                        // Usar el ID explícito de la cámara trasera encontrada
+                        cameraId = rearCamera.id;
+                        console.log(`Usando cámara trasera por label: ${rearCamera.label}`);
+                    } else if (cameras.length > 1) {
+                         // Si hay más de una, la última suele ser la trasera en móviles
+                        cameraId = cameras[cameras.length - 1].id;
+                        console.log("Usando última cámara detectada como fallback.");
+                    } else {
+                        // Si solo hay una cámara, usar esa
+                        cameraId = cameras[0].id;
+                        console.log("Usando la única cámara detectada.");
+                    }
+                    
+                    // 2. Iniciar el escaneo con el ID explícito de la cámara
+                    // La resolución ya no es necesaria, la librería la negocia.
+                    await html5Qrcode.start(
+                        cameraId, 
+                        config, 
+                        onScanSuccess, 
+                        onScanFailure
+                    );
+                    
+                    console.log("Escáner iniciado con ID explícito.");
 
-                try {
-                    await html5Qrcode.start(constraints, config, onScanSuccess, onScanFailure);
-                    console.log("Cámara genérica iniciada con éxito.");
-                } catch (e2) {
-                    // 3. Fallo total
-                    showError("Error al iniciar el flujo de video. Motivos: 1) Cámara ocupada, 2) Dispositivo sin cámara trasera compatible.");
-                    console.error("Fallo total al iniciar cámara:", e2);
+                } else {
+                    showError("No se detectó ninguna cámara en este dispositivo. Asegúrate de que los permisos estén habilitados.");
                     stopScanning();
                     return;
                 }
+            } catch (err) {
+                showError("Error crítico al iniciar la cámara. Puede que otra aplicación esté usándola o que haya un problema de compatibilidad.");
+                console.error("Fallo total al iniciar cámara:", err);
+                stopScanning();
+                return;
             }
             
             // Chequeo de estado después de 4 segundos (para detectar fallo de renderizado)
