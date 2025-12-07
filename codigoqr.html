@@ -174,16 +174,9 @@
                     html5QrcodeScanner.clear();
                 }
 
-                // 1. OBTENER CÁMARAS DISPONIBLES
-                const cameras = await Html5Qrcode.getCameras();
-                if (cameras.length === 0) {
-                    showError("No se detectaron cámaras en este dispositivo.");
-                    stopScanning();
-                    return;
-                }
-
-                // 2. SELECCIÓN DE CÁMARA: Usamos la última cámara detectada (suele ser la trasera en móviles)
-                const lastCameraId = cameras[cameras.length - 1].id;
+                // *** CAMBIO CLAVE: Usamos restricciones para forzar la cámara trasera ('environment') ***
+                // Esto es más fiable en muchos navegadores móviles que el ID de la cámara.
+                const videoConstraints = { facingMode: { exact: "environment" } };
                 
                 html5QrcodeScanner = new Html5QrcodeScanner(
                     "qr-reader", 
@@ -195,22 +188,22 @@
                     /* verbose= */ false
                 );
 
-                // 3. RENDERIZAR CON CÁMARA EXPLÍCITA
-                // Usamos el ID de la cámara seleccionada
-                html5QrcodeScanner.render(onScanSuccess, onScanFailure, lastCameraId);
+                // 3. RENDERIZAR CON RESTRICCIÓN EXPLÍCITA A LA CÁMARA TRASERA
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure, videoConstraints);
                 
                 // Chequeo de estado después de 4 segundos
                 setTimeout(() => {
                     // Si el video no se ha cargado, forzamos un error
                     const videoElement = document.querySelector('#qr-reader video');
-                    if (!videoElement || videoElement.readyState < 2) {
-                        showError("La cámara no se activó. Posibles causas: permiso denegado o ya está siendo usada por otra aplicación.");
+                    // Usamos la propiedad videoWidth para confirmar que hay un flujo de video activo
+                    if (!videoElement || videoElement.videoWidth === 0) { 
+                        showError("La cámara sigue sin activarse. Por favor, asegúrate de que el sitio está en HTTPS y que ninguna otra aplicación usa la cámara.");
                         stopScanning();
                     }
                 }, 4000); 
 
             } catch (e) {
-                showError("Error al iniciar el escáner. Revisa los permisos o intenta detener otras aplicaciones de cámara.");
+                showError("Error crítico al iniciar el escáner. Intenta recargar la página.");
                 console.error("Error al iniciar el escáner:", e);
                 stopScanning();
             }
