@@ -60,25 +60,26 @@
                         onclick="copyToClipboard()">
                     Copiar Texto Escaneado
                 </button>
+                
+                <!-- NUEVO BOTÓN PARA DETENER EL ESCANEO -->
+                <button id="stop-button" 
+                        class="mt-2 w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition duration-150 ease-in-out shadow-md"
+                        onclick="stopScanning()">
+                    Detener Escaneo y Volver
+                </button>
             </div>
         </div>
         
         <!-- Mensaje de Error (Inicialmente oculto) -->
         <div id="error-message" class="hidden mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
             <strong class="font-bold">Error:</strong>
-            <span id="error-details" class="block sm:inline">No se pudo acceder a la cámara. Asegúrate de otorgar permisos.</span>
+            <span id="error-details" class="block sm:inline">No se pudo acceder a la cámara. Razones comunes: 1) Permiso denegado, 2) Otra aplicación la está usando, o 3) La página NO está en HTTPS.</span>
         </div>
     </div>
 
     <!-- Script de la Librería html5-qrcode -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 
-    <!--
-        Lógica:
-        1. Al hacer clic en "Escanear Código QR", se llama a startScanning().
-        2. startScanning() oculta la pantalla inicial y muestra la vista del escáner.
-        3. Luego, llama a initializeScanner() para iniciar la cámara (con el mecanismo de espera robusto).
-    -->
     <script>
         // Inicialización de constantes y elementos
         const startScreen = document.getElementById('start-screen');
@@ -88,7 +89,7 @@
         const copyButton = document.getElementById('copy-button');
         const errorMessageDiv = document.getElementById('error-message');
         const errorDetailsSpan = document.getElementById('error-details');
-        let html5QrcodeScanner;
+        let html5QrcodeScanner = null;
 
         // Función que se ejecuta al escanear un código con éxito
         function onScanSuccess(decodedText, decodedResult) {
@@ -135,6 +136,29 @@
                 document.body.removeChild(tempInput);
             }
         }
+
+        // --- NUEVA FUNCIÓN PARA DETENER EL ESCANEO Y VOLVER ---
+        window.stopScanning = async function() {
+            if (html5QrcodeScanner) {
+                try {
+                    // Detiene el escáner si está activo
+                    await html5QrcodeScanner.stop();
+                    // Limpia la instancia para que se pueda recrear al iniciar de nuevo
+                    html5QrcodeScanner.clear();
+                    html5QrcodeScanner = null;
+                } catch (err) {
+                    console.warn("Error al detener el escáner (puede ser normal si falló la inicialización):", err);
+                }
+            }
+            // Restablecer la interfaz de usuario
+            scannerView.style.display = 'none';
+            startScreen.style.display = 'block';
+            errorMessageDiv.classList.add('hidden'); // Ocultar errores al volver
+            // Resetear resultados
+            qrCodeResultDiv.classList.remove('bg-green-50');
+            resultTextElement.textContent = 'Esperando escaneo...';
+            copyButton.classList.add('hidden');
+        }
         
         // --- INICIALIZACIÓN DEL ESCÁNER CON ESPERA GARANTIZADA ---
         function initializeScanner() {
@@ -147,6 +171,11 @@
 
             // La clase está definida. Procedemos con la inicialización.
             try {
+                // Si ya existe una instancia, la limpiamos antes de crear una nueva
+                if (html5QrcodeScanner) {
+                    html5QrcodeScanner.clear();
+                }
+
                 html5QrcodeScanner = new Html5QrcodeScanner(
                     "qr-reader", 
                     { 
@@ -157,19 +186,23 @@
                     /* verbose= */ false
                 );
 
+                // El método render maneja internamente la solicitud de permisos de la cámara
                 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
                 
-                // Un check temporal después de 2 segundos para ver si la cámara inició correctamente
+                // Chequeo temporal para capturar fallos de inicialización (ej. permiso denegado)
                 setTimeout(() => {
                     const videoElement = document.querySelector('#qr-reader video');
                     if (!videoElement) {
-                        showError("Error de inicialización de cámara. Revisa que tu navegador tenga acceso.");
+                        // Si no hay video después de 4s, mostramos error y volvemos a la pantalla inicial
+                        showError(errorDetailsSpan.textContent); // Usamos el mensaje predefinido
+                        stopScanning();
                     }
-                }, 2000);
+                }, 4000); 
 
             } catch (e) {
-                showError("Error inesperado durante la inicialización del escáner.");
+                showError("Error inesperado durante la inicialización del escáner. Asegúrate de que el navegador esté actualizado.");
                 console.error("Error al inicializar Html5QrcodeScanner:", e);
+                stopScanning();
             }
         }
 
@@ -177,10 +210,11 @@
         window.startScanning = function() {
             startScreen.style.display = 'none'; // Oculta el botón
             scannerView.style.display = 'block'; // Muestra la vista del escáner
+            errorMessageDiv.classList.add('hidden'); // Ocultar cualquier error anterior
             initializeScanner(); // Inicia el proceso de activación de la cámara
         }
 
-        // Ocultar la vista del escáner al cargar la página, solo si el script se carga después de que el DOM está listo
+        // Ocultar la vista del escáner al cargar la página
         document.addEventListener('DOMContentLoaded', () => {
             scannerView.style.display = 'none';
         });
