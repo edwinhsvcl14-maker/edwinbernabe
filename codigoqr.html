@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba Cámara Trasera Nativa</title>
+    <title>Escáner de Código QR Final</title>
+    
+    <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
         body {
@@ -17,8 +19,9 @@
         h1 {
             color: #333;
         }
+        /* Botón de inicio */
         #startButton {
-            background-color: #dc3545; /* Color rojo para destacar el cambio */
+            background-color: #28a745;
             color: white;
             border: none;
             padding: 15px 30px;
@@ -29,83 +32,136 @@
             transition: background-color 0.3s;
         }
         #startButton:hover {
-            background-color: #c82333;
+            background-color: #218838;
         }
-        #cameraView {
+        /* Indicador de Estado/Error */
+        #statusMessage {
+            display: block; 
+            width: 80%;
+            max-width: 450px;
+            padding: 15px;
+            background-color: #e9ecef;
+            color: #333;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        /* Contenedor de la cámara (OCULTO por defecto) */
+        #reader {
             display: none; 
             width: 100%;
-            max-width: 500px;
+            max-width: 500px; 
             height: auto;
-            border: 3px solid #dc3545; /* Borde rojo */
-            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 5px solid #007bff;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        #statusMessage {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 5px;
-            font-weight: bold;
-            min-height: 20px;
-            background-color: #e9ecef;
-            color: #333;
-            width: 80%;
-            max-width: 500px;
+        #result {
+            margin-top: 20px;
+            padding: 15px 25px;
+            border: 2px solid #28a745;
+            background-color: #e9f7ee;
+            color: #155724;
+            min-height: 40px;
+            border-radius: 8px;
             text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+        hr {
+            width: 80%;
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
         }
     </style>
 </head>
 <body>
 
-    <h1>📸 Prueba: Forzar Cámara Trasera</h1>
-    <p>Haz clic para intentar activar la cámara trasera (`facingMode: environment`).</p>
+    <h1>📸 Escáner de Código QR</h1>
+    <p>Haz clic para activar la cámara trasera y escanear un código QR.</p>
 
-    <button id="startButton">▶️ Habilitar Cámara Trasera</button>
+    <button id="startButton">▶️ Activar Escáner QR</button>
 
-    <video id="cameraView" autoplay playsinline></video>
+    <div id="statusMessage">Cámara inactiva. Haga clic en el botón para comenzar.</div>
     
-    <div id="statusMessage">Esperando activación...</div>
+    <div id="reader"></div>
+
+    <hr>
+
+    <h2>Resultado del Escaneo:</h2>
+    <div id="result">Esperando escaneo...</div>
 
     <script>
-        const startButton = document.getElementById('startButton');
-        const cameraView = document.getElementById('cameraView');
+        const resultElement = document.getElementById('result');
+        const readerElement = document.getElementById('reader');
         const statusMessage = document.getElementById('statusMessage');
+        const startButton = document.getElementById('startButton');
 
-        async function startCamera() {
-            startButton.style.display = 'none';
-            statusMessage.innerHTML = 'Solicitando cámara trasera...';
-            statusMessage.style.backgroundColor = '#fff3cd'; 
+        // Inicializar el objeto con la clase correcta para usar .start()
+        let html5QrcodeCode = new Html5Qrcode("reader"); 
 
-            try {
-                // 1. ⭐️ CAMBIO CLAVE: Solicita la cámara trasera ('environment')
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment' }
-                });
-
-                // 2. Si tiene éxito:
-                cameraView.srcObject = stream;
-                cameraView.style.display = 'block';
-                statusMessage.innerHTML = '✅ Cámara trasera activada con éxito.';
-                statusMessage.style.backgroundColor = '#d4edda';
-                statusMessage.style.color = '#155724';
-
-                await cameraView.play();
-
-            } catch (err) {
-                // 3. Si falla:
-                cameraView.style.display = 'none';
-                startButton.style.display = 'block'; // Mostrar botón para reintentar
-                
-                // Muestra el error exacto
-                statusMessage.innerHTML = `❌ **ERROR (${err.name}):** ${err.message}. La cámara trasera no pudo ser encontrada o activada.`;
-                statusMessage.style.backgroundColor = '#f8d7da';
-                statusMessage.style.color = '#721c24';
-
-                console.error("Error nativo al acceder a la cámara trasera:", err);
-            }
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Código escaneado = ${decodedText}`, decodedResult);
+            resultElement.innerHTML = `<b>Escaneo Exitoso:</b> ${decodedText}`;
+            
+            // Opcional: Detener la cámara después del primer escaneo
+            // html5QrcodeCode.stop().then(() => {
+            //     readerElement.style.display = 'none';
+            //     startButton.style.display = 'block';
+            //     statusMessage.style.display = 'block';
+            //     statusMessage.innerHTML = 'Escaneo completo. Haz clic para reanudar.';
+            // });
         }
 
-        startButton.addEventListener('click', startCamera);
+        function onScanFailure(error) {
+            // Manejo de errores silencioso durante el escaneo
+        }
+
+        const config = {
+            fps: 10,
+            qrbox: {width: 250, height: 250}
+        };
+
+        // Función que inicia el escáner
+        function startScanner() {
+            startButton.style.display = 'none'; 
+            statusMessage.innerHTML = 'Cargando cámara... Por favor, espere.';
+            statusMessage.style.backgroundColor = '#fff3cd';
+            
+            html5QrcodeCode.start(
+                // ⭐️ CLAVE: Usamos 'environment' (cámara trasera) que sabemos funciona
+                { facingMode: "environment" }, 
+                config, 
+                onScanSuccess, 
+                onScanFailure 
+            ).then(() => {
+                // Éxito al iniciar el stream
+                statusMessage.style.display = 'none'; 
+                readerElement.style.display = 'block'; 
+                
+            }).catch((err) => {
+                // Falla al iniciar la cámara
+                console.error("Error al iniciar la cámara:", err);
+                
+                // Muestra el error y el botón para reintentar
+                startButton.style.display = 'block'; 
+                statusMessage.style.display = 'block';
+                statusMessage.style.backgroundColor = '#f8d7da';
+                statusMessage.style.color = '#721c24';
+                
+                statusMessage.innerHTML = `❌ **Error al cargar el escáner (${err.name}):** Haz clic para reintentar.`;
+                readerElement.style.display = 'none';
+            });
+        }
+
+        // Llama a startScanner al hacer clic en el botón
+        startButton.addEventListener('click', startScanner);
     </script>
 
 </body>
