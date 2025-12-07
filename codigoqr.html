@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Asistencia QR - Solución Final</title>
+    <title>Sistema de Asistencia QR - Versión Funcional</title>
     
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
@@ -33,13 +33,17 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        /* El contenedor del lector debe estar visible para render */
+        /* Contenedor del Visor - Necesario para .render() */
         #my-qr-reader {
             min-height: 250px;
             border: 3px solid #007bff;
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 20px;
+        }
+        /* Ocultamos el botón de inicio, pues .render() es automático */
+        #startButton {
+            display: none !important;
         }
         /* Área de Resultado */
         #result {
@@ -56,7 +60,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Sistema de Asistencia QR  Solución Final23232323234232342q</h1>
+        <h1>Sistema de Asistencia QRwqwqwqwqwqwq</h1>
         
         <div class="section">
             <div id="my-qr-reader">
@@ -64,7 +68,7 @@
         </div>
         
         <div id="result">
-            Buscando cámaras disponibles...
+            Haga clic en el botón de la cámara para iniciar el escaneo.
         </div>
     </div>
 
@@ -72,95 +76,59 @@
         const qrReader = document.getElementById('my-qr-reader');
         const resultElement = document.getElementById('result');
         
-        let targetCameraId = null; 
-        
-        // Configuración Mínima
-        const config = {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-            // Permite que la librería maneje el flujo de selección
-            disableFlip: false 
-        };
+        // ⭐️ CLAVE: Usamos Html5QrcodeScanner con el método .render(), el que incluye la interfaz y SÍ funciona.
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "my-qr-reader", // ID del contenedor
+            { 
+                fps: 30, // Máxima velocidad para mejor lectura
+                qrbox: { width: 250, height: 250 },
+                // Configuramos para que intente usar la cámara trasera, pero permita la selección.
+                cameraConfig: {
+                    facingMode: "environment" 
+                },
+            },
+            false // verbose=false
+        );
         
         /**
          * Función que se ejecuta al escanear el QR.
          */
         function onScanSuccess(dni, decodeResult) {
-            // Detenemos el escáner (usamos .clear() porque usamos .render())
-            html5QrcodeScanner.clear();
+            // 1. Detenemos el escáner y limpiamos la interfaz.
+            html5QrcodeScanner.clear().catch(error => {
+                console.error("Error al detener el escáner:", error);
+            });
             
             if (!/^\d{8}$/.test(dni)) {
                 resultElement.innerHTML = `⚠️ Código no válido: **${dni}**. Escanee un QR con 8 dígitos.`;
                 return;
             }
             
+            // 2. Registro de Asistencia
             const hora = new Date().toLocaleTimeString();
             resultElement.innerHTML = `
                 <h2>🎉 ¡ASISTENCIA REGISTRADA!</h2>
                 <p><strong>DNI Escaneado:</strong> ${dni}</p>
                 <p><strong>Hora de Registro:</strong> ${hora}</p>
             `;
-        }
 
-        // ------------------ Flujo de Detección e Inicialización ------------------
-
-        function startScanner() {
-            // ⭐️ CLAVE: Usamos Html5QrcodeScanner que tiene la interfaz de selección (el que sí funciona)
-            let html5QrcodeScanner = new Html5QrcodeScanner(
-                "my-qr-reader", 
-                config, 
-                false 
-            );
-
-            // ⭐️ CLAVE 2: Le decimos a .render() que use el ID de la cámara trasera si lo encontramos.
-            if (targetCameraId) {
-                // Si encontramos un ID, intentamos renderizarlo directamente.
-                html5QrcodeScanner.render(onScanSuccess, onScanFailure, targetCameraId);
-            } else {
-                // Si no encontramos un ID específico, dejamos que la librería muestre la interfaz de selección
+            // 3. Volvemos a iniciar el escáner después de 5 segundos para escanear otra vez (opcional)
+            setTimeout(() => {
+                resultElement.innerHTML = "Listo para el siguiente escaneo. Reiniciando cámara...";
                 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-            }
-            resultElement.innerHTML = 'Haga clic en el botón de la cámara para iniciar el escaneo.';
+            }, 5000);
         }
 
         function onScanFailure(error) {
-            // Manejo de errores de escaneo
-        }
-        
-        /**
-         * Función: Detección y Selección de la Cámara Trasera
-         */
-        function detectAndStart() {
-            Html5Qrcode.getCameras().then(devices => {
-                if (devices && devices.length) {
-                    
-                    const rearCameras = devices.filter(device => 
-                        device.label.toLowerCase().includes('back') || 
-                        device.label.toLowerCase().includes('environment')
-                    );
-                    
-                    if (rearCameras.length > 0) {
-                        // ⭐️ Guardamos el ID de la cámara trasera
-                        targetCameraId = rearCameras[0].id;
-                        resultElement.innerHTML = `Cámara trasera detectada: ${rearCameras[0].label}. Iniciando escáner...`;
-                    } else {
-                        // Si no hay trasera, usamos la primera y la librería pedirá la selección
-                        resultElement.innerHTML = '⚠️ No se pudo determinar la cámara trasera. Por favor, selecciónela.';
-                    }
-                } else {
-                    resultElement.innerHTML = '❌ Error: No se encontraron dispositivos de cámara. Revise permisos.';
-                }
-                
-                // Iniciamos el renderizado, sea con ID o dejando que el usuario seleccione.
-                startScanner();
-
-            }).catch(err => {
-                resultElement.innerHTML = `❌ Error al obtener permisos: ${err.name}.`;
-            });
+            // Este es el error de ruido, lo ignoramos para no saturar la consola
+            // console.error(error); 
         }
 
-        // ⭐️ Iniciamos el flujo al cargar la página
-        document.addEventListener('DOMContentLoaded', detectAndStart);
+        // ⭐️ Iniciamos el renderizado que te mostraba la interfaz de selección
+        document.addEventListener('DOMContentLoaded', () => {
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        });
+
     </script>
 </body>
 </html>
