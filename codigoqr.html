@@ -60,7 +60,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Sistema de Asistencia edwinfeo</h1>
+        <h1>Sistema de Asistencia edwinfeo123</h1>
         
         <div class="section">
             <div id="my-qr-reader">
@@ -73,66 +73,129 @@
     </div>
 
     <script>
-        const qrReader = document.getElementById('my-qr-reader');
-        const resultElement = document.getElementById('result');
+    const resultElement = document.getElementById('result');
+    // ⚠️ Define la URL base de tu backend (sin /api ni /asistencia/validar)
+    const BACKEND_URL_BASE = 'https://asistencia-backend-red.vercel.app';
+    
+    // ⭐️ Configuración e Inicialización del Escáner (Mantenemos la que funciona)
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+        "my-qr-reader", // ID del contenedor
+        { 
+            fps: 30, 
+            qrbox: { width: 250, height: 250 },
+            cameraConfig: { facingMode: "environment" },
+        },
+        false 
+    );
+    
+    // Función para manejar la respuesta y reiniciar el escáner
+    function handleResponse(htmlContent, success) {
+        resultElement.innerHTML = htmlContent;
         
-        // ⭐️ Usamos Html5QrcodeScanner con el método .render() que ya sabes que funciona.
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "my-qr-reader", // ID del contenedor
-            { 
-                fps: 30, // Máxima velocidad para mejor lectura
-                qrbox: { width: 250, height: 250 },
-                cameraConfig: {
-                    facingMode: "environment" 
-                },
-            },
-            false // verbose=false
-        );
-        
-        /**
-         * Función que se ejecuta al escanear el QR.
-         */
-        function onScanSuccess(contenidoLeido, decodeResult) {
-            // 1. Detenemos el escáner y limpiamos la interfaz.
-            html5QrcodeScanner.clear().catch(error => {
-                console.error("Error al detener el escáner:", error);
-            });
-            
-            // 2. ⭐️ Obtenemos la longitud del contenido leído.
-            const longitud = contenidoLeido.length;
-            const hora = new Date().toLocaleTimeString();
-            
-            // 3. ⭐️ MOSTRAMOS LO LEÍDO SIN NINGUNA VALIDACIÓN.
-            resultElement.innerHTML = `
-                <h2>🎉 ¡ASISTENCIA REGISTRADA!</h2>
-                <p><strong>Hora de Registro:</strong> ${hora}</p>
-                <hr>
-                <p><strong>Contenido Leído:</strong> 
-                   <span style="font-weight: bold; color: red;">"${contenidoLeido}"</span>
-                </p>
-                <p><strong>Cantidad de Caracteres:</strong> 
-                   <span style="font-weight: bold; color: red;">${longitud}</span>
-                </p>
-                <hr>
-                <p>⚠️ Revise si el contenido tiene espacios o caracteres extra.
-            `;
-
-            // 4. Volvemos a iniciar el escáner después de 5 segundos para escanear otra vez (opcional)
-            setTimeout(() => {
-                resultElement.innerHTML = "Listo para el siguiente escaneo. Reiniciando cámara...";
-                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-            }, 5000);
-        }
-
-        function onScanFailure(error) {
-            // Este es el error de ruido, lo ignoramos.
-        }
-
-        // ⭐️ Iniciamos el renderizado que te mostraba la interfaz de selección
-        document.addEventListener('DOMContentLoaded', () => {
+        // Reinicia el escáner después de 5 segundos solo si hubo éxito
+        setTimeout(() => {
+            resultElement.innerHTML = success 
+                ? "Listo para el siguiente escaneo. Reiniciando cámara..."
+                : "Reiniciando cámara...";
             html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        }, 5000);
+    }
+    
+    /**
+     * Función principal que se ejecuta al escanear el QR.
+     */
+    async function onScanSuccess(contenidoLeido, decodeResult) {
+        // 1. Detenemos el escáner inmediatamente.
+        html5QrcodeScanner.clear().catch(error => {
+            console.error("Error al detener el escáner:", error);
         });
+        
+        const dniLeido = contenidoLeido.trim(); // Limpiamos espacios al inicio/final
+        
+        // --- 2. 🚨 VALIDACIÓN: Verificar si son 8 caracteres ---
+        if (dniLeido.length !== 8) {
+            const errorHtml = `
+                <h2 style="color: red;">❌ ERROR DE LECTURA</h2>
+                <p>El contenido escaneado tiene **${dniLeido.length}** caracteres. Un DNI debe tener 8.</p>
+                <p>Contenido: <strong>"${dniLeido}"</strong></p>
+            `;
+            return handleResponse(errorHtml, false);
+        }
 
-    </script>
+        // --- 3. 🌐 Llamada al Backend para VALIDAR DNI ---
+        let empleado;
+        try {
+            resultElement.innerHTML = "⏳ Verificando DNI en el sistema...";
+            
+            const validarUrl = `${BACKEND_URL_BASE}/asistencia/validar`;
+            const response = await fetch(validarUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dni: dniLeido })
+            });
+
+            const data = await response.json();
+
+            if (response.status === 404) {
+                const errorHtml = `<h2 style="color: orange;">⚠️ DNI NO REGISTRADO</h2><p>${data.message}</p>`;
+                return handleResponse(errorHtml, true);
+            }
+            
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${data.message}`);
+            }
+
+            empleado = data.data; // Guardamos los datos del empleado (nombre, dni)
+
+        } catch (error) {
+            console.error("Error en validación o conexión:", error);
+            const errorHtml = `<h2 style="color: red;">❌ ERROR DE CONEXIÓN</h2><p>No se pudo conectar con el servidor o DNI inválido.</p>`;
+            return handleResponse(errorHtml, false);
+        }
+
+        // --- 4. ✅ DNI VÁLIDO: Llamada al Backend para REGISTRAR ASISTENCIA ---
+        try {
+            resultElement.innerHTML = `⏳ DNI de ${empleado.nombre} verificado. Registrando asistencia...`;
+            
+            const registrarUrl = `${BACKEND_URL_BASE}/asistencia/registrar`;
+            const response = await fetch(registrarUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dni: empleado.dni })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${data.message}`);
+            }
+            
+            // --- 5. 🎉 ÉXITO FINAL: Mostrar el registro ---
+            const hora = new Date().toLocaleTimeString();
+            const successHtml = `
+                <h2 style="color: green;">✅ ¡ASISTENCIA REGISTRADA!</h2>
+                <p><strong>Empleado:</strong> ${data.registro.nombre}</p>
+                <p><strong>Hora:</strong> ${hora}</p>
+                <p><strong>Tipo de Registro:</strong> ENTRADA</p>
+                <p><strong>ID de Registro:</strong> ${data.registro.dni}</p>
+            `;
+            handleResponse(successHtml, true);
+
+        } catch (error) {
+            console.error("Error al registrar asistencia:", error);
+            const errorHtml = `<h2 style="color: red;">❌ ERROR AL REGISTRAR</h2><p>No se pudo completar el registro: ${error.message}</p>`;
+            handleResponse(errorHtml, false);
+        }
+    }
+
+    function onScanFailure(error) {
+        // Ignoramos el error de ruido
+    }
+
+    // ⭐️ Iniciamos el renderizado al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    });
+</script>
 </body>
 </html>
