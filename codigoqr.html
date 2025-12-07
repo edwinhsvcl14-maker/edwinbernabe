@@ -73,7 +73,7 @@
     <div class="container">
         <h1>Sistema de Asistencia QR</h1>
         
-        <button id="startButton">✅ Escanear para Asistencia</button>
+        <button id="startButton" disabled>Cargando detección de cámaras...</button>
         
         <div class="section">
             <div id="my-qr-reader">
@@ -81,7 +81,7 @@
         </div>
         
         <div id="result">
-            Esperando clic en el botón para iniciar el escáner.
+            Iniciando detección de cámaras traseras...
         </div>
     </div>
 
@@ -90,13 +90,13 @@
         const startButton = document.getElementById('startButton');
         const resultElement = document.getElementById('result');
         
-        // Usamos la clase Html5Qrcode (la que tiene .start()) para el inicio manual y forzado
+        // Usamos la clase Html5Qrcode para el inicio manual y forzado
         let html5QrcodeCode = new Html5Qrcode("my-qr-reader"); 
+        let targetCameraId = null; // Guardará el ID de la cámara trasera elegida
         
         const config = {
             fps: 10,
             qrbox: { width: 250, height: 250 },
-            // Deshabilitar la opción de voltear cámara (opcional)
             disableFlip: false 
         };
         
@@ -122,46 +122,79 @@
                 <h2>🎉 ¡ASISTENCIA REGISTRADA!</h2>
                 <p><strong>DNI Escaneado:</strong> ${dni}</p>
                 <p><strong>Hora de Registro:</strong> ${hora}</p>
-                `;
-            
-            // Ejemplo de llamada a servidor (debes implementarlo en tu backend):
-            // fetch('/api/registrar_asistencia', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ dni: dni, hora: hora })
-            // });
+            `;
         }
 
         /**
-         * Función que inicia el escáner al hacer clic, forzando la cámara trasera.
+         * Función que inicia el escáner con el ID específico.
          */
         function startScanner() {
+            if (!targetCameraId) {
+                resultElement.innerHTML = '❌ Error: La cámara trasera no fue detectada correctamente. Intente recargar.';
+                return;
+            }
+
             startButton.style.display = 'none';
-            resultElement.innerHTML = 'Cargando cámara trasera... Por favor, espere.';
+            resultElement.innerHTML = 'Cargando cámara trasera por ID...';
 
             html5QrcodeCode.start(
-                // ⭐️ CLAVE: Forzamos la cámara trasera (environment)
-                { facingMode: "environment" }, 
+                targetCameraId, // ⭐️ CLAVE: Usamos el ID específico encontrado
                 config, 
                 onScanSuccess, 
-                (errorMessage) => {
-                    // Ignorar errores menores durante el escaneo (ruido)
-                }
+                (errorMessage) => { /* Ignorar */ }
             ).then(() => {
-                // Éxito al iniciar
                 qrReader.style.display = 'block';
                 resultElement.innerHTML = 'Cámara activada. **Escanee su código DNI**.';
             }).catch((err) => {
-                // Falla grave al iniciar la cámara
-                console.error("Error al iniciar el escáner:", err);
+                console.error("Error al iniciar el escáner con ID:", err);
                 startButton.style.display = 'block';
                 qrReader.style.display = 'none';
-                resultElement.innerHTML = `❌ Error: ${err.name}. No se pudo acceder a la cámara trasera. Asegúrese de tener **HTTPS** y permisos concedidos.`;
+                resultElement.innerHTML = `❌ Error: ${err.name}. El ID de cámara falló. Intente recargar.`;
+            });
+        }
+        
+        /**
+         * Función: Detección y Selección de la Cámara Trasera (maneja múltiples cámaras)
+         */
+        function detectCamera() {
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices && devices.length) {
+                    
+                    // Buscar todas las cámaras traseras
+                    const rearCameras = devices.filter(device => 
+                        device.label.toLowerCase().includes('back') || 
+                        device.label.toLowerCase().includes('environment')
+                    );
+                    
+                    if (rearCameras.length > 0) {
+                        // ⭐️ Usamos la primera cámara trasera encontrada (la mayoría de las veces es la principal)
+                        targetCameraId = rearCameras[0].id;
+                        
+                        // Si la primera cámara (índice 0) no es la principal, puedes cambiar manualmente a rearCameras[1].id
+                        // targetCameraId = rearCameras[1].id; 
+
+                        startButton.disabled = false;
+                        startButton.innerHTML = '✅ Escanear para Asistencia';
+                        resultElement.innerHTML = `Cámara detectada: ${rearCameras[0].label}. Lista para usar.`;
+                        startButton.addEventListener('click', startScanner);
+                    } else {
+                        // Fallback: Si no se encuentra 'back'/'environment', usa la primera cámara en la lista
+                        targetCameraId = devices[0].id; 
+                        startButton.disabled = false;
+                        startButton.innerHTML = '⚠️ Usar Cámara Detectada (No trasera)';
+                        resultElement.innerHTML = '⚠️ No se encontró la etiqueta "trasera". Usando la primera cámara detectada.';
+                        startButton.addEventListener('click', startScanner);
+                    }
+                } else {
+                    resultElement.innerHTML = '❌ Error: No se encontraron dispositivos de cámara.';
+                }
+            }).catch(err => {
+                resultElement.innerHTML = `❌ Error al obtener permisos de cámara: ${err.name}.`;
             });
         }
 
-        // Asigna la función al botón al cargar la página
-        startButton.addEventListener('click', startScanner);
+        // ⭐️ Iniciar la detección al cargar la página
+        detectCamera();
     </script>
 </body>
 </html>
