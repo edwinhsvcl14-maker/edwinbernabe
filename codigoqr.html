@@ -3,292 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lector de Códigos QR Simple</title>
-    <!-- Carga de Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configuración del tema de Tailwind -->
+    <title>Escáner de Código QR Web con Preload</title>
+    
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f7f9;
         }
-        /* Estilo para que el contenedor del escáner sea visible cuando se active */
-        .scanner-container {
-            display: none;
+        h1 {
+            color: #333;
         }
-        /* Añadido para forzar la visibilidad del video */
-        #qr-reader video {
-            width: 100% !important;
-            height: auto !important;
+        /* 🌟 Preload Style */
+        #preload_message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            width: 80%;
+            max-width: 450px;
+            padding: 20px;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeeba;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        
+        /* 🌟 Camera Style (Oculta por defecto) */
+        #reader {
+            display: none; /* OCULTO por defecto hasta que el script lo muestre */
+            width: 100%;
+            max-width: 500px; 
+            height: auto;
+            margin-bottom: 20px;
+            border: 5px solid #007bff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px 25px;
+            border: 2px solid #28a745;
+            background-color: #e9f7ee;
+            color: #155724;
+            min-height: 40px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            word-wrap: break-word;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="w-full max-w-lg bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-100">
-        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">
-            Escaner de Código QRuuuuuu
-        </h1>
+    <h1>📸 Escáner de Código QR Web</h1>
+    <p>Apunta la cámara a un código QR. Recuerda conceder permiso de acceso a la cámara.</p>
 
-        <!-- Opción 1: Botón de Inicio (Visible por defecto) -->
-        <div id="start-screen" class="text-center p-8">
-            <p class="text-gray-600 mb-8">
-                Presiona el botón para activar tu cámara y comenzar a escanear.
-            </p>
-            <button id="start-button" 
-                    class="w-full max-w-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg transform hover:scale-105"
-                    onclick="startScanning()">
-                Escanear Código QRuuuuuu
-            </button>
-        </div>
-
-        <!-- Opción 2: Contenedor del Lector QR (Inicialmente oculto) -->
-        <div id="scanner-view" class="scanner-container">
-            <p class="text-center text-gray-500 mb-6">
-                Apunta la cámara al código.
-            </p>
-            <div id="qr-reader" class="w-full rounded-lg overflow-hidden shadow-inner bg-gray-100 p-2 border border-gray-300">
-                <!-- El video del escáner se insertará aquí -->
-            </div>
-
-            <!-- Sección de Resultados -->
-            <div class="mt-8">
-                <h2 class="text-xl font-semibold text-gray-700 mb-3 border-b pb-2">Resultado del Escaneo</h2>
-                
-                <div id="qr-reader-results" class="bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300 min-h-[5rem] flex items-center justify-center">
-                    <p id="result-text" class="text-gray-500 italic">Esperando escaneo...</p>
-                </div>
-
-                <!-- Botón para copiar resultado -->
-                <button id="copy-button" 
-                        class="hidden mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-150 ease-in-out shadow-md"
-                        onclick="copyToClipboard()">
-                    Copiar Texto Escaneado
-                </button>
-                
-                <!-- Nuevo botón para cambiar de cámara -->
-                <button id="toggle-camera-button" 
-                        class="hidden mt-2 w-full bg-indigo-400 hover:bg-indigo-500 text-white font-semibold py-2 rounded-lg transition duration-150 ease-in-out shadow-md"
-                        onclick="toggleCamera()">
-                    Cambiar a Cámara Frontal
-                </button>
-
-                <!-- Botón para detener el escaneo -->
-                <button id="stop-button" 
-                        class="mt-2 w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition duration-150 ease-in-out shadow-md"
-                        onclick="stopScanning()">
-                    Detener Escaneo y Volver
-                </button>
-            </div>
-        </div>
-        
-        <!-- Mensaje de Error (Inicialmente oculto) -->
-        <div id="error-message" class="hidden mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">Error al acceder a la cámara.</strong>
-            <span id="error-details" class="block sm:inline"></span>
-            <p class="mt-2 text-sm font-semibold">
-                ⚠️ Si el permiso no aparece (el diálogo de la cámara), el navegador lo tiene bloqueado. Por favor, haz clic en el <span class="font-bold">símbolo de candado (🔒)</span> en la barra de URL y cambia el permiso de "Cámara" a <span class="font-bold">"Preguntar"</span> o <span class="font-bold">"Permitir"</span>, luego recarga la página. **Este es el único paso fuera de mi control.**
-            </p>
-        </div>
+    <div id="preload_message">
+        <p>Cargando cámara... Por favor, **permite el acceso**.</p>
+        <span style="font-size: 0.9em; opacity: 0.7;">(Esto puede tardar unos segundos)</span>
     </div>
+    
+    <div id="reader"></div>
 
-    <!-- Script de la Librería html5-qrcode -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+    <hr>
+
+    <h2>Resultado del Escaneo:</h2>
+    <div id="result">Esperando escaneo...</div>
 
     <script>
-        // Inicialización de constantes y elementos
-        const startScreen = document.getElementById('start-screen');
-        const scannerView = document.getElementById('scanner-view');
-        const qrCodeResultDiv = document.getElementById('qr-reader-results');
-        const resultTextElement = document.getElementById('result-text');
-        const copyButton = document.getElementById('copy-button');
-        const errorMessageDiv = document.getElementById('error-message');
-        const errorDetailsSpan = document.getElementById('error-details');
-        const toggleCameraButton = document.getElementById('toggle-camera-button');
-        
-        // Estado de la cámara
-        let html5Qrcode = null; 
-        // Empezamos asumiendo la cámara trasera (environment)
-        let isFrontCamera = false;
-        let allCameras = []; // Almacenará la lista de cámaras si la detección es exitosa.
-
-        // --- FUNCIONES DE LÓGICA ---
+        const resultElement = document.getElementById('result');
+        const readerElement = document.getElementById('reader');
+        const preloadElement = document.getElementById('preload_message');
 
         function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Scan result: ${decodedText}`, decodedResult);
-            // Mostrar el resultado como un enlace clickeable
-            resultTextElement.innerHTML = `<a href="${decodedText}" target="_blank" class="text-indigo-600 hover:text-indigo-800 break-words">${decodedText}</a>`;
-            qrCodeResultDiv.classList.add('bg-green-50');
-            copyButton.classList.remove('hidden');
-            copyButton.setAttribute('data-text', decodedText);
+            console.log(`Código escaneado = ${decodedText}`, decodedResult);
+            resultElement.innerHTML = `<b>Escaneo Exitoso:</b> ${decodedText}`;
         }
 
         function onScanFailure(error) {
-            // Manejo de errores de escaneo (cuando no se detecta QR)
+            // Manejo de errores silencioso mientras se intenta escanear
         }
 
-        function showError(message) {
-            errorDetailsSpan.innerHTML = message;
-            errorMessageDiv.classList.remove('hidden');
-        }
+        // Inicializa el objeto Html5QrcodeScanner
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", // ID del contenedor
+            { 
+                fps: 10,
+                qrbox: {width: 250, height: 250}
+            },
+            false
+        );
 
-        window.copyToClipboard = function() {
-            const textToCopy = copyButton.getAttribute('data-text');
-            const tempInput = document.createElement('textarea');
-            document.body.appendChild(tempInput);
-            tempInput.value = textToCopy;
-            tempInput.select();
+        // Utilizamos .start() en lugar de .render() para un mejor control del inicio
+        html5QrcodeScanner.start(
+            { facingMode: "environment" }, // Prioriza la cámara trasera en móviles
+            {
+                fps: 10,
+                qrbox: {width: 250, height: 250}
+            },
+            onScanSuccess, // Función para cuando se escanea un código
+            onScanFailure // Función para errores
+        ).then(() => {
+            // ⭐️ ESTE CÓDIGO SE EJECUTA CUANDO LA CÁMARA ESTÁ LISTA ⭐️
+            preloadElement.style.display = 'none'; // Oculta el mensaje de carga
+            readerElement.style.display = 'block'; // Muestra el contenedor de la cámara
             
-            try {
-                // Comando clásico para asegurar la compatibilidad en entornos iframe
-                document.execCommand('copy'); 
-                copyButton.textContent = '¡Copiado!';
-                setTimeout(() => {
-                    copyButton.textContent = 'Copiar Texto Escaneado';
-                }, 1500);
-            } catch (err) {
-                console.error('No se pudo copiar el texto:', err);
-                copyButton.textContent = 'Error al Copiar';
-            } finally {
-                document.body.removeChild(tempInput);
-            }
-        }
-
-        window.stopScanning = async function() {
-            if (html5Qrcode && html5Qrcode.isScanning) {
-                try {
-                    await html5Qrcode.stop();
-                    html5Qrcode = null;
-                } catch (err) {
-                    console.warn("Error al detener el escáner (puede que ya estuviera detenido):", err);
-                }
-            }
-            // Restaurar la interfaz y estado
-            scannerView.style.display = 'none';
-            startScreen.style.display = 'block';
-            errorMessageDiv.classList.add('hidden');
-            qrCodeResultDiv.classList.remove('bg-green-50');
-            resultTextElement.textContent = 'Esperando escaneo...';
-            copyButton.classList.add('hidden');
-            toggleCameraButton.classList.add('hidden');
-            isFrontCamera = false; // Resetear estado de la cámara
-            allCameras = []; // Limpiar la lista de cámaras
-        }
-        
-        window.toggleCamera = async function() {
-            // Solo alternamos si se detectaron múltiples cámaras
-            if (!html5Qrcode || allCameras.length <= 1) {
-                showError("Solo se detectó una cámara o el acceso a la lista de cámaras falló. No se puede alternar.");
-                return;
-            } 
-
-            isFrontCamera = !isFrontCamera; // Alternar el estado
-            
-            // 1. Detener el escaneo actual
-            await html5Qrcode.stop();
-            
-            // 2. Reiniciar el escaneo con la cámara opuesta, usando facingMode
-            await startCameraScan(isFrontCamera);
-        }
-
-        async function initializeScanner() {
-            // Validación de soporte de API
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                showError("Tu navegador no soporta la API de cámara requerida (getUserMedia). Intenta con Chrome, Firefox o Edge.");
-                startScreen.style.display = 'none'; // Ocultar el botón si no hay soporte
-                return;
-            }
-            
-            // Esperar a que la librería se cargue antes de intentar usarla
-            if (typeof Html5Qrcode === 'undefined') {
-                console.log("Librería Html5Qrcode aún no cargada. Reintentando...");
-                setTimeout(initializeScanner, 100);
-                return;
-            }
-            
-            // Iniciar el escaneo con la lógica de detección y fallback
-            startCameraScan(isFrontCamera);
-        }
-        
-        /**
-         * Intenta iniciar la cámara usando la lógica de facingMode (trasera/frontal)
-         * que es más robusta que usar IDs explícitos.
-         */
-        async function startCameraScan(useFront = false) {
-            // Detener cualquier escaneo previo
-            if (html5Qrcode) { await html5Qrcode.stop(); html5Qrcode = null; }
-            
-            html5Qrcode = new Html5Qrcode("qr-reader");
-
-            // Configuración estándar del escáner
-            const config = { fps: 10, qrbox: 250 }; 
-            
-            // Restricción de cámara basada en facingMode, que solicita la cámara primaria o secundaria.
-            const constraints = {
-                facingMode: useFront ? "user" : "environment",
-            };
-
-            try {
-                // 1. Intentar obtener la lista de cámaras (esto dispara el diálogo de permiso si no está almacenado)
-                try {
-                    allCameras = await Html5Qrcode.getCameras();
-                } catch (e) {
-                    // Si falla la enumeración, no es fatal, solo no podremos alternar entre cámaras.
-                    console.warn("Fallo al listar cámaras, se procederá solo con facingMode.");
-                    allCameras = []; 
-                }
-
-                // 2. Iniciar el escaneo con la restricción de facingMode
-                await html5Qrcode.start(
-                    constraints, 
-                    config, 
-                    onScanSuccess, 
-                    onScanFailure
-                );
-                
-                console.log(`Escáner iniciado con facingMode: ${useFront ? 'user' : 'environment'}.`);
-                
-                // Mostrar/Ocultar el botón de alternancia
-                if (allCameras.length > 1) {
-                    toggleCameraButton.textContent = useFront ? 'Cambiar a Cámara Trasera' : 'Cambiar a Cámara Frontal';
-                    toggleCameraButton.classList.remove('hidden');
-                } else {
-                    toggleCameraButton.classList.add('hidden');
-                }
-                
-            } catch (err) {
-                // Fallo final. Capturar el error y mostrar el mensaje de ayuda.
-                let finalError = err.name || 'Error Desconocido';
-                let message = `**${finalError}:** No se pudo iniciar el flujo de video.`;
-
-                if (finalError === 'NotAllowedError' || finalError === 'PermissionDeniedError') {
-                    // Mensaje más directo si se deniega el permiso
-                    message = `**${finalError}:** El permiso de la cámara fue denegado.`; 
-                } else if (finalError === 'NotFoundError') {
-                    message = `**${finalError}:** No se detectó ninguna cámara accesible en tu dispositivo.`; 
-                } else if (finalError === 'NotReadableError') {
-                    message = `**${finalError}:** La cámara está en uso por otra aplicación. Cierra esa aplicación y vuelve a intentar.`;
-                }
-                
-                showError(message);
-                console.error("Fallo total al iniciar cámara:", err);
-            }
-        }
-
-        // Función llamada al hacer clic en el botón de inicio
-        window.startScanning = function() {
-            // La UI de inicio se oculta y la vista de escaneo se muestra
-            startScreen.style.display = 'none';
-            scannerView.style.display = 'block';
-            errorMessageDiv.classList.add('hidden'); // Ocultar errores previos
-            
-            // Iniciar el proceso de escaneo
-            initializeScanner(); 
-        }
-
-        // Ocultar la vista del escáner al cargar la página
-        document.addEventListener('DOMContentLoaded', () => {
-            scannerView.style.display = 'none';
+        }).catch((err) => {
+            // Si hay un error grave (ej. usuario deniega el permiso)
+            preloadElement.style.backgroundColor = '#f8d7da';
+            preloadElement.style.color = '#721c24';
+            preloadElement.style.border = '2px solid #f5c6cb';
+            preloadElement.innerHTML = `⚠️ **Error al cargar la cámara:** Asegúrate de haber **permitido el acceso** o de tener una cámara conectada.`;
+            readerElement.style.display = 'none';
         });
 
     </script>
