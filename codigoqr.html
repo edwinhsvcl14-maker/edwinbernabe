@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner QR Integrado y Corregidoqqq</title>
+    <title>Escáner QR: Cámara Trasera Forzada (Render)</title>
     
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
     <style>
-        /* Estilos basados en el style.css que encontraste, adaptados a un solo archivo */
+        /* ... (Estilos CSS simplificados) ... */
         body {    
             display: flex;    
             justify-content: center;    
-            flex-direction: column; /* Agregado para centrar verticalmente */
-            align-items: center; /* Agregado para centrar horizontalmente */
+            flex-direction: column; 
+            align-items: center; 
             margin: 0;    
-            padding: 20px 0; /* Ajuste de padding */
+            padding: 20px 0;
             min-height: 100vh;    
             box-sizing: border-box;    
             text-align: center;    
@@ -32,118 +32,82 @@
         }
         .section {    
             background-color: #ffffff;    
-            padding: 20px 30px; /* Reducido el padding */
+            padding: 20px 30px; 
             border: 1.5px solid #b2b2b2;    
             border-radius: 0.25em;    
             box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
         }
-        /* Contenedor del visor (my-qr-reader en tu ejemplo) */
+        /* Contenedor del visor (siempre visible para .render()) */
         #my-qr-reader {    
             padding: 20px !important;    
             border: 1.5px solid #b2b2b2 !important;    
             border-radius: 8px;
-            display: none; /* OCULTAR POR DEFECTO */
             min-height: 250px;
         }
-        /* Estilo para el botón de inicio */
-        #startButton {
-            padding: 15px 30px;
-            border: none;
-            outline: none;
-            border-radius: 0.25em;
-            color: white;
-            font-size: 1.2em;
-            cursor: pointer;
-            margin-top: 15px;
-            margin-bottom: 15px;
-            background-color: #008000ad;
-            transition: 0.3s background-color;
-        }
-        #startButton:hover {
-            background-color: #008000;
-        }
-        /* Estilo para el mensaje de estado/error */
-        #statusMessage {
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            background-color: #fff3cd;
-            color: #856404;
-            font-weight: bold;
-            display: block;
+        /* Ocultamos el botón de inicio de los ejemplos anteriores */
+        #startButton, #statusMessage {
+            display: none !important;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Scan QR Codes</h1>
-
-        <button id="startButton">▶️ Activar Cámara Trasera</button>
-
-        <div id="statusMessage">Haga clic en el botón para iniciar la cámara.</div>
+        
+        <div id="statusMessage">Iniciando escáner...</div>
         
         <div class="section">
             <div id="my-qr-reader">
-            </div>
+                </div>
         </div>
     </div>
 
     <script>
-        const qrReader = document.getElementById('my-qr-reader');
-        const startButton = document.getElementById('startButton');
         const statusMessage = document.getElementById('statusMessage');
 
-        // ⭐️ CLAVE: Usamos la clase Html5Qrcode para tener acceso a .start()
-        let html5QrcodeCode = new Html5Qrcode("my-qr-reader"); 
-
         function onScanSuccess(decodeText, decodeResult) {
-            alert("QR Code Escaneado: " + decodeText);
-            // Opcional: Detener la cámara al escanear
-            html5QrcodeCode.stop().then(() => {
-                qrReader.style.display = 'none';
-                startButton.style.display = 'block';
-                statusMessage.style.display = 'block';
-                statusMessage.innerHTML = 'Escaneo completado. Resultado: ' + decodeText;
-                statusMessage.style.backgroundColor = '#d4edda';
-            }).catch((err) => {
-                console.error("Error al detener la cámara:", err);
-            });
+            alert("✅ QR Code Escaneado: " + decodeText);
+            // CLAVE: No llamamos a .clear() o .stop(), el escáner se queda activo.
         }
 
-        const config = {
-            fps: 10,
-            qrbox: { width: 250, height: 250 } // qrbos en tu código, debe ser qrbox
-        };
+        function onScanFailure(error) {
+            // El escáner continuará intentando escanear
+        }
 
-        function startScanner() {
-            startButton.style.display = 'none';
-            statusMessage.innerHTML = 'Solicitando acceso a la cámara trasera...';
-            statusMessage.style.backgroundColor = '#fff3cd';
-
-            html5QrcodeCode.start(
-                // ⭐️ CLAVE: Forzamos la cámara trasera, que sabemos que funciona en tu móvil
-                { facingMode: "environment" }, 
-                config, 
-                onScanSuccess, 
-                (errorMessage) => {
-                    // console.log("Escaneando..."); // Silencioso
+        // ⭐️ CLAVE 1: Usamos Html5QrcodeScanner, que tiene el método .render()
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "my-qr-reader", // ID del contenedor
+            { 
+                // Configuración
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                
+                // ⭐️ CLAVE 2: Forzar la cámara trasera y deshabilitar el fallback de archivo
+                disableFlip: true, // Deshabilita el botón de voltear cámara
+                rememberLastUsedCamera: false, // No recordamos configuraciones previas
+                
+                // Forzar el inicio de la cámara trasera
+                supportedScanTypes: [
+                    Html5QrcodeScanType.SCAN_TYPE_CAMERA
+                ],
+                cameraConfig: {
+                    facingMode: "environment" // La configuración que sí funcionó en nativo
                 }
-            ).then(() => {
-                // Éxito al iniciar
-                statusMessage.style.display = 'none';
-                qrReader.style.display = 'block';
-            }).catch((err) => {
-                // Falla al iniciar
-                console.error("Error al iniciar el escáner:", err);
-                startButton.style.display = 'block';
-                statusMessage.style.display = 'block';
-                statusMessage.innerHTML = `❌ Error: ${err.name}. Haz clic para reintentar.`;
-                statusMessage.style.backgroundColor = '#f8d7da';
-            });
-        }
+            },
+            false // verbose=false
+        );
 
-        // Iniciar el escáner al hacer clic en el botón
-        startButton.addEventListener('click', startScanner);
+        // 3. Iniciar el renderizado automático
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+        // Ocultar el mensaje de estado si el escáner logra cargar el visor
+        document.addEventListener('DOMContentLoaded', () => {
+            // Se asume que si el lector aparece, el mensaje de estado no es necesario
+            const readerDiv = document.getElementById('my-qr-reader');
+            if (readerDiv.querySelector('video')) {
+                statusMessage.style.display = 'none';
+            }
+        }, 3000); // Esperamos 3 segundos para que cargue
     </script>
 </body>
 </html>
