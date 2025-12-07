@@ -76,13 +76,12 @@
         const qrReader = document.getElementById('my-qr-reader');
         const resultElement = document.getElementById('result');
         
-        // ⭐️ CLAVE: Usamos Html5QrcodeScanner con el método .render(), el que incluye la interfaz y SÍ funciona.
+        // ⭐️ Usamos Html5QrcodeScanner con el método .render() que ya sabes que funciona.
         let html5QrcodeScanner = new Html5QrcodeScanner(
             "my-qr-reader", // ID del contenedor
             { 
                 fps: 30, // Máxima velocidad para mejor lectura
                 qrbox: { width: 250, height: 250 },
-                // Configuramos para que intente usar la cámara trasera, pero permita la selección.
                 cameraConfig: {
                     facingMode: "environment" 
                 },
@@ -93,26 +92,32 @@
         /**
          * Función que se ejecuta al escanear el QR.
          */
-        function onScanSuccess(dni, decodeResult) {
+        function onScanSuccess(contenidoLeido, decodeResult) {
             // 1. Detenemos el escáner y limpiamos la interfaz.
             html5QrcodeScanner.clear().catch(error => {
                 console.error("Error al detener el escáner:", error);
             });
             
-            if (!/^\d{8}$/.test(dni)) {
-                resultElement.innerHTML = `⚠️ Código no válido: **${dni}**. Escanee un QR con 8 dígitos.`;
-                return;
-            }
-            
-            // 2. Registro de Asistencia
+            // 2. ⭐️ Obtenemos la longitud del contenido leído.
+            const longitud = contenidoLeido.length;
             const hora = new Date().toLocaleTimeString();
+            
+            // 3. ⭐️ MOSTRAMOS LO LEÍDO SIN NINGUNA VALIDACIÓN.
             resultElement.innerHTML = `
                 <h2>🎉 ¡ASISTENCIA REGISTRADA!</h2>
-                <p><strong>DNI Escaneado:</strong> ${dni}</p>
                 <p><strong>Hora de Registro:</strong> ${hora}</p>
+                <hr>
+                <p><strong>Contenido Leído:</strong> 
+                   <span style="font-weight: bold; color: red;">"${contenidoLeido}"</span>
+                </p>
+                <p><strong>Cantidad de Caracteres:</strong> 
+                   <span style="font-weight: bold; color: red;">${longitud}</span>
+                </p>
+                <hr>
+                <p>⚠️ Revise si el contenido tiene espacios o caracteres extra.
             `;
 
-            // 3. Volvemos a iniciar el escáner después de 5 segundos para escanear otra vez (opcional)
+            // 4. Volvemos a iniciar el escáner después de 5 segundos para escanear otra vez (opcional)
             setTimeout(() => {
                 resultElement.innerHTML = "Listo para el siguiente escaneo. Reiniciando cámara...";
                 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
@@ -120,8 +125,7 @@
         }
 
         function onScanFailure(error) {
-            // Este es el error de ruido, lo ignoramos para no saturar la consola
-            // console.error(error); 
+            // Este es el error de ruido, lo ignoramos.
         }
 
         // ⭐️ Iniciamos el renderizado que te mostraba la interfaz de selección
