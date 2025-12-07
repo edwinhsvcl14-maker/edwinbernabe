@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba Nativa de Cámara (Sin QR)</title>
+    <title>Prueba Cámara Trasera Nativa</title>
     
     <style>
         body {
@@ -17,9 +17,8 @@
         h1 {
             color: #333;
         }
-        /* Estilo para el botón de inicio */
         #startButton {
-            background-color: #007bff;
+            background-color: #dc3545; /* Color rojo para destacar el cambio */
             color: white;
             border: none;
             padding: 15px 30px;
@@ -30,20 +29,18 @@
             transition: background-color 0.3s;
         }
         #startButton:hover {
-            background-color: #0056b3;
+            background-color: #c82333;
         }
-        /* Contenedor del video (visor de la cámara) */
         #cameraView {
-            display: none; /* Oculto por defecto */
+            display: none; 
             width: 100%;
             max-width: 500px;
             height: auto;
-            border: 3px solid #007bff;
+            border: 3px solid #dc3545; /* Borde rojo */
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        /* Estilo para mostrar mensajes/errores */
         #statusMessage {
             margin-top: 15px;
             padding: 15px;
@@ -60,10 +57,10 @@
 </head>
 <body>
 
-    <h1>📸 Prueba de Activación de Cámara</h1>
-    <p>Haz clic para solicitar acceso y ver si el dispositivo activa la cámara.</p>
+    <h1>📸 Prueba: Forzar Cámara Trasera</h1>
+    <p>Haz clic para intentar activar la cámara trasera (`facingMode: environment`).</p>
 
-    <button id="startButton">▶️ Habilitar Cámara</button>
+    <button id="startButton">▶️ Habilitar Cámara Trasera</button>
 
     <video id="cameraView" autoplay playsinline></video>
     
@@ -74,27 +71,24 @@
         const cameraView = document.getElementById('cameraView');
         const statusMessage = document.getElementById('statusMessage');
 
-        // Función que intenta iniciar la cámara
         async function startCamera() {
             startButton.style.display = 'none';
-            statusMessage.innerHTML = 'Solicitando acceso a la cámara...';
+            statusMessage.innerHTML = 'Solicitando cámara trasera...';
             statusMessage.style.backgroundColor = '#fff3cd'; 
 
             try {
-                // 1. Solicita acceso a la cámara (video)
-                // Usamos 'facingMode: user' para probar primero la cámara frontal, que suele ser más estable.
+                // 1. ⭐️ CAMBIO CLAVE: Solicita la cámara trasera ('environment')
                 const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'user' }
+                    video: { facingMode: 'environment' }
                 });
 
                 // 2. Si tiene éxito:
                 cameraView.srcObject = stream;
                 cameraView.style.display = 'block';
-                statusMessage.innerHTML = '✅ Cámara activada con éxito. Deberías ver el video.';
+                statusMessage.innerHTML = '✅ Cámara trasera activada con éxito.';
                 statusMessage.style.backgroundColor = '#d4edda';
                 statusMessage.style.color = '#155724';
 
-                // Inicia la reproducción del video
                 await cameraView.play();
 
             } catch (err) {
@@ -103,15 +97,14 @@
                 startButton.style.display = 'block'; // Mostrar botón para reintentar
                 
                 // Muestra el error exacto
-                statusMessage.innerHTML = `❌ **ERROR (${err.name}):** ${err.message}.`;
+                statusMessage.innerHTML = `❌ **ERROR (${err.name}):** ${err.message}. La cámara trasera no pudo ser encontrada o activada.`;
                 statusMessage.style.backgroundColor = '#f8d7da';
                 statusMessage.style.color = '#721c24';
 
-                console.error("Error nativo al acceder a la cámara:", err);
+                console.error("Error nativo al acceder a la cámara trasera:", err);
             }
         }
 
-        // Llama a la función startCamera al hacer clic en el botón
         startButton.addEventListener('click', startCamera);
     </script>
 
