@@ -38,7 +38,7 @@
             padding: 15px 30px;
             font-size: 1.2em;
             cursor: pointer;
-            background-color: #007bff; /* Color azul */
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
@@ -71,7 +71,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Sistema de Asistencia QR2222</h1>
+        <h1>Sistema de Asistencia QR</h1>
         
         <button id="startButton" disabled>Cargando detección de cámaras...</button>
         
@@ -90,14 +90,13 @@
         const startButton = document.getElementById('startButton');
         const resultElement = document.getElementById('result');
         
-        // Usamos la clase Html5Qrcode para el inicio manual y forzado
         let html5QrcodeCode = new Html5Qrcode("my-qr-reader"); 
         let targetCameraId = null; // Guardará el ID de la cámara trasera elegida
         
+        // Configuración Mínima y compatible
         const config = {
             fps: 10,
             qrbox: { width: 250, height: 250 },
-            disableFlip: false 
         };
         
         /**
@@ -141,15 +140,17 @@
                 targetCameraId, // ⭐️ CLAVE: Usamos el ID específico encontrado
                 config, 
                 onScanSuccess, 
-                (errorMessage) => { /* Ignorar */ }
+                (errorMessage) => { /* Ignorar errores de ruido */ }
             ).then(() => {
+                // Éxito al iniciar
                 qrReader.style.display = 'block';
                 resultElement.innerHTML = 'Cámara activada. **Escanee su código DNI**.';
             }).catch((err) => {
-                console.error("Error al iniciar el escáner con ID:", err);
+                // Falla grave al iniciar el stream
+                console.error("Error al iniciar el stream con ID:", err);
                 startButton.style.display = 'block';
                 qrReader.style.display = 'none';
-                resultElement.innerHTML = `❌ Error: ${err.name}. El ID de cámara falló. Intente recargar.`;
+                resultElement.innerHTML = `❌ Error al abrir la cámara (${err.name}). El ID de cámara falló. Intente recargar.`;
             });
         }
         
@@ -157,6 +158,8 @@
          * Función: Detección y Selección de la Cámara Trasera (maneja múltiples cámaras)
          */
         function detectCamera() {
+            resultElement.innerHTML = 'Buscando cámaras disponibles...';
+
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
                     
@@ -167,10 +170,11 @@
                     );
                     
                     if (rearCameras.length > 0) {
-                        // ⭐️ Usamos la primera cámara trasera encontrada (la mayoría de las veces es la principal)
+                        // ⭐️ Selecciona la primera cámara trasera encontrada (Generalmente la principal)
                         targetCameraId = rearCameras[0].id;
                         
-                        // Si la primera cámara (índice 0) no es la principal, puedes cambiar manualmente a rearCameras[1].id
+                        // Si la primera cámara (índice 0) NO es la principal (es gran angular, por ejemplo),
+                        // puedes descomentar la siguiente línea para usar la segunda cámara trasera detectada:
                         // targetCameraId = rearCameras[1].id; 
 
                         startButton.disabled = false;
@@ -181,7 +185,7 @@
                         // Fallback: Si no se encuentra 'back'/'environment', usa la primera cámara en la lista
                         targetCameraId = devices[0].id; 
                         startButton.disabled = false;
-                        startButton.innerHTML = '⚠️ Usar Cámara Detectada (No trasera)';
+                        startButton.innerHTML = '⚠️ Usar Cámara Detectada';
                         resultElement.innerHTML = '⚠️ No se encontró la etiqueta "trasera". Usando la primera cámara detectada.';
                         startButton.addEventListener('click', startScanner);
                     }
@@ -193,7 +197,7 @@
             });
         }
 
-        // ⭐️ Iniciar la detección al cargar la página
+        // Iniciar la detección al cargar la página
         detectCamera();
     </script>
 </body>
