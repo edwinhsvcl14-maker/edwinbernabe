@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner de Código QR Flexible</title>
+    <title>Escáner de Código QR Final</title>
     
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
-        /* ... (Tus estilos CSS) ... */
+        /* ... (Estilos CSS) ... */
         body {
             font-family: Arial, sans-serif;
-            display: flex; 
+            display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
@@ -71,7 +71,7 @@
 </head>
 <body>
 
-    <h1>📸 Escáner de Código QR Webedwin</h1>
+    <h1>📸 Escáner de Código QR Webaaaaaaaaa</h1>
     <p>Apunta la cámara a un código QR. Recuerda conceder permiso de acceso.</p>
 
     <div id="preload_message">
@@ -107,9 +107,9 @@
             qrbox: {width: 250, height: 250}
         };
         
-        // ⭐️ CAMBIO CLAVE: Usamos {} en lugar de { facingMode: "environment" }
         html5QrcodeCode.start(
-            {}, // Configuración más flexible. Le dice al navegador: usa la cámara que encuentres.
+            // ⭐️ SOLUCIÓN AL ERROR DE 0 KEYS: Especificamos 'user' (cámara frontal)
+            { facingMode: "user" }, 
             config, 
             onScanSuccess, 
             onScanFailure 
