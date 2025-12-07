@@ -3,111 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner QR: Cámara Trasera Forzada (Render)</title>
+    <title>Sistema de Asistencia QR - DNI</title>
     
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
     <style>
-        /* ... (Estilos CSS simplificados) ... */
+        /* Estilos generales */
         body {    
             display: flex;    
             justify-content: center;    
             flex-direction: column; 
             align-items: center; 
-            margin: 0;    
-            padding: 20px 0;
             min-height: 100vh;    
-            box-sizing: border-box;    
-            text-align: center;    
-            background: rgb(128 0 0 / 66%);
+            background-color: #f4f7f9;
             font-family: Arial, sans-serif;
+            padding: 20px;
         }
         .container {    
             width: 100%;    
-            max-width: 500px;    
-            margin: 5px;
+            max-width: 500px;
+            text-align: center;
         }
-        .container h1 {    
-            color: #ffffff;
+        h1 {
+            color: #333;
         }
         .section {    
             background-color: #ffffff;    
-            padding: 20px 30px; 
-            border: 1.5px solid #b2b2b2;    
-            border-radius: 0.25em;    
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
-        }
-        /* Contenedor del visor (siempre visible para .render()) */
-        #my-qr-reader {    
-            padding: 20px !important;    
-            border: 1.5px solid #b2b2b2 !important;    
+            padding: 20px;
             border-radius: 8px;
-            min-height: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        /* Ocultamos el botón de inicio de los ejemplos anteriores */
-        #startButton, #statusMessage {
-            display: none !important;
+        /* Botón de Inicio */
+        #startButton {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #007bff; /* Color azul */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+        #startButton:hover {
+            background-color: #0056b3;
+        }
+        /* Contenedor del Visor */
+        #my-qr-reader {
+            min-height: 250px;
+            display: none; /* OCULTO hasta el clic */
+            border: 3px solid #007bff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        /* Área de Resultado */
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #28a745;
+            background-color: #e9f7ee;
+            color: #155724;
+            border-radius: 5px;
+            min-height: 50px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Scan QR Codes</h1>
+        <h1>Sistema de Asistencia QR</h1>
         
-        <div id="statusMessage">Iniciando escáner...</div>
+        <button id="startButton">✅ Escanear para Asistencia</button>
         
         <div class="section">
             <div id="my-qr-reader">
                 </div>
         </div>
+        
+        <div id="result">
+            Esperando clic en el botón para iniciar el escáner.
+        </div>
     </div>
 
     <script>
-        const statusMessage = document.getElementById('statusMessage');
+        const qrReader = document.getElementById('my-qr-reader');
+        const startButton = document.getElementById('startButton');
+        const resultElement = document.getElementById('result');
+        
+        // Usamos la clase Html5Qrcode (la que tiene .start()) para el inicio manual y forzado
+        let html5QrcodeCode = new Html5Qrcode("my-qr-reader"); 
+        
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            // Deshabilitar la opción de voltear cámara (opcional)
+            disableFlip: false 
+        };
+        
+        /**
+         * Función que se ejecuta al escanear el QR. (El evento de Asistencia)
+         */
+        function onScanSuccess(dni, decodeResult) {
+            // 1. Detener la cámara inmediatamente después de un escaneo exitoso
+            html5QrcodeCode.stop();
+            qrReader.style.display = 'none';
+            startButton.style.display = 'block';
 
-        function onScanSuccess(decodeText, decodeResult) {
-            alert("✅ QR Code Escaneado: " + decodeText);
-            // CLAVE: No llamamos a .clear() o .stop(), el escáner se queda activo.
-        }
-
-        function onScanFailure(error) {
-            // El escáner continuará intentando escanear
-        }
-
-        // ⭐️ CLAVE 1: Usamos Html5QrcodeScanner, que tiene el método .render()
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "my-qr-reader", // ID del contenedor
-            { 
-                // Configuración
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-                
-                // ⭐️ CLAVE 2: Forzar la cámara trasera y deshabilitar el fallback de archivo
-                disableFlip: true, // Deshabilita el botón de voltear cámara
-                rememberLastUsedCamera: false, // No recordamos configuraciones previas
-                
-                // Forzar el inicio de la cámara trasera
-                supportedScanTypes: [
-                    Html5QrcodeScanType.SCAN_TYPE_CAMERA
-                ],
-                cameraConfig: {
-                    facingMode: "environment" // La configuración que sí funcionó en nativo
-                }
-            },
-            false // verbose=false
-        );
-
-        // 3. Iniciar el renderizado automático
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-
-        // Ocultar el mensaje de estado si el escáner logra cargar el visor
-        document.addEventListener('DOMContentLoaded', () => {
-            // Se asume que si el lector aparece, el mensaje de estado no es necesario
-            const readerDiv = document.getElementById('my-qr-reader');
-            if (readerDiv.querySelector('video')) {
-                statusMessage.style.display = 'none';
+            // 2. Validar que el código sea un DNI (ej. 8 dígitos)
+            if (!/^\d{8}$/.test(dni)) {
+                resultElement.innerHTML = `⚠️ Código no válido: **${dni}**. Escanee un QR que contenga 8 dígitos (DNI).`;
+                return;
             }
-        }, 3000); // Esperamos 3 segundos para que cargue
+            
+            // 3. REGISTRAR ASISTENCIA (Simulación del evento)
+            const hora = new Date().toLocaleTimeString();
+            
+            resultElement.innerHTML = `
+                <h2>🎉 ¡ASISTENCIA REGISTRADA!</h2>
+                <p><strong>DNI Escaneado:</strong> ${dni}</p>
+                <p><strong>Hora de Registro:</strong> ${hora}</p>
+                `;
+            
+            // Ejemplo de llamada a servidor (debes implementarlo en tu backend):
+            // fetch('/api/registrar_asistencia', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ dni: dni, hora: hora })
+            // });
+        }
+
+        /**
+         * Función que inicia el escáner al hacer clic, forzando la cámara trasera.
+         */
+        function startScanner() {
+            startButton.style.display = 'none';
+            resultElement.innerHTML = 'Cargando cámara trasera... Por favor, espere.';
+
+            html5QrcodeCode.start(
+                // ⭐️ CLAVE: Forzamos la cámara trasera (environment)
+                { facingMode: "environment" }, 
+                config, 
+                onScanSuccess, 
+                (errorMessage) => {
+                    // Ignorar errores menores durante el escaneo (ruido)
+                }
+            ).then(() => {
+                // Éxito al iniciar
+                qrReader.style.display = 'block';
+                resultElement.innerHTML = 'Cámara activada. **Escanee su código DNI**.';
+            }).catch((err) => {
+                // Falla grave al iniciar la cámara
+                console.error("Error al iniciar el escáner:", err);
+                startButton.style.display = 'block';
+                qrReader.style.display = 'none';
+                resultElement.innerHTML = `❌ Error: ${err.name}. No se pudo acceder a la cámara trasera. Asegúrese de tener **HTTPS** y permisos concedidos.`;
+            });
+        }
+
+        // Asigna la función al botón al cargar la página
+        startButton.addEventListener('click', startScanner);
     </script>
 </body>
 </html>
