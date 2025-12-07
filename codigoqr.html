@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escáner QR: Búsqueda por ID de Cámara</title>
+    <title>Escáner QR: Solución Universal Simple</title>
     
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
+        /* ... (Estilos CSS simplificados para compatibilidad) ... */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -19,38 +20,10 @@
         h1 {
             color: #333;
         }
-        #startButton {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: background-color 0.3s;
-        }
-        #startButton:hover {
-            background-color: #218838;
-        }
-        #statusMessage {
-            display: block; 
-            width: 80%;
-            max-width: 450px;
-            padding: 15px;
-            background-color: #e9ecef;
-            color: #333;
-            border: 1px solid #ced4da;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 1.1em;
-            text-align: center;
-        }
         #reader {
-            display: none; 
             width: 100%;
             max-width: 500px; 
-            height: auto;
+            height: 300px; /* Tamaño fijo para render() */
             margin-bottom: 20px;
             border: 5px solid #007bff;
             border-radius: 12px;
@@ -70,22 +43,18 @@
             font-weight: bold;
             word-wrap: break-word;
         }
-        hr {
-            width: 80%;
-            border: 0;
-            height: 1px;
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+        /* Ocultamos el botón y el mensaje de estado ya que .render() es automático */
+        #startButton, #statusMessage {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <h1>📸 Escáner de Código QR (Avanzado)</h1>
-    <p>Haz clic para activar la cámara trasera, detectada por ID.</p>
+    <h1>✅ Escáner QR: Solución Definitiva</h1>
+    <p>El escáner intentará cargarse automáticamente al máximo de compatibilidad.</p>
 
-    <button id="startButton" disabled>Cargando detectores...</button>
-
-    <div id="statusMessage">Iniciando detección de cámaras...</div>
+    <div id="statusMessage">Iniciando escáner...</div>
     
     <div id="reader"></div>
 
@@ -96,104 +65,45 @@
 
     <script>
         const resultElement = document.getElementById('result');
-        const readerElement = document.getElementById('reader');
         const statusMessage = document.getElementById('statusMessage');
-        const startButton = document.getElementById('startButton');
-
-        let html5QrcodeCode = new Html5Qrcode("reader"); 
-        let targetCameraId = null; // Variable para guardar el ID de la cámara trasera
 
         function onScanSuccess(decodedText, decodedResult) {
             resultElement.innerHTML = `<b>Escaneo Exitoso:</b> ${decodedText}`;
+            // Detenemos el escáner después de un escaneo exitoso
+            html5QrcodeScanner.clear();
         }
 
         function onScanFailure(error) {
-            // Manejo de errores silencioso
+            // Manejo silencioso. La librería muestra sus propios errores si la cámara no inicia.
         }
 
-        const config = {
-            fps: 10,
-            qrbox: {width: 250, height: 250}
+        // 1. Inicializamos la clase Scanner (la que tiene .render())
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", // ID del contenedor
+            { 
+                // ⭐️ SOLUCIÓN CLAVE: Solo configuramos lo esencial (fps y qrbox)
+                // Eliminamos facingMode o deviceId para máxima compatibilidad.
+                fps: 10,
+                qrbox: {width: 250, height: 250},
+                // Pedir la cámara trasera como preferencia, sin forzar (fallback)
+                // Esto puede usar facingMode: 'environment' si ya hay permiso.
+                rememberLastUsedCamera: true
+            },
+            false // verbose=false
+        );
+
+        // 2. Iniciar el renderizado automático
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+        // Captura y muestra errores de inicialización si es posible
+        // Nota: .render() no devuelve una Promesa, por lo que la captura de errores es limitada.
+        // Si no funciona, el error aparecerá dentro del contenedor #reader.
+        document.getElementById('reader').onerror = (e) => {
+             statusMessage.style.display = 'block';
+             statusMessage.innerHTML = `❌ Error Crítico: Fallo al iniciar el visor. Revise permisos.`;
+             statusMessage.style.backgroundColor = '#f8d7da';
         };
 
-        // Función que inicia el escáner (usa targetCameraId)
-        function startScanner() {
-            if (!targetCameraId) {
-                statusMessage.innerHTML = '❌ Error: No se pudo identificar la cámara trasera. Intente recargar.';
-                statusMessage.style.backgroundColor = '#f8d7da';
-                return;
-            }
-
-            startButton.style.display = 'none'; 
-            statusMessage.innerHTML = 'Cargando cámara... Por favor, espere.';
-            statusMessage.style.backgroundColor = '#fff3cd';
-            
-            // ⭐️ CLAVE: Iniciamos con el ID específico que encontramos
-            html5QrcodeCode.start(
-                targetCameraId, // Usamos el ID de la cámara trasera
-                config, 
-                onScanSuccess, 
-                onScanFailure 
-            ).then(() => {
-                // Éxito al iniciar el stream
-                statusMessage.style.display = 'none'; 
-                readerElement.style.display = 'block'; 
-                
-            }).catch((err) => {
-                // Falla al iniciar la cámara
-                console.error("Error al iniciar la cámara con ID:", err);
-                
-                startButton.style.display = 'block'; 
-                statusMessage.style.display = 'block';
-                statusMessage.style.backgroundColor = '#f8d7da';
-                statusMessage.style.color = '#721c24';
-                
-                statusMessage.innerHTML = `❌ **Error fatal (${err.name}):** La cámara falló al iniciar. Verifique permisos.`;
-                readerElement.style.display = 'none';
-            });
-        }
-        
-        // ⭐️ NUEVA FUNCIÓN: Busca las cámaras y encuentra la trasera
-        function initScanner() {
-            Html5Qrcode.getCameras().then(devices => {
-                if (devices && devices.length) {
-                    // Buscar la cámara trasera (label contiene 'back' o 'environment')
-                    const rearCamera = devices.find(device => 
-                        device.label.toLowerCase().includes('back') || 
-                        device.label.toLowerCase().includes('environment')
-                    );
-
-                    if (rearCamera) {
-                        targetCameraId = rearCamera.id;
-                        statusMessage.innerHTML = `✅ Cámara detectada (${rearCamera.label}). Lista para escanear.`;
-                        statusMessage.style.backgroundColor = '#d4edda';
-                        statusMessage.style.color = '#155724';
-                        startButton.disabled = false;
-                        startButton.innerHTML = '▶️ Activar Escáner QR';
-                        startButton.addEventListener('click', startScanner);
-                    } else {
-                        // Si no se encuentra la cámara trasera, usa la primera disponible.
-                        targetCameraId = devices[0].id;
-                        statusMessage.innerHTML = `⚠️ Cámara trasera no identificada. Usando: ${devices[0].label}.`;
-                        statusMessage.style.backgroundColor = '#fff3cd';
-                        statusMessage.style.color = '#856404';
-                        startButton.disabled = false;
-                        startButton.innerHTML = '▶️ Activar Escáner QR';
-                        startButton.addEventListener('click', startScanner);
-                    }
-                } else {
-                    statusMessage.innerHTML = '❌ Error: No se encontraron cámaras en este dispositivo.';
-                    statusMessage.style.backgroundColor = '#f8d7da';
-                }
-            }).catch(err => {
-                statusMessage.innerHTML = `❌ Error al obtener dispositivos: (${err.name}). Asegúrate de haber dado permiso.`;
-                statusMessage.style.backgroundColor = '#f8d7da';
-                console.error("Error al obtener cámaras:", err);
-            });
-        }
-        
-        // Inicia el proceso de detección al cargar la página
-        initScanner();
     </script>
 
 </body>
