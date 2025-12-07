@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Asistencia QR - DNI</title>
+    <title>Sistema de Asistencia QR - Solución Final</title>
     
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
@@ -33,24 +33,13 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        /* Botón de Inicio */
-        #startButton {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            cursor: pointer;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        /* Contenedor del Visor */
+        /* El contenedor del lector debe estar visible para render */
         #my-qr-reader {
             min-height: 250px;
-            display: none; /* OCULTO hasta el clic */
             border: 3px solid #007bff;
             border-radius: 8px;
             overflow: hidden;
+            margin-bottom: 20px;
         }
         /* Área de Resultado */
         #result {
@@ -67,9 +56,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Sistema de Asistencia QR2222222</h1>
-        
-        <button id="startButton" disabled>Cargando detección de cámaras...</button>
+        <h1>Sistema de Asistencia QR  Solución Final</h1>
         
         <div class="section">
             <div id="my-qr-reader">
@@ -77,32 +64,31 @@
         </div>
         
         <div id="result">
-            Iniciando detección de cámaras traseras...
+            Buscando cámaras disponibles...
         </div>
     </div>
 
     <script>
         const qrReader = document.getElementById('my-qr-reader');
-        const startButton = document.getElementById('startButton');
         const resultElement = document.getElementById('result');
         
-        let html5QrcodeCode = new Html5Qrcode("my-qr-reader"); 
         let targetCameraId = null; 
         
         // Configuración Mínima
         const config = {
             fps: 10,
             qrbox: { width: 250, height: 250 },
+            // Permite que la librería maneje el flujo de selección
+            disableFlip: false 
         };
         
         /**
          * Función que se ejecuta al escanear el QR.
          */
         function onScanSuccess(dni, decodeResult) {
-            html5QrcodeCode.stop();
-            qrReader.style.display = 'none';
-            startButton.style.display = 'block';
-
+            // Detenemos el escáner (usamos .clear() porque usamos .render())
+            html5QrcodeScanner.clear();
+            
             if (!/^\d{8}$/.test(dni)) {
                 resultElement.innerHTML = `⚠️ Código no válido: **${dni}**. Escanee un QR con 8 dígitos.`;
                 return;
@@ -116,78 +102,65 @@
             `;
         }
 
-        /**
-         * Función que inicia el escáner con el ID específico.
-         */
+        // ------------------ Flujo de Detección e Inicialización ------------------
+
         function startScanner() {
-            if (!targetCameraId) {
-                resultElement.innerHTML = '❌ Error: La cámara trasera no fue detectada correctamente.';
-                return;
-            }
-
-            startButton.style.display = 'none';
-            resultElement.innerHTML = 'Cargando cámara trasera por ID...';
-
-            html5QrcodeCode.start(
-                targetCameraId, // Usamos el ID específico encontrado
+            // ⭐️ CLAVE: Usamos Html5QrcodeScanner que tiene la interfaz de selección (el que sí funciona)
+            let html5QrcodeScanner = new Html5QrcodeScanner(
+                "my-qr-reader", 
                 config, 
-                onScanSuccess, 
-                (errorMessage) => { /* Ignorar errores de ruido */ }
-            ).then(() => {
-                // Éxito al iniciar
-                qrReader.style.display = 'block';
-                resultElement.innerHTML = 'Cámara activada. **Escanee su código DNI**.';
-            }).catch((err) => {
-                // Falla grave al iniciar el stream
-                console.error("Error al iniciar el stream con ID:", err);
-                startButton.style.display = 'block';
-                qrReader.style.display = 'none';
-                resultElement.innerHTML = `❌ Error: ${err.name}. El ID de cámara falló. `;
-            });
+                false 
+            );
+
+            // ⭐️ CLAVE 2: Le decimos a .render() que use el ID de la cámara trasera si lo encontramos.
+            if (targetCameraId) {
+                // Si encontramos un ID, intentamos renderizarlo directamente.
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure, targetCameraId);
+            } else {
+                // Si no encontramos un ID específico, dejamos que la librería muestre la interfaz de selección
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            }
+            resultElement.innerHTML = 'Haga clic en el botón de la cámara para iniciar el escaneo.';
+        }
+
+        function onScanFailure(error) {
+            // Manejo de errores de escaneo
         }
         
         /**
          * Función: Detección y Selección de la Cámara Trasera
          */
-        function detectCamera() {
+        function detectAndStart() {
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
                     
-                    // Buscar todas las cámaras traseras
                     const rearCameras = devices.filter(device => 
                         device.label.toLowerCase().includes('back') || 
                         device.label.toLowerCase().includes('environment')
                     );
                     
                     if (rearCameras.length > 0) {
-                        // ⭐️ Selecciona la PRIMERA cámara trasera encontrada (Generalmente la principal)
+                        // ⭐️ Guardamos el ID de la cámara trasera
                         targetCameraId = rearCameras[0].id;
-                        
-                        // Si la cámara [0] falla o no es la correcta, cambia el índice a [1] para probar la otra:
-                        // targetCameraId = rearCameras[1].id; 
-
-                        startButton.disabled = false;
-                        startButton.innerHTML = '✅ Escanear para Asistencia';
-                        resultElement.innerHTML = `Cámara detectada: ${rearCameras[0].label}. Lista para usar.`;
-                        startButton.addEventListener('click', startScanner);
+                        resultElement.innerHTML = `Cámara trasera detectada: ${rearCameras[0].label}. Iniciando escáner...`;
                     } else {
-                        // Fallback a la primera cámara si no se encuentra etiqueta 'trasera'
-                        targetCameraId = devices[0].id; 
-                        startButton.disabled = false;
-                        startButton.innerHTML = '⚠️ Usar Cámara Detectada';
-                        resultElement.innerHTML = '⚠️ No se encontró la etiqueta "trasera". Usando la primera cámara.';
-                        startButton.addEventListener('click', startScanner);
+                        // Si no hay trasera, usamos la primera y la librería pedirá la selección
+                        resultElement.innerHTML = '⚠️ No se pudo determinar la cámara trasera. Por favor, selecciónela.';
                     }
                 } else {
-                    resultElement.innerHTML = '❌ Error: No se encontraron dispositivos de cámara.';
+                    resultElement.innerHTML = '❌ Error: No se encontraron dispositivos de cámara. Revise permisos.';
                 }
+                
+                // Iniciamos el renderizado, sea con ID o dejando que el usuario seleccione.
+                startScanner();
+
             }).catch(err => {
-                resultElement.innerHTML = `❌ Error al obtener permisos de cámara: ${err.name}.`;
+                resultElement.innerHTML = `❌ Error al obtener permisos: ${err.name}.`;
             });
         }
 
-        // Iniciar la detección al cargar la página
-        detectCamera();
+        // ⭐️ Iniciamos el flujo al cargar la página
+        document.addEventListener('DOMContentLoaded', detectAndStart);
     </script>
 </body>
 </html>
