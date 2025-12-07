@@ -27,7 +27,7 @@
 
     <div class="w-full max-w-lg bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-100">
         <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6">
-            Escaner de Código QR12121212121
+            Escaner de Código QR
         </h1>
 
         <!-- Opción 1: Botón de Inicio (Visible por defecto) -->
@@ -38,7 +38,7 @@
             <button id="start-button" 
                     class="w-full max-w-xs bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg transform hover:scale-105"
                     onclick="startScanning()">
-                Escanear Código QR12121212121
+                Escanear Código QR
             </button>
         </div>
 
@@ -170,7 +170,11 @@
         }
         
         window.toggleCamera = async function() {
-            if (!html5Qrcode || allCameras.length <= 1) return; // Necesitamos al menos dos cámaras para alternar
+            // Utilizamos el número de cámaras detectadas en la última ejecución exitosa o fallida
+            if (!html5Qrcode || allCameras.length <= 1) {
+                showError("Solo se detectó una cámara o hubo un error al detectarlas, no se puede alternar.");
+                return;
+            } 
 
             isFrontCamera = !isFrontCamera; // Alternar el estado
             
@@ -189,6 +193,7 @@
                     return;
                 }
                 
+                // La librería ahora maneja el permiso y la inicialización
                 startCameraScan(isFrontCamera);
             }
 
@@ -204,13 +209,13 @@
             const config = { fps: 10, qrbox: 250 }; 
 
             try {
+                // Paso 1: Intentar obtener la lista de cámaras (esto también puede fallar si hay restricciones)
                 allCameras = await Html5Qrcode.getCameras();
                 
                 if (allCameras && allCameras.length) {
                     let cameraId = null;
-                    let targetLabel = useFront ? 'front' : 'back';
                     
-                    // Buscar la cámara deseada por etiqueta
+                    // Lógica para seleccionar el ID de la cámara
                     let targetCamera = null;
                     if (useFront) {
                         targetCamera = allCameras.find(camera => 
@@ -228,7 +233,7 @@
                         cameraId = targetCamera.id;
                         console.log(`Usando ID de cámara: ${targetCamera.label}`);
                     } else if (!useFront && allCameras.length > 1) {
-                        // Fallback para trasera si la etiqueta no ayuda: la última suele ser la trasera
+                        // Fallback para trasera: la última suele ser la trasera
                         cameraId = allCameras[allCameras.length - 1].id;
                         console.log("Usando última cámara detectada como fallback.");
                     } else {
@@ -245,11 +250,12 @@
                         toggleCameraButton.classList.add('hidden');
                     }
 
-                    // *** CAMBIO CLAVE DE DEBUG: Quitar todas las restricciones de resolución (máxima compatibilidad) ***
+                    // *** Máxima compatibilidad: Restricción solo por ID ***
                     const videoConstraints = {
                         deviceId: { exact: cameraId },
                     };
 
+                    // Intento de inicio con ID específico
                     await html5Qrcode.start(
                         videoConstraints, 
                         config, 
@@ -260,15 +266,9 @@
                     console.log(`Escáner iniciado con ID explícito (${useFront ? 'Frontal' : 'Trasera'}).`);
 
                 } else {
-                    showError("No se detectó ninguna cámara en este dispositivo. Asegúrate de que los permisos estén habilitados.");
-                    stopScanning();
-                    return;
-                }
-            } catch (err) {
-                // Fallback final: Intentar con facingMode genérico y sin restricciones de resolución
-                console.error("Fallo con ID explícito. Intentando fallback con facingMode simple.", err);
-                
-                try {
+                    // Si no se detecta ninguna cámara, probamos el fallback de facingMode
+                    console.warn("No se detectó ninguna cámara. Intentando fallback genérico.");
+                    
                     const fallbackConstraints = {
                         facingMode: useFront ? "user" : "environment",
                     };
@@ -279,57 +279,41 @@
                         onScanFailure
                     );
                     console.log(`Escáner iniciado con facingMode fallback (${useFront ? 'Frontal' : 'Trasera'}).`);
-                } catch (e2) {
-                    showError("Error crítico al iniciar el video. El navegador pudo dar permiso, pero no pudo renderizar el stream de la cámara.");
-                    console.error("Fallo total al iniciar cámara:", e2);
-                    stopScanning();
-                    return;
                 }
+            } catch (err) {
+                // Fallo final. Capturar el error exacto de la librería/navegador.
+                let errorName = err.name || 'Error Desconocido';
+                let message = `Error: ${errorName}. La cámara no está disponible o el acceso está bloqueado por el sistema/navegador.`;
+
+                if (errorName === 'NotAllowedError' || errorName === 'PermissionDeniedError') {
+                    message = "Error: Permiso de cámara denegado. Revísalo en la configuración del navegador.";
+                } else if (errorName === 'NotFoundError') {
+                    message = "Error: Cámara no encontrada (NotFoundError). El dispositivo no expone ninguna cámara a la página web.";
+                } else if (errorName === 'NotReadableError') {
+                    message = "Error: La cámara está en uso por otra app (NotReadableError). Ciérrala e inténtalo de nuevo.";
+                }
+                
+                showError(message);
+                console.error("Fallo total al iniciar cámara:", err);
+                stopScanning();
+                return;
             }
             
             // Chequeo de estado para detectar fallo de renderizado
             setTimeout(() => {
                 const videoElement = document.querySelector('#qr-reader video');
-                if (!videoElement || videoElement.videoWidth === 0) { 
-                    showError("El video no se renderizó. Esto es un fallo de compatibilidad del navegador/OS. Sugerencia: Intenta con otro navegador (ej. Chrome si usas Safari) o presiona el botón 'Cambiar Cámara'.");
+                // Si existe el elemento de video, pero no tiene dimensiones, el stream falló al cargar
+                if (videoElement && videoElement.videoWidth === 0) { 
+                    showError("El video se renderizó vacío. Esto es un fallo de compatibilidad (hardware/OS) o la cámara está bloqueada. Intenta 'Cambiar Cámara'.");
                     stopScanning();
                 }
             }, 4000); 
         }
 
 
-        // --- FUNCIÓN PARA SOLICITAR PERMISOS EXPLÍCITAMENTE ANTES DE INICIAR ---
-        async function requestCameraPermission() {
-            try {
-                // Esto fuerza el pop-up de permiso del navegador
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                
-                // Detenemos el stream nativo para que la librería html5-qrcode pueda tomar el control
-                stream.getTracks().forEach(track => track.stop());
-                return true;
-            } catch (err) {
-                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                    showError("Permiso de cámara denegado. ¡Debes permitirlo! Revisa la configuración del sitio en tu navegador.");
-                } else if (err.name === 'NotReadableError') {
-                    showError("La cámara está en uso por otra aplicación. Ciérrala e inténtalo de nuevo.");
-                } else {
-                    showError(`Error al acceder a la cámara: ${err.name}. Asegúrate de usar una conexión HTTPS.`);
-                }
-                return false;
-            }
-        }
-
         // Función llamada al hacer clic en el botón de inicio
         window.startScanning = async function() {
-            // 1. Intentar obtener permiso explícito
-            const permissionGranted = await requestCameraPermission();
-            
-            if (!permissionGranted) {
-                stopScanning();
-                return;
-            }
-
-            // 2. Si hay permiso, proceder con la interfaz y la inicialización
+            // Ahora la librería maneja la interfaz y el permiso.
             startScreen.style.display = 'none';
             scannerView.style.display = 'block';
             errorMessageDiv.classList.add('hidden');
