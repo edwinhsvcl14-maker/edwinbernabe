@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
     <style>
-        /* Estilos generales */
+        /* Estilos esenciales */
         body {    
             display: flex;    
             justify-content: center;    
@@ -43,10 +43,6 @@
             border: none;
             border-radius: 5px;
             margin-bottom: 20px;
-            transition: background-color 0.3s;
-        }
-        #startButton:hover {
-            background-color: #0056b3;
         }
         /* Contenedor del Visor */
         #my-qr-reader {
@@ -71,7 +67,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Sistema de Asistencia QRwwwwwwww</h1>
+        <h1>Sistema de Asistencia QR2222222</h1>
         
         <button id="startButton" disabled>Cargando detección de cámaras...</button>
         
@@ -91,32 +87,28 @@
         const resultElement = document.getElementById('result');
         
         let html5QrcodeCode = new Html5Qrcode("my-qr-reader"); 
-        let targetCameraId = null; // Guardará el ID de la cámara trasera elegida
+        let targetCameraId = null; 
         
-        // Configuración Mínima y compatible
+        // Configuración Mínima
         const config = {
             fps: 10,
             qrbox: { width: 250, height: 250 },
         };
         
         /**
-         * Función que se ejecuta al escanear el QR. (El evento de Asistencia)
+         * Función que se ejecuta al escanear el QR.
          */
         function onScanSuccess(dni, decodeResult) {
-            // 1. Detener la cámara inmediatamente después de un escaneo exitoso
             html5QrcodeCode.stop();
             qrReader.style.display = 'none';
             startButton.style.display = 'block';
 
-            // 2. Validar que el código sea un DNI (ej. 8 dígitos)
             if (!/^\d{8}$/.test(dni)) {
-                resultElement.innerHTML = `⚠️ Código no válido: **${dni}**. Escanee un QR que contenga 8 dígitos (DNI).`;
+                resultElement.innerHTML = `⚠️ Código no válido: **${dni}**. Escanee un QR con 8 dígitos.`;
                 return;
             }
             
-            // 3. REGISTRAR ASISTENCIA (Simulación del evento)
             const hora = new Date().toLocaleTimeString();
-            
             resultElement.innerHTML = `
                 <h2>🎉 ¡ASISTENCIA REGISTRADA!</h2>
                 <p><strong>DNI Escaneado:</strong> ${dni}</p>
@@ -129,7 +121,7 @@
          */
         function startScanner() {
             if (!targetCameraId) {
-                resultElement.innerHTML = '❌ Error: La cámara trasera no fue detectada correctamente. Intente recargar.';
+                resultElement.innerHTML = '❌ Error: La cámara trasera no fue detectada correctamente.';
                 return;
             }
 
@@ -137,7 +129,7 @@
             resultElement.innerHTML = 'Cargando cámara trasera por ID...';
 
             html5QrcodeCode.start(
-                targetCameraId, // ⭐️ CLAVE: Usamos el ID específico encontrado
+                targetCameraId, // Usamos el ID específico encontrado
                 config, 
                 onScanSuccess, 
                 (errorMessage) => { /* Ignorar errores de ruido */ }
@@ -150,16 +142,14 @@
                 console.error("Error al iniciar el stream con ID:", err);
                 startButton.style.display = 'block';
                 qrReader.style.display = 'none';
-                resultElement.innerHTML = `❌ Error al abrir la cámara (${err.name}). El ID de cámara falló. Intente recargar.`;
+                resultElement.innerHTML = `❌ Error: ${err.name}. El ID de cámara falló. `;
             });
         }
         
         /**
-         * Función: Detección y Selección de la Cámara Trasera (maneja múltiples cámaras)
+         * Función: Detección y Selección de la Cámara Trasera
          */
         function detectCamera() {
-            resultElement.innerHTML = 'Buscando cámaras disponibles...';
-
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
                     
@@ -170,11 +160,10 @@
                     );
                     
                     if (rearCameras.length > 0) {
-                        // ⭐️ Selecciona la primera cámara trasera encontrada (Generalmente la principal)
+                        // ⭐️ Selecciona la PRIMERA cámara trasera encontrada (Generalmente la principal)
                         targetCameraId = rearCameras[0].id;
                         
-                        // Si la primera cámara (índice 0) NO es la principal (es gran angular, por ejemplo),
-                        // puedes descomentar la siguiente línea para usar la segunda cámara trasera detectada:
+                        // Si la cámara [0] falla o no es la correcta, cambia el índice a [1] para probar la otra:
                         // targetCameraId = rearCameras[1].id; 
 
                         startButton.disabled = false;
@@ -182,11 +171,11 @@
                         resultElement.innerHTML = `Cámara detectada: ${rearCameras[0].label}. Lista para usar.`;
                         startButton.addEventListener('click', startScanner);
                     } else {
-                        // Fallback: Si no se encuentra 'back'/'environment', usa la primera cámara en la lista
+                        // Fallback a la primera cámara si no se encuentra etiqueta 'trasera'
                         targetCameraId = devices[0].id; 
                         startButton.disabled = false;
                         startButton.innerHTML = '⚠️ Usar Cámara Detectada';
-                        resultElement.innerHTML = '⚠️ No se encontró la etiqueta "trasera". Usando la primera cámara detectada.';
+                        resultElement.innerHTML = '⚠️ No se encontró la etiqueta "trasera". Usando la primera cámara.';
                         startButton.addEventListener('click', startScanner);
                     }
                 } else {
