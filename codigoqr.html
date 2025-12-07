@@ -151,18 +151,40 @@
         }
         
         // --- FUNCIÓN DE INICIALIZACIÓN ROBUSTA (polling para asegurar la carga) ---
-        function initializeScanner() {
-            if (typeof Html5QrcodeScanner === 'undefined') {
-                console.log("Esperando carga de Html5QrcodeScanner...");
-                setTimeout(initializeScanner, 100);
-                return;
+        async function initializeScanner() {
+            // Utilizamos una función anidada para el polling de la librería
+            function checkLibraryLoaded() {
+                if (typeof Html5QrcodeScanner === 'undefined') {
+                    console.log("Esperando carga de Html5QrcodeScanner...");
+                    setTimeout(checkLibraryLoaded, 100);
+                    return;
+                }
+                
+                // Si la librería está cargada, procedemos a iniciar el escáner
+                startCameraScan();
             }
 
+            checkLibraryLoaded();
+        }
+        
+        // --- FUNCIÓN QUE INICIA EL ESCANEO DESPUÉS DE LA COMPROBACIÓN DE CARGA ---
+        async function startCameraScan() {
             try {
                 if (html5QrcodeScanner) {
                     html5QrcodeScanner.clear();
                 }
 
+                // 1. OBTENER CÁMARAS DISPONIBLES
+                const cameras = await Html5Qrcode.getCameras();
+                if (cameras.length === 0) {
+                    showError("No se detectaron cámaras en este dispositivo.");
+                    stopScanning();
+                    return;
+                }
+
+                // 2. SELECCIÓN DE CÁMARA: Usamos la última cámara detectada (suele ser la trasera en móviles)
+                const lastCameraId = cameras[cameras.length - 1].id;
+                
                 html5QrcodeScanner = new Html5QrcodeScanner(
                     "qr-reader", 
                     { 
@@ -173,26 +195,29 @@
                     /* verbose= */ false
                 );
 
-                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+                // 3. RENDERIZAR CON CÁMARA EXPLÍCITA
+                // Usamos el ID de la cámara seleccionada
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure, lastCameraId);
                 
-                // Un chequeo de estado después de 4 segundos
+                // Chequeo de estado después de 4 segundos
                 setTimeout(() => {
+                    // Si el video no se ha cargado, forzamos un error
                     const videoElement = document.querySelector('#qr-reader video');
-                    if (!videoElement) {
-                        // Si no hay video, es probable que haya un problema de permisos no capturado
-                        showError("La cámara no se activó. Posibles causas: permiso denegado o HTTPS no utilizado.");
+                    if (!videoElement || videoElement.readyState < 2) {
+                        showError("La cámara no se activó. Posibles causas: permiso denegado o ya está siendo usada por otra aplicación.");
                         stopScanning();
                     }
                 }, 4000); 
 
             } catch (e) {
-                showError("Error al iniciar el escáner. Asegúrate de que el navegador esté actualizado.");
-                console.error("Error al inicializar Html5QrcodeScanner:", e);
+                showError("Error al iniciar el escáner. Revisa los permisos o intenta detener otras aplicaciones de cámara.");
+                console.error("Error al iniciar el escáner:", e);
                 stopScanning();
             }
         }
 
-        // --- NUEVA FUNCIÓN PARA SOLICITAR PERMISOS EXPLÍCITAMENTE ANTES DE INICIAR ---
+
+        // --- FUNCIÓN PARA SOLICITAR PERMISOS EXPLÍCITAMENTE ANTES DE INICIAR ---
         async function requestCameraPermission() {
             try {
                 // Esto fuerza el pop-up de permiso del navegador
