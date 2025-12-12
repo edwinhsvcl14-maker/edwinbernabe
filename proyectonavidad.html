@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gran Chocolatada Navideña 2025 - Hermandad del Carmen de Lima</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel-stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
             --color-red-primary: #C0392B; /* Rojo de túnica/capa */
@@ -13,80 +14,87 @@
             --color-white-cream: #FDFEFE; /* Blanco cremoso */
             --color-snow: #ECF0F1;        /* Gris claro para la nieve/fondos sutiles */
         }
+        
+        /* ------------------------------------------------------------------ */
+        /* Estilos Base y Tipografía */
+        /* ------------------------------------------------------------------ */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-green-dark); /* Fondo oscuro */
+            color: var(--color-white-cream);
+            line-height: 1.6;
+            overflow-x: hidden; /* Evita scroll horizontal */
+        }
+        
+        /* ------------------------------------------------------------------ */
+        /* EFECTO DE ESTRELLAS FUGACES Y TITILANTES (TWINKLE STAR FALL) */
+        /* ------------------------------------------------------------------ */
+        /* ¡CLASE CORREGIDA! Debe ser .star-container en el HTML */
+        .star-container { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        /* ¡CLASE CORREGIDA! Debe ser .star en el HTML */
+        .star { 
+            position: absolute;
+            width: 4px; 
+            height: 4px;
+            background: rgba(255, 255, 150, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 5px 1px rgba(255, 255, 150, 0.8), 0 0 10px 2px rgba(255, 255, 150, 0.5);
+            opacity: 0; 
+            animation: 
+                fall linear infinite,
+                twinkle ease-in-out infinite;
+        }
+        
+        /* 1. Animación de Titileo (Prender y Apagar) */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; } 
+            50% { opacity: 1; } 
+            75% { opacity: 0.5; } 
+        }
+        
+        /* 2. Animación de Caída (Movimiento Suave) */
+        @keyframes fall {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; } 
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh) translateX(5vw); opacity: 0; } 
+        }
+        
+        /* Variaciones y Distribución de las Estrellas (Manteniendo la aleatoriedad) */
+        .star:nth-child(1) { left: 10%; animation-duration: 20s, 3s; animation-delay: 0s, 1s; }
+        .star:nth-child(2) { left: 20%; animation-duration: 18s, 2.5s; animation-delay: 2s, 0s; width: 6px; height: 6px; } 
+        .star:nth-child(3) { left: 30%; animation-duration: 25s, 4s; animation-delay: 4s, 2s; }
+        .star:nth-child(4) { left: 40%; animation-duration: 16s, 3.5s; animation-delay: 1s, 0.5s; }
+        .star:nth-child(5) { left: 50%; animation-duration: 22s, 2s; animation-delay: 3s, 1.5s; width: 3px; height: 3px; } 
+        .star:nth-child(6) { left: 60%; animation-duration: 14s, 4.5s; animation-delay: 5s, 2.5s; }
+        .star:nth-child(7) { left: 70%; animation-duration: 19s, 3s; animation-delay: 0.5s, 1s; }
+        .star:nth-child(8) { left: 80%; animation-duration: 28s, 2.8s; animation-delay: 2.5s, 0s; }
+        .star:nth-child(9) { left: 90%; animation-duration: 17s, 3.2s; animation-delay: 4.5s, 1.2s; width: 5px; height: 5px; }
+        .star:nth-child(10) { left: 5%; animation-duration: 24s, 4.8s; animation-delay: 6s, 3s; width: 3px; height: 3px; }
+        .star:nth-child(11) { left: 95%; animation-duration: 15s, 2.2s; animation-delay: 8s, 0.8s; width: 6px; height: 6px; }
+        .star:nth-child(12) { left: 15%; animation-duration: 13s, 3.8s; animation-delay: 9s, 1s; }
+        .star:nth-child(13) { left: 35%; animation-duration: 21s, 2.7s; animation-delay: 10s, 0.3s; width: 4px; height: 4px; }
+        .star:nth-child(14) { left: 55%; animation-duration: 23s, 4.2s; animation-delay: 11s, 2s; }
+        .star:nth-child(15) { left: 75%; animation-duration: 17s, 3.3s; animation-delay: 12s, 1.8s; width: 5px; height: 5px; }
 
-     /* ------------------------------------------------------------------ */
-/* EFECTO DE ESTRELLAS FUGACES Y TITILANTES (TWINKLE STAR FALL) */
-/* ------------------------------------------------------------------ */
-.snow-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-}
 
-.star {
-    position: absolute;
-    width: 4px; /* Tamaño más pequeño que la bola de nieve */
-    height: 4px;
-    /* Color de la estrella: blanco brillante, casi dorado */
-    background: rgba(255, 255, 150, 0.9);
-    border-radius: 50%;
-    /* Efecto de brillo (light glow) */
-    box-shadow: 0 0 5px 1px rgba(255, 255, 150, 0.8), 0 0 10px 2px rgba(255, 255, 150, 0.5);
-    opacity: 0; /* Inicia invisible para el efecto de titileo */
-    
-    /* Aplicamos 2 animaciones: Caída (fall) y Titileo (twinkle) */
-    animation: 
-        fall linear infinite,
-        twinkle ease-in-out infinite;
-}
-
-/* ------------------------------------------------------------------ */
-/* 1. Animación de Titileo (Prender y Apagar) */
-/* ------------------------------------------------------------------ */
-@keyframes twinkle {
-    0%, 100% { opacity: 0; } /* Apagada */
-    50% { opacity: 1; } /* Brillando al máximo */
-    75% { opacity: 0.5; } /* Brillo intermedio */
-}
-
-/* ------------------------------------------------------------------ */
-/* 2. Animación de Caída (Movimiento Suave) */
-/* ------------------------------------------------------------------ */
-@keyframes fall {
-    0% { transform: translateY(-10vh) translateX(0); opacity: 0; }
-    10% { opacity: 1; } /* Se prende al inicio de la caída */
-    90% { opacity: 1; }
-    100% { transform: translateY(100vh) translateX(5vw); opacity: 0; } /* Se apaga al final */
-}
-
-/* ------------------------------------------------------------------ */
-/* Variaciones y Distribución de las Estrellas (Más aleatorio) */
-/* ------------------------------------------------------------------ */
-.star:nth-child(1) { left: 10%; animation-duration: 20s, 3s; animation-delay: 0s, 1s; }
-.star:nth-child(2) { left: 20%; animation-duration: 18s, 2.5s; animation-delay: 2s, 0s; width: 6px; height: 6px; } /* Más grande y cerca */
-.star:nth-child(3) { left: 30%; animation-duration: 25s, 4s; animation-delay: 4s, 2s; }
-.star:nth-child(4) { left: 40%; animation-duration: 16s, 3.5s; animation-delay: 1s, 0.5s; }
-.star:nth-child(5) { left: 50%; animation-duration: 22s, 2s; animation-delay: 3s, 1.5s; width: 3px; height: 3px; } /* Más pequeña y lejos */
-.star:nth-child(6) { left: 60%; animation-duration: 14s, 4.5s; animation-delay: 5s, 2.5s; }
-.star:nth-child(7) { left: 70%; animation-duration: 19s, 3s; animation-delay: 0.5s, 1s; }
-.star:nth-child(8) { left: 80%; animation-duration: 28s, 2.8s; animation-delay: 2.5s, 0s; }
-.star:nth-child(9) { left: 90%; animation-duration: 17s, 3.2s; animation-delay: 4.5s, 1.2s; width: 5px; height: 5px; }
-.star:nth-child(10) { left: 5%; animation-duration: 24s, 4.8s; animation-delay: 6s, 3s; width: 3px; height: 3px; }
-.star:nth-child(11) { left: 95%; animation-duration: 15s, 2.2s; animation-delay: 8s, 0.8s; width: 6px; height: 6px; }
-.star:nth-child(12) { left: 15%; animation-duration: 13s, 3.8s; animation-delay: 9s, 1s; }
-.star:nth-child(13) { left: 35%; animation-duration: 21s, 2.7s; animation-delay: 10s, 0.3s; width: 4px; height: 4px; }
-.star:nth-child(14) { left: 55%; animation-duration: 23s, 4.2s; animation-delay: 11s, 2s; }
-.star:nth-child(15) { left: 75%; animation-duration: 17s, 3.3s; animation-delay: 12s, 1.8s; width: 5px; height: 5px; }
-        /* --- Global CTA Button (kept for reference/reused from header) --- */
+        /* --- Global CTA Button --- */
         .cta-button {
             background-color: var(--color-red-primary);
             color: var(--color-white-cream);
             padding: 12px 30px;
-            border-radius: 8px; /* Esquinas más definidas */
+            border-radius: 8px; 
             text-decoration: none;
             font-weight: 700;
             font-size: 1.1em;
@@ -104,7 +112,6 @@
         /* --- Hero Section --- */
         .hero {
             position: relative;
-            /* AJUSTE CLAVE: Usamos min-height y reducimos el padding para comprimir */
             min-height: 80vh; 
             display: flex;
             flex-direction: column;
@@ -112,7 +119,7 @@
             align-items: center;
             text-align: center;
             color: var(--color-white-cream);
-            padding: 40px 20px; /* Padding reducido */
+            padding: 40px 20px; 
             overflow: hidden; 
         }
 
@@ -123,18 +130,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* URL ACTUALIZADA: Solo color de fondo verde oscuro (1A3E38) sin texto ni color de fuente. */
+            /* Placeholder de imagen con fondo verde oscuro */
             background-image: url('https://placehold.co/1920x1080/1A3E38');
             background-size: cover;
             background-position: center;
-            filter: brightness(0.8) contrast(1.1); /* Lo dejamos un poco más claro para que el texto resalte más */
+            filter: brightness(0.8) contrast(1.1); 
             z-index: -1;
         }
 
         .hero h1 {
             font-family: 'Playfair Display', serif;
             font-size: 5em; 
-            /* Margen drásticamente reducido */
             margin-bottom: 10px; 
             color: var(--color-gold-accent);
             text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
@@ -149,19 +155,15 @@
             background-color: rgba(255, 255, 255, 0.9);
             padding: 10px 20px;
             border-radius: 5px;
-            /* Margen drásticamente reducido */
             margin-top: 5px; 
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
         
-        /* Estilo para el contenedor de fecha y lugar */
         .hero .info-box {
             background-color: rgba(15, 35, 35, 0.8); 
-            /* Padding reducido */
             padding: 12px 25px; 
             border-radius: 10px;
-            /* Márgenes reducidos */
             margin-top: 15px; 
             margin-bottom: 20px; 
             border: 2px solid var(--color-gold-accent);
@@ -169,8 +171,8 @@
         }
 
         .hero .info-box p {
-            font-size: 1.5em; /* Ligeramente más pequeño */
-            margin: 8px 0; /* Menor espacio entre líneas */
+            font-size: 1.5em; 
+            margin: 8px 0; 
             font-weight: 700;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
             color: var(--color-white-cream);
@@ -183,16 +185,14 @@
         }
 
         .hero p {
-            font-size: 1.5em; /* Ligeramente más pequeño */
+            font-size: 1.5em; 
             max-width: 800px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
             font-weight: 400;
             letter-spacing: 0.5px;
-            /* Margen drásticamente reducido */
             margin-bottom: 20px; 
         }
 
-        /* Margen ajustado para el botón */
         .hero .cta-button {
             margin-bottom: 20px; 
         }
@@ -379,9 +379,8 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero {
-                /* Quitamos height fijo, el contenido lo define con márgenes minimizados */
                 min-height: 70vh; 
-                padding: 20px 10px; /* Padding muy reducido en móvil */
+                padding: 20px 10px; 
             }
             .hero h1 {
                 font-size: 3em;
@@ -430,33 +429,33 @@
 </head>
 <body>
     
-    <!-- Contenedor de la Nieve -->
     <div class="star-container">
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
-        <div class="snow"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
     </div>
 
-    <!-- Se eliminó el encabezado <header class="header"> -->
-
     <section class="hero">
-         <h1>Hermandad de la Santísima Virgen del Carmen de Lima</h1>
+        <h1>Hermandad de la Santísima Virgen del Carmen de Lima</h1>
         <h1>Gran Chocolatada Navideña 2025</h1>
-       
+        
         <p>Los esperamos para compartir un momento de fraternidad y alegría navideña con nuestros niños barrioaltinos.</p>
         
-        <!-- Contenedor para la información de fecha y lugar con iconos -->
         <div class="info-box">
-            <p><span class="icon">📅</span> Sábado 20 de Diciembre | 9:00 AM</p>
-            <p><span class="icon">📍</span> Local Institucional: Jr. Junín 1145, Lima</p>
+            <p><span class="icon">📅</span> **Sábado 20 de Diciembre | 9:00 AM**</p>
+            <p><span class="icon">📍</span> **Local Institucional: Jr. Junín 1145, Lima**</p>
         </div>
 
         <a href="#detalles" class="cta-button">Ver Detalles del Evento</a>
@@ -465,7 +464,6 @@
     <section id="detalles" class="featured-section">
         <h2>Nuestra Celebración Navideña</h2>
         <div class="card-container">
-            <!-- CARD 1: Detalles de la Chocolatada -->
             <div class="card">
                 <div class="icon-container">☕</div>
                 <h3>Chocolatada Carmelitana</h3>
@@ -474,7 +472,6 @@
                 <a href="#mapa" class="learn-more">Cómo Llegar</a>
             </div>
 
-            <!-- CARD 2: El Verdadero Significado de la Navidad -->
             <div class="card">
                 <div class="icon-container">🙏</div>
                 <h3>El Verdadero Significado: Navidad</h3>
@@ -482,25 +479,22 @@
                 <a href="#" class="learn-more">Hermano Presidente Vicente Dominguez Solano</a>
             </div>
 
-            <!-- CARD 3: Contacto y Colaboración -->
             <div class="card">
                 <div class="icon-container">🎁</div>
                 <h3>Apoyo y Colaboración</h3>
-                <p>Si deseas colaborar con donaciones de juguetes, panetones o insumos para nuestra Chocolatada, contacta con nuestro hermana Carmen Rosa Gutiérrez Vargas - Presidenta del Consejo de Disciplina (Telefono : 932 910 728) o con Nuestro Hermano Vicente Dominguez Solano - Presidente HSVCL (Telefono : 993 901 466) </p>
-                <p>Horario de atencion: 7pm a 10pm (Lun - Vie)</p>
+                <p>Si deseas colaborar con donaciones de juguetes, panetones o insumos para nuestra Chocolatada, contacta con nuestra hermana **Carmen Rosa Gutiérrez Vargas** (Presidenta del Consejo de Disciplina, Teléfono: 932 910 728) o con nuestro Hermano **Vicente Dominguez Solano** (Presidente HSVCL, Teléfono: 993 901 466).</p>
+                <p>Horario de atención para donaciones: **7:00 PM a 10:00 PM (Lunes a Viernes)**</p>
                 <a href="#" class="learn-more">Contáctanos</a>
             </div>
         </div>
     </section>
 
-    <!-- SECTION MAPA/UBICACIÓN -->
     <section id="mapa" class="map-section">
         <h2>Ubicación: Nuestro Local Institucional</h2>
         <div style="margin-bottom: 20px; font-style: italic; color: var(--color-snow);">Jr. Junín 1145, Lima (Cercado)</div>
         
-        <!-- Iframe de Google Maps para Jr. Junín 1145, Lima, Perú -->
         <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.1328906917637!2d-77.02700872659353!3d-12.049447241857644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c5f498c48443%3A0xc3b5a191f63a3d54!2zSnIuIEp1bsOtbiAxMTQ1LCBMaW1hIDE1MDAx!5e0!3m2!1ses!2spe!4v1701710400000!5m2!1ses!2spe" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3902.1352467554034!2d-77.0252112851865!3d-12.04368939145618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c5c93d93d395%3A0x6739b61d4a572a1!2sJr.%20Jun%C3%ADn%201145%2C%20Cercado%20de%20Lima%2015001!5e0!3m2!1ses-419!2spe!4v1670876400000!5m2!1ses-419!2spe" 
             allowfullscreen="" 
             loading="lazy" 
             referrerpolicy="no-referrer-when-downgrade"
@@ -510,18 +504,19 @@
     </section>
 
     <footer class="footer">
+        <div class="social-icons">
+             <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+             <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+             <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
         
-        
-        <p>&copy; 2025 Hermandad de la Santísima Virgen del Carmen de Lima. Todos los derechos reservados.</p>
+        <p>© 2025 Hermandad de la Santísima Virgen del Carmen de Lima. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Controles de Audio -->
     <div class="audio-controls">
         <p style="font-size: 0.8em; margin: 0 0 5px; color: var(--color-white-cream);">Música Navideña</p>
         <button id="play-pause-btn">Reproducir Música</button>
-        <!-- Audio tag con un placeholder para la canción -->
         <audio id="christmas-music" loop>
-            <!-- Nota: Debes reemplazar 'URL_DE_TU_CANCIÓN.mp3' con un enlace público real de una canción navideña. -->
             <source src="https://edwinhsvcl14-maker.github.io/edwinbernabe/Ven_A_Cantar.mp3" type="audio/mp3">
             Tu navegador no soporta el elemento de audio.
         </audio>
@@ -538,14 +533,14 @@
                 music.pause();
                 btn.textContent = 'Reproducir Música';
             } else {
+                // El .play() debe ser llamado por interacción del usuario para evitar el bloqueo del navegador.
                 music.play().catch(error => {
-                    console.error("No se pudo reproducir el audio automáticamente. Asegúrate de que el archivo MP3 sea accesible y que el usuario haya interactuado con la página.", error);
-                    // Usamos un modal o mensaje personalizado en lugar de alert()
+                    console.error("No se pudo reproducir el audio automáticamente.", error);
                     const message = document.createElement('div');
                     message.style.cssText = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #C0392B; color: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 2000; font-family: 'Montserrat', sans-serif;";
                     message.innerHTML = "<strong>Atención:</strong> El navegador bloqueó la reproducción automática. Haz clic de nuevo en el botón para iniciar la música.";
                     document.body.appendChild(message);
-                    setTimeout(() => message.remove(), 4000); // Quitar mensaje después de 4 segundos
+                    setTimeout(() => message.remove(), 4000); 
                     
                     btn.textContent = 'Reproducir Música';
                     isPlaying = false;
