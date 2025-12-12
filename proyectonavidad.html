@@ -14,58 +14,73 @@
             --color-snow: #ECF0F1;        /* Gris claro para la nieve/fondos sutiles */
         }
 
-        /* ------------------------------------------------------------------ */
-        /* EFECTO DE NIEVE (SNOW) */
-        /* ------------------------------------------------------------------ */
-        .snow-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-        }
+     /* ------------------------------------------------------------------ */
+/* EFECTO DE ESTRELLAS FUGACES Y TITILANTES (TWINKLE STAR FALL) */
+/* ------------------------------------------------------------------ */
+.snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
 
-        .snow {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            opacity: 0.8;
-            animation: fall linear infinite;
-        }
+.star {
+    position: absolute;
+    width: 4px; /* Tamaño más pequeño que la bola de nieve */
+    height: 4px;
+    /* Color de la estrella: blanco brillante, casi dorado */
+    background: rgba(255, 255, 150, 0.9);
+    border-radius: 50%;
+    /* Efecto de brillo (light glow) */
+    box-shadow: 0 0 5px 1px rgba(255, 255, 150, 0.8), 0 0 10px 2px rgba(255, 255, 150, 0.5);
+    opacity: 0; /* Inicia invisible para el efecto de titileo */
+    
+    /* Aplicamos 2 animaciones: Caída (fall) y Titileo (twinkle) */
+    animation: 
+        fall linear infinite,
+        twinkle ease-in-out infinite;
+}
 
-        @keyframes fall {
-            0% { transform: translateY(-10vh) translateX(0); opacity: 0.5; }
-            100% { transform: translateY(100vh) translateX(5vw); opacity: 0.9; }
-        }
+/* ------------------------------------------------------------------ */
+/* 1. Animación de Titileo (Prender y Apagar) */
+/* ------------------------------------------------------------------ */
+@keyframes twinkle {
+    0%, 100% { opacity: 0; } /* Apagada */
+    50% { opacity: 1; } /* Brillando al máximo */
+    75% { opacity: 0.5; } /* Brillo intermedio */
+}
 
-        /* Generamos 3 capas de nieve para un efecto 3D */
-        .snow:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
-        .snow:nth-child(2) { left: 20%; animation-duration: 18s; animation-delay: 2s; }
-        .snow:nth-child(3) { left: 30%; animation-duration: 12s; animation-delay: 4s; }
-        .snow:nth-child(4) { left: 40%; animation-duration: 20s; animation-delay: 1s; }
-        .snow:nth-child(5) { left: 50%; animation-duration: 16s; animation-delay: 3s; }
-        .snow:nth-child(6) { left: 60%; animation-duration: 14s; animation-delay: 5s; }
-        .snow:nth-child(7) { left: 70%; animation-duration: 19s; animation-delay: 0.5s; }
-        .snow:nth-child(8) { left: 80%; animation-duration: 13s; animation-delay: 2.5s; }
-        .snow:nth-child(9) { left: 90%; animation-duration: 17s; animation-delay: 4.5s; }
-        .snow:nth-child(10) { left: 5%; animation-duration: 11s; animation-delay: 6s; width: 3px; height: 3px; }
-        .snow:nth-child(11) { left: 95%; animation-duration: 14s; animation-delay: 8s; width: 6px; height: 6px; }
+/* ------------------------------------------------------------------ */
+/* 2. Animación de Caída (Movimiento Suave) */
+/* ------------------------------------------------------------------ */
+@keyframes fall {
+    0% { transform: translateY(-10vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; } /* Se prende al inicio de la caída */
+    90% { opacity: 1; }
+    100% { transform: translateY(100vh) translateX(5vw); opacity: 0; } /* Se apaga al final */
+}
 
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--color-green-dark); /* Fondo oscuro como el cielo nocturno */
-            color: var(--color-white-cream);
-            line-height: 1.6;
-            overflow-x: hidden; /* Evita scroll horizontal */
-        }
-
+/* ------------------------------------------------------------------ */
+/* Variaciones y Distribución de las Estrellas (Más aleatorio) */
+/* ------------------------------------------------------------------ */
+.star:nth-child(1) { left: 10%; animation-duration: 20s, 3s; animation-delay: 0s, 1s; }
+.star:nth-child(2) { left: 20%; animation-duration: 18s, 2.5s; animation-delay: 2s, 0s; width: 6px; height: 6px; } /* Más grande y cerca */
+.star:nth-child(3) { left: 30%; animation-duration: 25s, 4s; animation-delay: 4s, 2s; }
+.star:nth-child(4) { left: 40%; animation-duration: 16s, 3.5s; animation-delay: 1s, 0.5s; }
+.star:nth-child(5) { left: 50%; animation-duration: 22s, 2s; animation-delay: 3s, 1.5s; width: 3px; height: 3px; } /* Más pequeña y lejos */
+.star:nth-child(6) { left: 60%; animation-duration: 14s, 4.5s; animation-delay: 5s, 2.5s; }
+.star:nth-child(7) { left: 70%; animation-duration: 19s, 3s; animation-delay: 0.5s, 1s; }
+.star:nth-child(8) { left: 80%; animation-duration: 28s, 2.8s; animation-delay: 2.5s, 0s; }
+.star:nth-child(9) { left: 90%; animation-duration: 17s, 3.2s; animation-delay: 4.5s, 1.2s; width: 5px; height: 5px; }
+.star:nth-child(10) { left: 5%; animation-duration: 24s, 4.8s; animation-delay: 6s, 3s; width: 3px; height: 3px; }
+.star:nth-child(11) { left: 95%; animation-duration: 15s, 2.2s; animation-delay: 8s, 0.8s; width: 6px; height: 6px; }
+.star:nth-child(12) { left: 15%; animation-duration: 13s, 3.8s; animation-delay: 9s, 1s; }
+.star:nth-child(13) { left: 35%; animation-duration: 21s, 2.7s; animation-delay: 10s, 0.3s; width: 4px; height: 4px; }
+.star:nth-child(14) { left: 55%; animation-duration: 23s, 4.2s; animation-delay: 11s, 2s; }
+.star:nth-child(15) { left: 75%; animation-duration: 17s, 3.3s; animation-delay: 12s, 1.8s; width: 5px; height: 5px; }
         /* --- Global CTA Button (kept for reference/reused from header) --- */
         .cta-button {
             background-color: var(--color-red-primary);
@@ -416,7 +431,7 @@
 <body>
     
     <!-- Contenedor de la Nieve -->
-    <div class="snow-container">
+    <div class="star-container">
         <div class="snow"></div>
         <div class="snow"></div>
         <div class="snow"></div>
@@ -433,13 +448,14 @@
     <!-- Se eliminó el encabezado <header class="header"> -->
 
     <section class="hero">
+         <h1>Hermandad de la Santísima Virgen del Carmen de Lima</h1>
         <h1>Gran Chocolatada Navideña 2025</h1>
-        <h1>Hermandad de la Santísima Virgen del Carmen de Lima</h1>
+       
         <p>Los esperamos para compartir un momento de fraternidad y alegría navideña con nuestros niños barrioaltinos.</p>
         
         <!-- Contenedor para la información de fecha y lugar con iconos -->
         <div class="info-box">
-            <p><span class="icon">📅</span> Sábado 20 de Diciembre | 11:00 AM</p>
+            <p><span class="icon">📅</span> Sábado 20 de Diciembre | 9:00 AM</p>
             <p><span class="icon">📍</span> Local Institucional: Jr. Junín 1145, Lima</p>
         </div>
 
@@ -463,15 +479,15 @@
                 <div class="icon-container">🙏</div>
                 <h3>El Verdadero Significado: Navidad</h3>
                 <p>"Estimados Hermanos y Hermanas, celebramos esta Noche Santa con profunda alegría el nacimiento de Nuestro Señor Jesucristo, la fuente de nuestra fe, cuya venida magnifica el 'Sí' de la Virgen María, nuestra amada y Santa Madre. Para nuestra Hermandad, la Navidad es un llamado a la unidad, invitándonos a renovar nuestro compromiso de servicio y caridad, que son el cimiento de nuestra misión. Que el Niño Dios, protegido bajo el Escapulario del Carmen, ilumine nuestros pasos y fortalezca los lazos de fe y amor que nos unen. ¡Feliz Navidad a todos!".</p>
-                <a href="#" class="learn-more">Mensaje de Nuestro Hermano Presidente Vicente Dominguez Solano</a>
+                <a href="#" class="learn-more">Hermano Presidente Vicente Dominguez Solano</a>
             </div>
 
             <!-- CARD 3: Contacto y Colaboración -->
             <div class="card">
                 <div class="icon-container">🎁</div>
                 <h3>Apoyo y Colaboración</h3>
-                <p>Si deseas colaborar con donaciones de juguetes, panetones o insumos para nuestra Chocolatada, contacta con nuestro hermano Fernando Marcenaro</p>
-                <p>Horario de apoyo: 7pm a 10pm (Lun - Vie)</p>
+                <p>Si deseas colaborar con donaciones de juguetes, panetones o insumos para nuestra Chocolatada, contacta con nuestro hermana Carmen Rosa Gutiérrez Vargas - Presidenta del Consejo de Disciplina (Telefono : 932 910 728) o con Nuestro Hermano Vicente Dominguez Solano - Presidente HSVCL (Telefono : 993 901 466) </p>
+                <p>Horario de atencion: 7pm a 10pm (Lun - Vie)</p>
                 <a href="#" class="learn-more">Contáctanos</a>
             </div>
         </div>
