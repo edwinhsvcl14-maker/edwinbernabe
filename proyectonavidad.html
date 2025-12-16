@@ -148,7 +148,7 @@
         }
 
         .small-text {
-            font-size: 1.2em;
+            font-size: 2em;
             font-weight: 400;
             margin: 5px 0 20px;
             color: rgba(255, 255, 255, 0.9);
@@ -168,7 +168,7 @@
             border-radius: 50%;
             /* Efecto de borde brillante (simulando las luces) */
             box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.4),
-                        0 0 20px 8px rgba(255, 165, 0, 0.6); 
+                         0 0 20px 8px rgba(255, 165, 0, 0.6); 
             animation: pulse-shine 2s infinite alternate; 
             position: relative;
             z-index: 25;
@@ -200,17 +200,50 @@
             box-shadow: 0 0 25px rgba(255, 255, 255, 0.8), 0 10px 15px rgba(0, 0, 0, 0.5);
             margin-top: 20px;
             text-align: center;
-            max-width: 400px;
+            max-width: 500px; /* Aumentado ligeramente para hacerlo más rectangular */
+            width: 90%; /* Asegura que ocupe buen ancho en móvil */
+            margin-left: auto;
+            margin-right: auto;
+            
+            /* --- NUEVA DISTRIBUCIÓN FLEXBOX PARA EL CONTENIDO --- */
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* Espacio entre los elementos de información */
         }
+        
+        /* Nuevo estilo para cada línea de información */
+        .info-item {
+            display: flex;
+            align-items: center; /* Alinea ícono y texto verticalmente */
+            justify-content: center; /* Centra el contenido horizontalmente */
+            font-size: 1.2em; /* Tamaño base ligeramente mayor */
+            font-weight: 700;
+        }
+
+        .info-item .icon {
+            font-size: 1.2em; /* Tamaño del ícono */
+            margin-right: 10px;
+            color: var(--color-red-bright);
+        }
+
+        .info-item p {
+            margin: 0; /* Elimina el margen del párrafo */
+            color: var(--color-dark-blue);
+        }
+        /* --- FIN NUEVO CSS PARA INFO-BLOCK --- */
+
 
         .info-block h3 {
             font-size: 2.2em;
             margin: 0;
             font-weight: 700;
             color: var(--color-dark-blue);
+            /* OJO: Esta regla ahora solo aplica a los <h3> dentro de info-block si existen,
+               pero se recomienda usar la nueva estructura .info-item */
         }
 
         .info-block p {
+            /* ESTA REGLA NO APLICARÁ A LOS NUEVOS <p> DENTRO DE .info-item */
             font-size: 1.1em;
             margin: 5px 0 15px;
             color: var(--color-dark-blue);
@@ -366,16 +399,20 @@
                 Gran Chocolatada Navideña <br>2025 <i class="fas fa-bell hero-bell"></i>
             </h1>
         
-           
+            
             
             <div class="adviento-corona" title="Corona de Adviento Brillante"></div>
             
             <div class="info-block">
-                <p><span class="icon">📅</span>  <h3>Sábado 20 de Diciembre | 9:00 AM</h3></p>
-            <p><span class="icon">📍</span>  <h3>Local Institucional: Jr. Junín 1145, Lima</h3></p>
-               
+                <div class="info-item">
+                    <span class="icon">📅</span> 
+                    <p>Sábado 20 de Diciembre | 9:00 AM</p>
+                </div>
+                <div class="info-item">
+                    <span class="icon">📍</span> 
+                    <p>Local Institucional: Jr. Junín 1145, Lima</p>
+                </div>
             </div>
-            
             <a href="#featured" class="cta-button" style="margin-top: 20px;">Ver Detalles</a>
         </div>
     </section>
@@ -394,15 +431,15 @@
                 <div class="icon-container">🙏</div>
                 <h3>El Verdadero Significado: Navidad</h3>
                 <p>"Estimados Hermanos y Hermanas, celebramos esta Noche Santa con profunda alegría el nacimiento de Nuestro Señor Jesucristo, la fuente de nuestra fe, cuya venida magnifica el 'Sí' de la Virgen María, nuestra amada y Santa Madre. Para nuestra Hermandad, la Navidad es un llamado a la unidad, invitándonos a renovar nuestro compromiso de servicio y caridad, que son el cimiento de nuestra misión. Que el Niño Dios, protegido bajo el Escapulario del Carmen, ilumine nuestros pasos y fortalezca los lazos de fe y amor que nos unen. ¡Feliz Navidad a todos!".</p>
-               
- <h3>Hermano Presidente</h3>
-                 <h3>Vicente Dominguez Solano</h3>
+                
+<h3>Hermano Presidente</h3>
+                <h3>Vicente Dominguez Solano</h3>
             </div>
 
              <div class="card">
                 <div class="icon-container">🎁</div>
                 <h3>Apoyo y Colaboración</h3>
-                <p>Si deseas colaborar con donaciones de juguetes, panetones o insumos para nuestra Chocolatada, contacta con nuestra hermana **Carmen Rosa Gutiérrez Vargas** (Presidenta del Consejo de Disciplina, Teléfono: 932 910 728) o con nuestro Hermano **Vicente Dominguez Solano** (Presidente HSVCL, Teléfono: 993 901 466).</p>
+                <p>Si deseas colaborar con donaciones de juguetes, panetones o insumos para nuestra Chocolatada, contacta con nuestra hermana Carmen Rosa Gutiérrez Vargas (Presidenta del Consejo de Disciplina, Teléfono: 932 910 728) o con nuestro Hermano Vicente Dominguez Solano (Presidente HSVCL, Teléfono: 993 901 466).</p>
                 <p>Horario de atención para donaciones: 7:00 PM a 10:00 PM (Lunes a Viernes)</p>
             </div>
 
