@@ -86,13 +86,13 @@
         <div class="card">
             <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/papanoel.png" style="width:100px;">
             <h1>¡Hola!</h1>
-            <p>Toca la campana arriba si quieres música y atrapa 5 regalos.</p>
+            <p>Toca la campana arriba si quieres música y atrapa 10 regalos.</p>
             <button class="btn-oro" onclick="irAlJuego()">¡Jugar ahora!</button>
         </div>
     </div>
 
     <div id="game-area" style="display:none; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-        <h2 style="font-family:'Mountains of Christmas'; color: var(--oro); font-size: 2.2rem;">Regalos: <span id="score">0</span>/5</h2>
+        <h2 style="font-family:'Mountains of Christmas'; color: var(--oro); font-size: 2.2rem;">Regalos: <span id="score">0</span>/10</h2>
         <canvas id="gameCanvas"></canvas>
     </div>
 
@@ -171,7 +171,7 @@
                     gifts.splice(i, 1); pts++;
                     playNote(880, 0.2, 0.1, 'triangle');
                     document.getElementById('score').innerText = pts;
-                    if(pts >= 5) {
+                    if(pts >= 10) {
                         active = false;
                         if(musicEnabled) {
                             // Detener MP3 al ganar para que suene la fanfarria
