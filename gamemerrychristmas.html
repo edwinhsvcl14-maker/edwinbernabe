@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Navidad Mágica - Mary Ann</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --verde-profundo: #062e1e;
+            --verde-alegre: #0a5d38;
+            --rojo: #d62828;
+            --oro: #f9c74f;
+            --oro-metal: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle, var(--verde-alegre) 0%, var(--verde-profundo) 100%);
+            font-family: 'Playfair Display', serif;
+            color: white; overflow: hidden;
+        }
+
+        /* --- PRELOADER (2 SEGUNDOS) --- */
+        #preloader {
+            position: fixed; inset: 0; background: var(--verde-profundo);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .tree-blink { font-size: 80px; animation: pulse-gold 1s ease-in-out infinite; }
+        @keyframes pulse-gold {
+            0%, 100% { filter: drop-shadow(0 0 5px var(--oro)); opacity: 0.5; transform: scale(0.95); }
+            50% { filter: drop-shadow(0 0 30px var(--oro)); opacity: 1; transform: scale(1.05); }
+        }
+
+        /* --- IMAGEN PAPÁ NOEL (EN LA TARJETA DE INICIO) --- */
+        .santa-img {
+            width: 120px; /* Ajusta el tamaño según tu imagen */
+            height: auto;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+            animation: bounce 3s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* --- CORONA DE ADVIENTO --- */
+        .corona-adviento {
+            position: absolute; top: 5%; left: 50%; transform: translateX(-50%);
+            width: 140px; z-index: 5;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+
+        /* --- BOTÓN DORADO METALIZADO --- */
+        .btn-oro {
+            background: var(--oro-metal);
+            color: #4a3701; border: none;
+            padding: 15px 45px; border-radius: 50px;
+            font-weight: bold; font-size: 1.1rem;
+            cursor: pointer; margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-transform: uppercase; border: 1px solid rgba(255,255,255,0.3);
+            transition: 0.3s;
+        }
+        .btn-oro:hover { transform: scale(1.1); box-shadow: 0 0 25px var(--oro); }
+
+        /* --- CONTENEDORES --- */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--oro);
+            padding: 25px; border-radius: 35px;
+            text-align: center; z-index: 10; width: 85%; max-width: 320px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        h1 { font-family: 'Mountains of Christmas', cursive; font-size: 2.8rem; color: var(--oro); margin: 0; }
+        
+        /* --- NIEVE --- */
+        .snowflake { position: fixed; top: -10px; color: white; z-index: 1000; pointer-events: none; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
+
+        /* --- JUEGO Y FINAL --- */
+        canvas { border: 3px solid var(--oro); border-radius: 15px; background: rgba(0,0,0,0.3); }
+        .marco { border: 8px double var(--oro); padding: 5px; background: white; margin: 20px 0; transform: rotate(1deg); }
+    </style>
+</head>
+<body>
+
+    <img src="LINK_DE_TU_CORONA.png" alt="Corona" class="corona-adviento">
+
+    <div id="preloader">
+        <div class="tree-blink">🎄</div>
+        <p style="color:var(--oro); font-family:'Mountains of Christmas'; margin-top:15px;">CARGANDO...</p>
+    </div>
+
+    <div id="start-screen" style="display: flex; height: 100%; align-items: center; justify-content: center; padding-top: 50px;">
+        <div class="card">
+            <img src="LINK_DE_TU_PAPA_NOEL_PNG.png" alt="Papá Noel" class="santa-img">
+            
+            <h1>¡Mary Ann!</h1>
+            <p style="margin: 10px 0;">Edwin te ha preparado un pequeño reto.</p>
+            <p style="color: var(--oro); font-weight: bold; font-size: 0.9rem;">¡Atrapa 5 regalos para tu sorpresa!</p>
+            
+            <button class="btn-oro" onclick="startGame()">¡Jugar ahora!</button>
+        </div>
+    </div>
+
+    <div id="game-area" style="display:none; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+        <h2 style="font-family:'Mountains of Christmas'; color: var(--oro); font-size: 2.2rem;">Regalos: <span id="score">0</span>/5</h2>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div id="final-screen" style="display:none; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+        <h1 style="text-shadow: 0 0 10px var(--oro); font-size: 3.5rem;">¡Felicidades!</h1>
+        <div class="marco">
+            <img id="img-final" src="LINK_DE_TU_CANVA.jpg" style="width: 250px; display: block;">
+        </div>
+        <button class="btn-oro" onclick="alert('Descargando...')">📥 Descargar Mi Regalo</button>
+        <p style="margin-top:15px; font-style: italic;">Con cariño, Edwin</p>
+    </div>
+
+    <script>
+        // Nieve
+        setInterval(() => {
+            const f = document.createElement('div');
+            f.className = 'snowflake'; f.innerHTML = '❄';
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 5000);
+        }, 200);
+
+        // Preloader (2 seg)
+        window.onload = () => {
+            setTimeout(() => {
+                const p = document.getElementById('preloader');
+                p.style.transition = '0.5s'; p.style.opacity = '0';
+                setTimeout(() => p.style.display = 'none', 500);
+            }, 2000);
+        };
+
+        // Juego
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let pts = 0, active = false, gifts = [];
+
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-area').style.display = 'flex';
+            canvas.width = window.innerWidth * 0.85;
+            canvas.height = window.innerHeight * 0.5;
+            active = true;
+            spawn(); loop();
+        }
+
+        function spawn() {
+            if(!active) return;
+            gifts.push({ x: Math.random()*(canvas.width-40), y: -50 });
+            setTimeout(spawn, 900);
+        }
+
+        function loop() {
+            if(!active) return;
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            gifts.forEach((g, i) => {
+                g.y += 3;
+                ctx.font = "40px Arial";
+                ctx.fillText("🎁", g.x, g.y);
+            });
+            requestAnimationFrame(loop);
+        }
+
+        canvas.onpointerdown = (e) => {
+            const r = canvas.getBoundingClientRect();
+            const mx = e.clientX - r.left, my = e.clientY - r.top;
+            gifts.forEach((g, i) => {
+                if(mx > g.x && mx < g.x+40 && my > g.y-40 && my < g.y) {
+                    gifts.splice(i, 1);
+                    pts++;
+                    document.getElementById('score').innerText = pts;
+                    if(pts >= 5) {
+                        active = false;
+                        document.getElementById('game-area').style.display = 'none';
+                        document.getElementById('final-screen').style.display = 'flex';
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
