@@ -13,60 +13,88 @@
             --oro-metal: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
         }
 
+        /* --- RESET Y RESPONSIVE --- */
+        * { box-sizing: border-box; }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             background: radial-gradient(circle, var(--verde-alegre) 0%, var(--verde-profundo) 100%);
             font-family: 'Playfair Display', serif;
             color: white; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
             touch-action: manipulation;
         }
 
-        /* --- BOTÓN DE MÚSICA FLOTANTE --- */
+        /* --- BOTÓN DE MÚSICA --- */
         #music-toggle {
-            position: fixed; top: 20px; right: 20px;
-            width: 50px; height: 50px; border-radius: 50%;
+            position: fixed; top: 15px; right: 15px;
+            width: 55px; height: 55px; border-radius: 50%;
             background: var(--oro-metal);
-            border: 2px solid white;
-            z-index: 2000; cursor: pointer;
+            border: 2px solid white; z-index: 9999; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; box-shadow: 0 0 15px rgba(249, 199, 79, 0.5);
-            transition: all 0.3s ease;
+            font-size: 26px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
-        .music-off { filter: grayscale(1); opacity: 0.6; transform: scale(0.9); }
-        .music-on { animation: pulse-music 2s infinite; }
-        @keyframes pulse-music { 0% { box-shadow: 0 0 0px var(--oro); } 50% { box-shadow: 0 0 20px var(--oro); } 100% { box-shadow: 0 0 0px var(--oro); } }
 
-        .corona-adviento {
-            position: absolute; top: 2%; left: 50%; transform: translateX(-50%);
-            width: 100px; z-index: 100;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
-            animation: float-corona 4s ease-in-out infinite;
+        /* --- PRELOADER GIGANTE --- */
+        #preloader { 
+            position: fixed; inset: 0; background: var(--verde-profundo); 
+            z-index: 10000; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
         }
-        @keyframes float-corona { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
-
-        .tree-blink {
-            font-size: 60px; text-align: center;
+        .tree-preloader {
+            font-size: 180px; /* 3 veces más grande */
+            filter: drop-shadow(0 0 30px var(--oro));
             animation: pulse-gold 1.5s ease-in-out infinite;
-            display: block;
+            margin-bottom: 20px;
         }
-        @keyframes pulse-gold { 0%, 100% { opacity: 0.7; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
 
-        #preloader { position: fixed; inset: 0; background: var(--verde-profundo); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* --- CONTENEDORES --- */
+        .container {
+            width: 90%; max-width: 400px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; z-index: 10;
+        }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.12); 
+            backdrop-filter: blur(15px); 
+            border: 2px solid var(--oro); 
+            padding: 30px 20px; border-radius: 35px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+        }
+
+        h1 { 
+            font-family: 'Mountains of Christmas', cursive; 
+            font-size: 2.2rem; color: var(--oro); margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        /* --- JUEGO --- */
+        canvas { 
+            border: 3px solid var(--oro); border-radius: 20px; 
+            background: rgba(0,0,0,0.4); 
+            width: 100%; max-width: 300px; height: auto; aspect-ratio: 4/5;
+            touch-action: none;
+        }
 
         .btn-oro {
             background: var(--oro-metal); color: #4a3701; border: none;
-            padding: 15px 40px; border-radius: 50px; font-weight: bold; font-size: 1.1rem;
-            cursor: pointer; margin-top: 15px; text-transform: uppercase;
-            transition: transform 0.2s;
+            padding: 18px 30px; border-radius: 50px; font-weight: bold; 
+            font-size: 1rem; cursor: pointer; margin-top: 15px; 
+            text-transform: uppercase; width: 100%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .btn-oro:active { transform: scale(0.9); }
 
-        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border: 2px solid var(--oro); padding: 25px; border-radius: 35px; text-align: center; width: 85%; max-width: 320px; }
-        
-        canvas { border: 3px solid var(--oro); border-radius: 15px; background: rgba(0,0,0,0.3); width: 280px; height: 350px; }
-        h1 { font-family: 'Mountains of Christmas', cursive; font-size: 2.8rem; color: var(--oro); margin: 0; }
         .snowflake { position: fixed; top: -10px; color: white; z-index: 1000; pointer-events: none; animation: fall linear infinite; }
         @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
+        @keyframes pulse-gold { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
+
+        /* --- RESPONSIVE PEQUEÑO --- */
+        @media (max-height: 600px) {
+            h1 { font-size: 1.8rem; }
+            .tree-preloader { font-size: 120px; }
+            .card { padding: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -77,55 +105,53 @@
 
     <div id="music-toggle" class="music-off" onclick="toggleMusic()">🔇</div>
 
-    <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/corona_adviento.png" alt="Corona" class="corona-adviento">
-
     <div id="preloader">
-        <div class="tree-blink">🎄</div>
-        <p style="color:var(--oro); font-family:'Mountains of Christmas';">CARGANDO...</p>
+        <div class="tree-preloader">🎄</div>
+        <p style="color:var(--oro); font-family:'Mountains of Christmas'; font-size: 1.5rem; letter-spacing: 2px;">CARGANDO MAGIA...</p>
     </div>
 
-    <div id="start-screen" style="display: none; height: 100%; align-items: center; justify-content: center;">
+    <div id="start-screen" class="container" style="display: none;">
         <div class="card">
-            <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/papanoel.png" style="width:100px;">
-            <h1>¡Holaaaaaaaaa!</h1>
-            <p>Edwin te ha puesto un reto navideño, atrapa 10 regalos y obtendrás un regalo (Toca la campana arriba si quieres música)</p>
+            <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/papanoel.png" style="width:100px; margin-bottom: 10px;">
+            <h1>¡Holaaaaaa!</h1>
+            <p>Edwin te ha puesto un reto navideño: atrapa 10 regalos para obtener tu sorpresa.</p>
+            <p style="font-size: 0.8rem; color: var(--oro);">(Usa la campana arriba para activar la música)</p>
             <button class="btn-oro" onclick="irAlJuego()">¡Jugar ahora!</button>
         </div>
     </div>
 
-    <div id="game-area" style="display:none; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-        <h2 style="font-family:'Mountains of Christmas'; color: var(--oro); font-size: 2.2rem;">Regalos: <span id="score">0</span>/10</h2>
+    <div id="game-area" class="container" style="display:none;">
+        <h2 style="font-family:'Mountains of Christmas'; color: var(--oro); font-size: 2rem; margin: 0 0 10px 0;">Regalos: <span id="score">0</span>/10</h2>
         <canvas id="gameCanvas"></canvas>
     </div>
 
-    <div id="final-screen" style="display:none; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-        <h1 style="text-align: center;">¡FELIZ NAVIDAD Y PROSPERO AÑO NUEVO! Que la magia de la navidad permanezca en tu corazon y que Dios te bendiga siempre</h1>
-        <div class="tree-blink" style="font-size: 80px;">🎁</div>
-        <p style="text-align: center;">Tu regalo está listo, Mary Ann.</p>
-        <button class="btn-oro" id="download-btn" onclick="descargarConMagia()">✨ Descargar Regalo ✨</button>
+    <div id="final-screen" class="container" style="display:none;">
+        <div class="card">
+            <h1 style="font-size: 1.6rem;">¡FELIZ NAVIDAD Y PRÓSPERO AÑO NUEVO!</h1>
+            <p style="font-size: 0.9rem;">Que la magia de la navidad permanezca en tu corazón. ¡Dios te bendiga!</p>
+            <div class="tree-blink" style="font-size: 60px; margin: 10px 0;">🎁</div>
+            <p>Tu regalo está listo.</p>
+            <button class="btn-oro" id="download-btn" onclick="descargarConMagia()">✨ Descargar Regalo ✨</button>
+        </div>
     </div>
 
     <script>
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx;
+        let audioCtx, active = false;
         let musicEnabled = false;
         const bgAudio = document.getElementById('bg-audio');
 
         function toggleMusic() {
             if (!audioCtx) audioCtx = new AudioContext();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             musicEnabled = !musicEnabled;
             const btn = document.getElementById('music-toggle');
-            
             if (musicEnabled) {
                 btn.innerHTML = "🔔";
-                btn.className = "music-on";
-                bgAudio.play().catch(e => console.log("Esperando interacción"));
+                bgAudio.play();
                 bgAudio.volume = 0.4;
             } else {
                 btn.innerHTML = "🔇";
-                btn.className = "music-off";
                 bgAudio.pause();
             }
         }
@@ -141,54 +167,36 @@
             o.start(); o.stop(audioCtx.currentTime + d);
         }
 
-        // --- NUEVA FUNCIÓN DE DESCARGA MÁGICA ---
         function descargarConMagia() {
             const btn = document.getElementById('download-btn');
             btn.innerHTML = "¡ABRIENDO...! 🎄";
-            
-            // Explosión de partículas
-            for (let i = 0; i < 40; i++) {
-                crearParticulaMagica();
-            }
-
-            // Sonido de fanfarria extra
+            for (let i = 0; i < 40; i++) crearParticulaMagica();
             if (musicEnabled) {
                 [523, 659, 783, 1046, 1318].forEach((f, idx) => {
                     setTimeout(() => playNote(f, 0.6, 0.15, 'triangle'), idx * 100);
                 });
             }
-
-            // Descarga del video
             const link = document.createElement('a');
-            link.href = 'https://edwinhsvcl14-maker.github.io/edwinbernabe/tarjetasaludo.mp4'; // <--- SUSTITUIR AQUÍ TU URL
+            link.href = 'https://edwinhsvcl14-maker.github.io/edwinbernabe/tarjetasaludo.mp4';
             link.download = 'Sorpresa_De_Edwin.mp4';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
-            setTimeout(() => {
-                btn.innerHTML = "¡FELIZ NAVIDAD! ❤️";
-            }, 2000);
+            setTimeout(() => { btn.innerHTML = "¡CON CARIÑO! ❤️"; }, 2000);
         }
 
         function crearParticulaMagica() {
             const p = document.createElement('div');
-            const emojis = ['✨', '⭐', '🎊', '🎁', '❄️', '🎅'];
+            const emojis = ['✨', '⭐', '🎊', '🎁', '❄️'];
             p.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-            p.style.position = 'fixed';
-            p.style.left = '50%';
-            p.style.top = '60%';
-            p.style.fontSize = Math.random() * 20 + 20 + 'px';
-            p.style.zIndex = '10000';
-            p.style.pointerEvents = 'none';
-            p.style.transition = 'all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            p.style.position = 'fixed'; p.style.left = '50%'; p.style.top = '60%';
+            p.style.fontSize = '25px'; p.style.zIndex = '10000';
+            p.style.transition = 'all 2s ease-out';
             document.body.appendChild(p);
-
             const tx = (Math.random() - 0.5) * 400;
             const ty = (Math.random() - 0.5) * 600 - 150;
-            
             requestAnimationFrame(() => {
-                p.style.transform = `translate(${tx}px, ${ty}px) rotate(${Math.random() * 360}deg)`;
+                p.style.transform = `translate(${tx}px, ${ty}px) rotate(360deg)`;
                 p.style.opacity = '0';
             });
             setTimeout(() => p.remove(), 2000);
@@ -203,7 +211,7 @@
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let pts = 0, active = false, gifts = [];
+        let pts = 0, gifts = [];
 
         function spawn() { if(active) { gifts.push({x: Math.random()*240, y: -40}); setTimeout(spawn, 900); } }
 
@@ -219,8 +227,10 @@
 
         canvas.onpointerdown = (e) => {
             const r = canvas.getBoundingClientRect();
-            const mx = (e.clientX || (e.touches && e.touches[0].clientX)) - r.left;
-            const my = (e.clientY || (e.touches && e.touches[0].clientY)) - r.top;
+            const scaleX = canvas.width / r.width;
+            const scaleY = canvas.height / r.height;
+            const mx = ((e.clientX || (e.touches && e.touches[0].clientX)) - r.left) * scaleX;
+            const my = ((e.clientY || (e.touches && e.touches[0].clientY)) - r.top) * scaleY;
             gifts.forEach((g, i) => {
                 if(mx > g.x && mx < g.x+40 && my > g.y-40 && my < g.y) {
                     gifts.splice(i, 1); pts++;
@@ -230,8 +240,7 @@
                         active = false;
                         if(musicEnabled) {
                             bgAudio.pause();
-                            const win = [523, 659, 783, 1046];
-                            win.forEach((f, idx) => setTimeout(() => playNote(f, 0.8, 0.1, 'square'), idx * 150));
+                            [523, 659, 783, 1046].forEach((f, idx) => setTimeout(() => playNote(f, 0.8, 0.1, 'square'), idx * 150));
                         }
                         document.getElementById('game-area').style.display = 'none';
                         document.getElementById('final-screen').style.display = 'flex';
@@ -240,8 +249,16 @@
             });
         };
 
-        window.onload = () => { setTimeout(() => { document.getElementById('preloader').style.display = 'none'; document.getElementById('start-screen').style.display = 'flex'; }, 2000); };
-        setInterval(() => { const f = document.createElement('div'); f.className = 'snowflake'; f.innerHTML = '❄'; f.style.left = Math.random() * 100 + 'vw'; f.style.animationDuration = Math.random() * 3 + 2 + 's'; document.body.appendChild(f); setTimeout(() => f.remove(), 5000); }, 300);
+        window.onload = () => { setTimeout(() => { document.getElementById('preloader').style.display = 'none'; document.getElementById('start-screen').style.display = 'flex'; }, 3000); };
+        setInterval(() => {
+            const f = document.createElement('div');
+            f.className = 'snowflake'; f.innerHTML = '❄';
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.opacity = Math.random();
+            f.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 5000);
+        }, 300);
     </script>
 </body>
 </html>
