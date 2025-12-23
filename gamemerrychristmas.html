@@ -21,68 +21,68 @@
             touch-action: manipulation;
         }
 
-        /* --- CORONA --- */
+        /* --- BOTÓN DE MÚSICA FLOTANTE --- */
+        #music-toggle {
+            position: fixed; top: 20px; right: 20px;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: var(--oro-metal);
+            border: 2px solid white;
+            z-index: 2000; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 0 0 15px rgba(249, 199, 79, 0.5);
+            transition: all 0.3s ease;
+        }
+        .music-off { filter: grayscale(1); opacity: 0.6; transform: scale(0.9); }
+        .music-on { animation: pulse-music 2s infinite; }
+        @keyframes pulse-music { 0% { box-shadow: 0 0 0px var(--oro); } 50% { box-shadow: 0 0 20px var(--oro); } 100% { box-shadow: 0 0 0px var(--oro); } }
+
         .corona-adviento {
             position: absolute; top: 2%; left: 50%; transform: translateX(-50%);
-            width: 120px; z-index: 100;
+            width: 100px; z-index: 100;
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
             animation: float-corona 4s ease-in-out infinite;
         }
         @keyframes float-corona { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
 
-        /* --- ARBOLITO --- */
         .tree-blink {
             font-size: 60px; text-align: center;
             animation: pulse-gold 1.5s ease-in-out infinite;
-            display: block; margin-bottom: -5px;
+            display: block;
         }
-        @keyframes pulse-gold {
-            0%, 100% { filter: drop-shadow(0 0 5px var(--oro)); opacity: 0.7; transform: scale(0.95); }
-            50% { filter: drop-shadow(0 0 25px var(--oro)); opacity: 1; transform: scale(1.05); }
-        }
+        @keyframes pulse-gold { 0%, 100% { opacity: 0.7; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
 
-        /* --- PRELOADER --- */
-        #preloader {
-            position: fixed; inset: 0; background: var(--verde-profundo);
-            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        #preloader { position: fixed; inset: 0; background: var(--verde-profundo); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         .btn-oro {
             background: var(--oro-metal); color: #4a3701; border: none;
             padding: 15px 40px; border-radius: 50px; font-weight: bold; font-size: 1.1rem;
-            cursor: pointer; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            text-transform: uppercase; border: 1px solid rgba(255,255,255,0.3); transition: 0.3s;
+            cursor: pointer; margin-top: 15px; text-transform: uppercase;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px);
-            border: 2px solid var(--oro); padding: 25px; border-radius: 35px;
-            text-align: center; z-index: 10; width: 85%; max-width: 320px;
-        }
-        .marco { border: 8px double var(--oro); padding: 5px; background: white; margin-top: 5px; }
-
-        .snowflake { position: fixed; top: -10px; color: white; z-index: 1000; pointer-events: none; animation: fall linear infinite; }
-        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
+        .card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border: 2px solid var(--oro); padding: 25px; border-radius: 35px; text-align: center; width: 85%; max-width: 320px; }
         
         canvas { border: 3px solid var(--oro); border-radius: 15px; background: rgba(0,0,0,0.3); width: 280px; height: 350px; }
         h1 { font-family: 'Mountains of Christmas', cursive; font-size: 2.8rem; color: var(--oro); margin: 0; }
-        .santa-img { width: 100px; height: auto; margin-bottom: 5px; }
+        .snowflake { position: fixed; top: -10px; color: white; z-index: 1000; pointer-events: none; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
     </style>
 </head>
-<body onclick="iniciarAudio()">
+<body>
+
+    <div id="music-toggle" class="music-off" onclick="toggleMusic()">🔇</div>
 
     <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/corona_adviento.png" alt="Corona" class="corona-adviento">
 
     <div id="preloader">
-        <div class="tree-blink" style="font-size: 80px;">🎄</div>
-        <p style="color:var(--oro); font-family:'Mountains of Christmas'; margin-top:15px;">CARGANDO MAGIA...</p>
+        <div class="tree-blink">🎄</div>
+        <p style="color:var(--oro); font-family:'Mountains of Christmas';">CARGANDO...</p>
     </div>
 
     <div id="start-screen" style="display: none; height: 100%; align-items: center; justify-content: center;">
         <div class="card">
-            <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/papanoel.png" class="santa-img">
+            <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/papanoel.png" style="width:100px;">
             <h1>¡Hola!</h1>
-            <p>Atrapa 5 regalos para ver la sorpresa que te esta dando Edwin.</p>
+            <p>Toca la campana arriba si quieres música y atrapa 5 regalos.</p>
             <button class="btn-oro" onclick="irAlJuego()">¡Jugar ahora!</button>
         </div>
     </div>
@@ -93,25 +93,35 @@
     </div>
 
     <div id="final-screen" style="display:none; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-        <h1>¡Feliz navidad!</h1>
+        <h1>¡Feliz Navidad!</h1>
         <div class="tree-blink">🎄</div>
-       
-        <button class="btn-oro" onclick="location.reload()">Descargar Sorpresa</button>
+        <button class="btn-oro" onclick="location.reload()">Reiniciar</button>
     </div>
 
     <script>
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx, bgMusicActive = false;
+        let audioCtx, bgMusicInterval;
+        let musicEnabled = false;
 
-        function iniciarAudio() {
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-                playMelody();
-                bgMusicActive = true;
+        function toggleMusic() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            musicEnabled = !musicEnabled;
+            const btn = document.getElementById('music-toggle');
+            
+            if (musicEnabled) {
+                btn.innerHTML = "🔔";
+                btn.className = "music-on";
+                if (!bgMusicInterval) startBgMusic();
+            } else {
+                btn.innerHTML = "🔇";
+                btn.className = "music-off";
             }
         }
 
         function playNote(f, d, v = 0.05, t = 'sine') {
+            if(!audioCtx || !musicEnabled) return;
             const o = audioCtx.createOscillator();
             const g = audioCtx.createGain();
             o.type = t; o.frequency.value = f;
@@ -121,28 +131,16 @@
             o.start(); o.stop(audioCtx.currentTime + d);
         }
 
-        // Música de fondo (Jingle Bells simple)
-        function playMelody() {
+        function startBgMusic() {
             const jingle = [329, 329, 329, 329, 329, 329, 329, 392, 261, 293, 329];
             let n = 0;
-            setInterval(() => {
-                if(bgMusicActive) {
-                    playNote(jingle[n % jingle.length], 0.3);
+            bgMusicInterval = setInterval(() => {
+                if(musicEnabled) {
+                    playNote(jingle[n % jingle.length], 0.4, 0.03);
                     n++;
                 }
             }, 450);
         }
-
-        function playWinFanfare() {
-            bgMusicActive = false; // Detiene música de fondo
-            const notes = [523, 659, 783, 1046];
-            notes.forEach((f, i) => setTimeout(() => playNote(f, 1, 0.1, 'square'), i * 150));
-        }
-
-        // Lógica del Juego
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let pts = 0, active = false, gifts = [];
 
         function irAlJuego() {
             document.getElementById('start-screen').style.display = 'none';
@@ -150,6 +148,10 @@
             canvas.width = 280; canvas.height = 350;
             active = true; spawn(); loop();
         }
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let pts = 0, active = false, gifts = [];
 
         function spawn() { if(active) { gifts.push({x: Math.random()*240, y: -40}); setTimeout(spawn, 900); } }
 
@@ -165,15 +167,19 @@
 
         canvas.onpointerdown = (e) => {
             const r = canvas.getBoundingClientRect();
-            const mx = (e.clientX || e.touches[0].clientX) - r.left;
-            const my = (e.clientY || e.touches[0].clientY) - r.top;
+            const mx = (e.clientX || (e.touches && e.touches[0].clientX)) - r.left;
+            const my = (e.clientY || (e.touches && e.touches[0].clientY)) - r.top;
             gifts.forEach((g, i) => {
                 if(mx > g.x && mx < g.x+40 && my > g.y-40 && my < g.y) {
                     gifts.splice(i, 1); pts++;
                     playNote(880, 0.2, 0.1, 'triangle');
                     document.getElementById('score').innerText = pts;
                     if(pts >= 5) {
-                        active = false; playWinFanfare();
+                        active = false;
+                        if(musicEnabled) {
+                            const win = [523, 659, 783, 1046];
+                            win.forEach((f, idx) => setTimeout(() => playNote(f, 0.8, 0.1, 'square'), idx * 150));
+                        }
                         document.getElementById('game-area').style.display = 'none';
                         document.getElementById('final-screen').style.display = 'flex';
                     }
@@ -181,22 +187,8 @@
             });
         };
 
-        window.onload = () => {
-            setTimeout(() => {
-                document.getElementById('preloader').style.display = 'none';
-                document.getElementById('start-screen').style.display = 'flex';
-            }, 2000);
-        };
-
-        // NIEVE
-        setInterval(() => {
-            const f = document.createElement('div');
-            f.className = 'snowflake'; f.innerHTML = '❄';
-            f.style.left = Math.random() * 100 + 'vw';
-            f.style.animationDuration = Math.random() * 3 + 2 + 's';
-            document.body.appendChild(f);
-            setTimeout(() => f.remove(), 5000);
-        }, 300);
+        window.onload = () => { setTimeout(() => { document.getElementById('preloader').style.display = 'none'; document.getElementById('start-screen').style.display = 'flex'; }, 2000); };
+        setInterval(() => { const f = document.createElement('div'); f.className = 'snowflake'; f.innerHTML = '❄'; f.style.left = Math.random() * 100 + 'vw'; f.style.animationDuration = Math.random() * 3 + 2 + 's'; document.body.appendChild(f); setTimeout(() => f.remove(), 5000); }, 300);
     </script>
 </body>
 </html>
