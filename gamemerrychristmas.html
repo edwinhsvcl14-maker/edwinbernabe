@@ -69,6 +69,10 @@
 </head>
 <body>
 
+    <audio id="bg-audio" loop>
+        <source src="https://edwinhsvcl14-maker.github.io/edwinbernabe/Música_NAVIDAD_instrumental.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="music-toggle" class="music-off" onclick="toggleMusic()">🔇</div>
 
     <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/corona_adviento.png" alt="Corona" class="corona-adviento">
@@ -95,13 +99,14 @@
     <div id="final-screen" style="display:none; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
         <h1>¡Feliz Navidad!</h1>
         <div class="tree-blink">🎄</div>
-        <button class="btn-oro" onclick="location.reload()">Reiniciar</button>
+        <button class="btn-oro" onclick="location.reload()">Descargar Regalo</button>
     </div>
 
     <script>
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx, bgMusicInterval;
+        let audioCtx;
         let musicEnabled = false;
+        const bgAudio = document.getElementById('bg-audio');
 
         function toggleMusic() {
             if (!audioCtx) audioCtx = new AudioContext();
@@ -113,13 +118,16 @@
             if (musicEnabled) {
                 btn.innerHTML = "🔔";
                 btn.className = "music-on";
-                if (!bgMusicInterval) startBgMusic();
+                bgAudio.play().catch(e => console.log("Esperando interacción"));
+                bgAudio.volume = 0.4; // Ajusta el volumen del MP3 aquí (0.0 a 1.0)
             } else {
                 btn.innerHTML = "🔇";
                 btn.className = "music-off";
+                bgAudio.pause();
             }
         }
 
+        // Esta función sigue igual para los efectos de sonido de regalos y victoria
         function playNote(f, d, v = 0.05, t = 'sine') {
             if(!audioCtx || !musicEnabled) return;
             const o = audioCtx.createOscillator();
@@ -129,17 +137,6 @@
             g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
             o.connect(g); g.connect(audioCtx.destination);
             o.start(); o.stop(audioCtx.currentTime + d);
-        }
-
-        function startBgMusic() {
-            const jingle = [329, 329, 329, 329, 329, 329, 329, 392, 261, 293, 329];
-            let n = 0;
-            bgMusicInterval = setInterval(() => {
-                if(musicEnabled) {
-                    playNote(jingle[n % jingle.length], 0.4, 0.03);
-                    n++;
-                }
-            }, 450);
         }
 
         function irAlJuego() {
@@ -177,6 +174,8 @@
                     if(pts >= 5) {
                         active = false;
                         if(musicEnabled) {
+                            // Detener MP3 al ganar para que suene la fanfarria
+                            bgAudio.pause();
                             const win = [523, 659, 783, 1046];
                             win.forEach((f, idx) => setTimeout(() => playNote(f, 0.8, 0.1, 'square'), idx * 150));
                         }
