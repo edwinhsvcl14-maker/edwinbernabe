@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharon Davidovich | Coaching de Parejas</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root {
+            --crema: #FDFBF7;
+            --marron-soft: #D4C3B3;
+            --marron-gold: #A68966;
+            --marron-deep: #3d2314; 
+            --blanco-puro: #FFFFFF;
+            --transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--crema);
+            color: var(--marron-deep);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--crema);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        /* --- LOGO CIRCULAR --- */
+        .logo-container {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+            padding: 5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--marron-soft), var(--marron-gold));
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .logo-circle {
+            width: 100%; height: 100%;
+            background-color: white;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-circle img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+            background: url('https://images.unsplash.com/photo-1532693322450-2cb5c511067d?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat fixed;
+        }
+
+        .rain-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(253, 251, 247, 0.6);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 50px 30px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 850px;
+            width: 100%;
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--marron-deep);
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: block;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 6vw, 3.8rem);
+            line-height: 1.1;
+            margin-bottom: 25px;
+            color: var(--marron-deep);
+        }
+
+        h1 em { font-weight: 400; color: var(--marron-gold); font-style: italic; }
+
+        .btn-luxury {
+            display: inline-block;
+            padding: 20px 45px;
+            background-color: var(--marron-deep);
+            color: var(--crema);
+            text-decoration: none;
+            border-radius: 60px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            transition: 0.4s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .btn-luxury:hover {
+            background-color: var(--marron-gold);
+            transform: translateY(-5px);
+        }
+
+        /* --- SECCIONES --- */
+        section.info {
+            padding: 100px 5%;
+            background: var(--crema);
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .card {
+            background: white;
+            padding: 45px 30px;
+            border-radius: 40px 15px;
+            border: 1px solid #f2eee9;
+            transition: 0.4s;
+        }
+
+        .card:hover { transform: translateY(-10px); border-color: var(--marron-gold); }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: var(--transition); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        footer {
+            background: var(--marron-deep);
+            color: var(--crema);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 600px) {
+            .hero-content { padding: 40px 20px; border-radius: 30px; }
+            .logo-container { width: 110px; height: 110px; }
+            .hero { padding: 60px 15px; }
+            .btn-luxury { width: 100%; padding: 18px 20px; }
+            .brand-name { font-size: 1.5rem; letter-spacing: 2px; }
+            section.info { padding: 70px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div style="text-align: center;">
+            <div class="logo-container" style="width: 90px; height: 90px;">
+                <div class="logo-circle">
+                    <img src="URL_DEL_LOGO_SHARON" alt="Sharon">
+                </div>
+            </div>
+            <p style="font-family: 'Playfair Display', serif; letter-spacing: 3px; font-weight: 700; color: var(--marron-gold);">SHARON DAVIDOVICH</p>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="rain-overlay"></div>
+        <div class="hero-content animate__animated animate__fadeInUp">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <img src="URL_DEL_LOGO_SHARON" alt="Sharon Davidovich">
+                </div>
+            </div>
+            <span class="brand-name">Sharon Davidovich</span>
+            <p style="letter-spacing: 2px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-bottom: 15px; color: var(--marron-gold);">Coaching de Parejas</p>
+            <h1>Sanar el corazón, <br><em>fortalecer la unión.</em></h1>
+            <p style="margin-bottom: 30px; font-size: 1rem;">Un espacio profesional para redescubrir la armonía y el propósito en tu relación.</p>
+            <a href="#" class="btn-luxury"><i class="fab fa-whatsapp"></i> Agendar Consulta</a>
+        </div>
+    </section>
+
+    <section class="info">
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 15px;" class="reveal">Mi Enfoque</h2>
+        <div class="grid">
+            <div class="card reveal">
+                <i class="fas fa-dove" style="font-size: 35px; color: var(--marron-gold); margin-bottom: 20px; display: block;"></i>
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px;">Diálogo</h3>
+                <p>Herramientas para una comunicación asertiva y libre de juicios.</p>
+            </div>
+            <div class="card reveal">
+                <i class="fas fa-heart" style="font-size: 35px; color: var(--marron-gold); margin-bottom: 20px; display: block;"></i>
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px;">Vínculo</h3>
+                <p>Reconexión profunda para parejas en procesos de cambio.</p>
+            </div>
+            <div class="card reveal">
+                <i class="fas fa-leaf" style="font-size: 35px; color: var(--marron-gold); margin-bottom: 20px; display: block;"></i>
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px;">Bienestar</h3>
+                <p>Crecimiento individual para una relación más sana y fuerte.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p style="font-family: 'Playfair Display', serif; font-size: 1.6rem;">Sharon Davidovich</p>
+        <div style="margin: 25px 0;">
+            <a href="#" style="color: white; margin: 0 15px; font-size: 22px;"><i class="fab fa-instagram"></i></a>
+            <a href="#" style="color: white; margin: 0 15px; font-size: 22px;"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p style="font-size: 0.7rem; opacity: 0.6;">&copy; 2025 Sharon Davidovich.</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            const pre = document.getElementById('preloader');
+            setTimeout(() => {
+                pre.style.opacity = '0';
+                setTimeout(() => pre.style.display = 'none', 1000);
+            }, 1500);
+        });
+
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+    </script>
+</body>
+</html>
