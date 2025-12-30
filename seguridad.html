@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.I.G.A. PRO | Sistema de Inteligencia y Gestión de Accesos</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0c10;
+            --sidebar-bg: #0d1117;
+            --card-bg: #161b22;
+            --accent: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.3);
+            --danger: #ff4b4b;
+            --text-main: #e6edf3;
+            --text-gray: #8b949e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); overflow: hidden; height: 100vh; }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; inset: 0; background: var(--bg-dark);
+            display: none; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 10000;
+        }
+        .scanner-line {
+            width: 260px; height: 2px; background: var(--accent);
+            box-shadow: 0 0 20px var(--accent);
+            animation: scan 1.5s ease-in-out infinite;
+        }
+        @keyframes scan { 0%, 100% { transform: translateY(-30px); } 50% { transform: translateY(30px); } }
+
+        /* --- LOGIN --- */
+        #login-screen {
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            background: radial-gradient(circle at center, #111d2b 0%, #0a0c10 100%);
+        }
+        .login-card {
+            background: var(--card-bg); padding: 50px; border-radius: 8px;
+            width: 100%; max-width: 420px; border: 1px solid #30363d;
+            text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+        .login-card h1 { letter-spacing: 8px; font-weight: 200; color: var(--accent); margin-bottom: 30px; }
+        .input-group { margin-bottom: 25px; text-align: left; }
+        .input-group label { display: block; color: var(--text-gray); font-size: 11px; text-transform: uppercase; margin-bottom: 8px; }
+        .input-group input {
+            width: 100%; background: #0d1117; border: 1px solid #30363d;
+            padding: 14px; color: white; border-radius: 4px; outline: none;
+        }
+        .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+
+        .btn-action {
+            width: 100%; padding: 15px; background: var(--accent); border: none;
+            color: black; font-weight: bold; border-radius: 4px; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 5px 15px var(--accent-glow); }
+
+        /* --- DASHBOARD STRUCTURE --- */
+        #main-app { display: none; height: 100vh; }
+        .sidebar {
+            width: 280px; height: 100vh; background: var(--sidebar-bg);
+            position: fixed; border-right: 1px solid #30363d; padding: 30px;
+            display: flex; flex-direction: column;
+        }
+        .main-content { margin-left: 280px; padding: 40px; height: 100vh; overflow-y: auto; width: calc(100% - 280px); }
+
+        .nav-item {
+            padding: 15px; color: var(--text-gray); cursor: pointer;
+            border-radius: 6px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px;
+        }
+        .nav-item.active { background: var(--accent-glow); color: var(--accent); border-left: 3px solid var(--accent); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--card-bg); padding: 25px; border-radius: 4px; border: 1px solid #30363d; }
+        .stat-card .num { font-size: 32px; font-weight: bold; display: block; margin-top: 5px; }
+
+        .dashboard-row { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .btn-sim { flex: 1; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px;}
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 15px; color: var(--text-gray); font-size: 12px; border-bottom: 1px solid #30363d; }
+        td { padding: 15px; border-bottom: 1px solid #21262d; font-size: 14px; }
+
+        #qr-box { background: white; padding: 15px; border-radius: 8px; display: inline-block; margin-top: 20px; }
+        .section { display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="scanner-line"></div>
+        <p style="margin-top: 40px; color: var(--accent); letter-spacing: 5px; font-size: 12px;">SISTEMA DE SEGURANÇA ATIVO...</p>
+    </div>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <i class="fas fa-shield-halved fa-4x" style="color: var(--accent); margin-bottom: 20px;"></i>
+            <h1>S.I.G.A.</h1>
+            <div class="input-group">
+                <label>Usuario</label>
+                <input type="text" id="admin-user" value="admin@cuadrilla15.pe">
+            </div>
+            <div class="input-group">
+                <label>Contraseña</label>
+                <input type="password" id="admin-pass" value="123456">
+            </div>
+            <button class="btn-action" onclick="login()">Autenticar</button>
+        </div>
+    </div>
+
+    <div id="main-app">
+        <div class="sidebar">
+            <h2 style="letter-spacing: 4px; font-weight: 200; margin-bottom: 50px; color: var(--accent);">S.I.G.A. PRO</h2>
+            <div class="nav-item active" onclick="nav('dashboard', this)"><i class="fas fa-chart-line"></i> Dashboard</div>
+            <div class="nav-item" onclick="nav('residentes', this)"><i class="fas fa-users"></i> Residentes</div>
+            <div class="nav-item" onclick="nav('generador', this)"><i class="fas fa-qrcode"></i> Generar Pase</div>
+            <div style="flex-grow: 1;"></div>
+            <div class="nav-item" style="color: var(--danger);" onclick="logout()"><i class="fas fa-power-off"></i> Salir</div>
+        </div>
+
+        <div class="main-content">
+            <div id="section-dashboard" class="section" style="display: block;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h1>Mapa de Calor de Flujo</h1>
+                    <div id="live-clock" style="color: var(--accent); font-family: monospace; font-size: 24px;"></div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card"><span>Entradas</span><div class="num" id="stat-in">150</div></div>
+                    <div class="stat-card"><span>Salidas</span><div class="num" id="stat-out">80</div></div>
+                    <div class="stat-card" style="border-right: 4px solid var(--accent);"><span>Aforo Actual</span><div class="num" id="stat-now">70</div></div>
+                    <div class="stat-card"><span>Estado SOS</span><div class="num" style="color: var(--accent);">PASIVO</div></div>
+                </div>
+
+                <div class="dashboard-row">
+                    <div class="stat-card">
+                        <span>Análisis de Densidad (Entradas vs Salidas)</span>
+                        <canvas id="heatChart" style="margin-top: 20px;"></canvas>
+                    </div>
+                    <div class="stat-card">
+                        <span>Control Manual (Demo)</span>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button class="btn-sim" style="background: var(--accent);" onclick="updateFlow('IN')">ENTRADA +1</button>
+                            <button class="btn-sim" style="background: var(--danger); color: white;" onclick="updateFlow('OUT')">SALIDA +1</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-residentes" class="section">
+                <h1>Gestión de Residentes</h1>
+                <div class="stat-card" style="margin-top: 20px;">
+                    <table>
+                        <thead>
+                            <tr><th>NOMBRE</th><th>DNI</th><th>NIVEL</th><th>ESTADO</th></tr>
+                        </thead>
+                        <tbody id="resident-list"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="section-generador" class="section">
+                <h1>Emisión de Pases QR</h1>
+                <div class="dashboard-row" style="margin-top: 20px;">
+                    <div class="stat-card">
+                        <div class="input-group">
+                            <label>DNI para Encriptar</label>
+                            <input type="text" id="dni-to-gen" placeholder="70665544">
+                        </div>
+                        <button class="btn-action" onclick="generateQR()">Generar Llave QR</button>
+                    </div>
+                    <div class="stat-card" style="text-align: center;">
+                        <div id="qr-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const AUTH = { user: "admin@cuadrilla15.pe", pass: "123456" };
+        let countIn = 150, countOut = 80, heatChart;
+
+        function login() {
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+
+            if(u === AUTH.user && p === AUTH.pass) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('preloader').style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('preloader').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'flex';
+                    if(!heatChart) initCharts();
+                    loadResidents();
+                    updateUI();
+                }, 2000);
+            } else {
+                alert("Acceso denegado. Credenciales incorrectas.");
+            }
+        }
+
+        function logout() {
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('admin-pass').value = "";
+        }
+
+        function nav(sec, el) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('section-' + sec).style.display = 'block';
+            el.classList.add('active');
+        }
+
+        setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+
+        function initCharts() {
+            const ctx = document.getElementById('heatChart').getContext('2d');
+            heatChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['08:00', '11:00', '14:00', '17:00', '20:00', '23:00'],
+                    datasets: [
+                        { label: 'Entradas', data: [20, 80, 45, 130, 60, 10], borderColor: '#00ff88', backgroundColor: 'rgba(0,255,136,0.1)', fill: true, tension: 0.4 },
+                        { label: 'Salidas', data: [5, 30, 90, 40, 110, 50], borderColor: '#ff4b4b', backgroundColor: 'rgba(255,75,75,0.1)', fill: true, tension: 0.4 }
+                    ]
+                },
+                options: {
+                    scales: { 
+                        y: { beginAtZero: true, grid: { color: '#21262d' }, ticks: { color: '#8b949e' }, title: { display: true, text: 'Cantidad' } },
+                        x: { grid: { display: false }, ticks: { color: '#8b949e' } }
+                    }
+                }
+            });
+        }
+
+        function updateFlow(type) {
+            if(type === 'IN') countIn++; else countOut++;
+            updateUI();
+            heatChart.data.datasets[type === 'IN' ? 0 : 1].data[5] += 2;
+            heatChart.update();
+        }
+
+        function updateUI() {
+            document.getElementById('stat-in').innerText = countIn;
+            document.getElementById('stat-out').innerText = countOut;
+            document.getElementById('stat-now').innerText = (countIn - countOut);
+        }
+
+        function loadResidents() {
+            const data = [
+                { n: "Jose Rodriguez", d: "45778811", v: "NIVEL 1", s: "DENTRO" },
+                { n: "Carlos Mendoza", d: "10203040", v: "NIVEL 2", s: "FUERA" }
+            ];
+            const list = document.getElementById('resident-list');
+            list.innerHTML = data.map(r => `<tr><td>${r.n}</td><td>${r.d}</td><td>${r.v}</td><td style="color:${r.s==='DENTRO'?'var(--accent)':'var(--text-gray)'}">${r.s}</td></tr>`).join('');
+        }
+
+        function generateQR() {
+            const dni = document.getElementById('dni-to-gen').value;
+            if(!dni) return;
+            const box = document.getElementById('qr-box');
+            box.innerHTML = "";
+            new QRCode(box, { text: btoa("SIGA_PRO_" + dni), width: 160, height: 160 });
+        }
+    </script>
+</body>
+</html>
