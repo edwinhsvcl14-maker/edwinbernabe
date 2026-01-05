@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELITE REALTY | Definición de Lujo</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@200;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --gold: #b89650; --dark: #0f0f0f; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff; color: var(--dark); overflow-x: hidden; }
+        .serif { font-family: 'Playfair Display', serif; }
+        
+        /* Preloader */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+        }
+
+        /* Custom Anim */
+        .img-container { overflow: hidden; position: relative; }
+        .img-container img { transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
+        .img-container:hover img { transform: scale(1.08); }
+        
+        .gold-line { height: 1px; background: var(--gold); width: 0; transition: width 0.8s ease; }
+        .reveal-visible .gold-line { width: 100px; }
+
+        .parallax-section {
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <h2 class="text-white serif italic text-3xl animate-pulse tracking-widest">Elite Realty</h2>
+        <div class="w-48 h-[1px] bg-gray-800 mt-4 overflow-hidden">
+            <div id="bar" class="h-full bg-[#b89650] w-0 transition-all duration-1000"></div>
+        </div>
+    </div>
+
+    <nav class="fixed w-full z-50 px-8 py-6 flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="serif font-bold text-2xl tracking-tighter">E<span class="text-[#b89650]">.</span>REALTY</div>
+        <div class="hidden lg:flex space-x-12 text-[10px] uppercase tracking-[0.4em] font-semibold">
+            <a href="#propiedades" class="hover:text-[#b89650] transition">Colecciones</a>
+            <a href="#servicios" class="hover:text-[#b89650] transition">Servicios VIP</a>
+            <a href="#nosotros" class="hover:text-[#b89650] transition">La Firma</a>
+            <a href="#contacto" class="bg-black text-white px-6 py-3 -mt-3 hover:bg-[#b89650] transition">Agendar</a>
+        </div>
+    </nav>
+
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1920&q=80" class="absolute inset-0 w-full h-full object-cover scale-110" id="heroImg">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative z-10 text-center text-white reveal-up">
+            <p class="uppercase tracking-[0.6em] text-xs mb-6">Establecidos en 1994</p>
+            <h1 class="serif text-6xl md:text-9xl mb-8">Hogares que <br> <span class="italic">trascienden.</span></h1>
+            <div class="flex justify-center gap-6">
+                <button class="border border-white/50 backdrop-blur-sm px-10 py-4 hover:bg-white hover:text-black transition uppercase text-xs tracking-widest">Ver Catálogo</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-10 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            <div class="reveal-up">
+                <p class="text-4xl serif mb-2">+2.5B</p>
+                <p class="text-[10px] uppercase tracking-widest text-gray-500">Ventas Cerradas</p>
+            </div>
+            <div class="reveal-up" data-delay="200">
+                <p class="text-4xl serif mb-2">14</p>
+                <p class="text-[10px] uppercase tracking-widest text-gray-500">Países</p>
+            </div>
+            <div class="reveal-up" data-delay="400">
+                <p class="text-4xl serif mb-2">120</p>
+                <p class="text-[10px] uppercase tracking-widest text-gray-500">Propiedades Luxury</p>
+            </div>
+            <div class="reveal-up" data-delay="600">
+                <p class="text-4xl serif mb-2">98%</p>
+                <p class="text-[10px] uppercase tracking-widest text-gray-500">Clientes Leales</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="nosotros" class="py-32 px-10 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+            <div class="reveal-left">
+                <span class="text-[#b89650] text-sm font-bold uppercase tracking-widest">Nuestra Filosofía</span>
+                <h2 class="serif text-5xl mt-6 mb-8 leading-tight">No vendemos metros cuadrados, vendemos <span class="italic">libertad.</span></h2>
+                <p class="text-gray-600 leading-relaxed mb-10 text-lg">En Elite Realty entendemos que su propiedad es el escenario de su vida. Nos especializamos en activos inmobiliarios que combinan arquitectura de vanguardia con ubicaciones irrepetibles.</p>
+                <div class="flex items-center gap-4">
+                    <div class="h-[1px] w-12 bg-[#b89650]"></div>
+                    <p class="serif italic text-xl">Directorio Ejecutivo</p>
+                </div>
+            </div>
+            <div class="img-container shadow-2xl reveal-right">
+                <img src="https://images.unsplash.com/photo-1600607687940-c52af0369996?auto=format&fit=crop&w=1000&q=80" alt="Interior">
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" class="bg-gray-50 py-32 px-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 reveal-up">
+                <h2 class="serif text-5xl mb-4">Servicio Concierge</h2>
+                <p class="text-gray-500 uppercase tracking-widest text-xs">Atención integral para el inversor global</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-1px bg-gray-200">
+                <div class="bg-white p-12 hover:bg-black hover:text-white transition duration-500 reveal-up">
+                    <h3 class="serif text-2xl mb-6">Gestión de Patrimonio</h3>
+                    <p class="text-sm leading-loose opacity-70">Asesoría fiscal y legal para la adquisición de propiedades de alto valor.</p>
+                </div>
+                <div class="bg-white p-12 hover:bg-black hover:text-white transition duration-500 reveal-up" data-delay="200">
+                    <h3 class="serif text-2xl mb-6">Interiorismo Premium</h3>
+                    <p class="text-sm leading-loose opacity-70">Colaboramos con los mejores estudios de diseño para personalizar su nuevo hogar.</p>
+                </div>
+                <div class="bg-white p-12 hover:bg-black hover:text-white transition duration-500 reveal-up" data-delay="400">
+                    <h3 class="serif text-2xl mb-6">Relocalización</h3>
+                    <p class="text-sm leading-loose opacity-70">Nos encargamos de toda la logística para que su mudanza sea invisible.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="propiedades" class="py-32 px-10">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="serif text-4xl mb-16 reveal-left">Colección Invierno <span class="text-gray-300 italic">2026</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="group reveal-up">
+                    <div class="img-container aspect-[4/5]">
+                        <img src="https://images.unsplash.com/photo-1600566753190-17f0bb2a6c3e?auto=format&fit=crop&w=1000&q=80" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button class="bg-white text-black px-8 py-3 text-xs uppercase tracking-tighter">Explorar Detalles</button>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-between items-end">
+                        <div>
+                            <p class="text-xs uppercase text-gray-400 tracking-widest">Ibiza, España</p>
+                            <h3 class="serif text-2xl">Villa Amanecer</h3>
+                        </div>
+                        <p class="serif text-xl">$4.2M</p>
+                    </div>
+                </div>
+                
+                <div class="group reveal-up" data-delay="200">
+                    <div class="img-container aspect-[4/5]">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button class="bg-white text-black px-8 py-3 text-xs uppercase tracking-tighter">Explorar Detalles</button>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-between items-end">
+                        <div>
+                            <p class="text-xs uppercase text-gray-400 tracking-widest">Malibu, USA</p>
+                            <h3 class="serif text-2xl">Pacific Jewel</h3>
+                        </div>
+                        <p class="serif text-xl">$12.8M</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black text-white pt-32 pb-10 px-10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20 border-b border-gray-800 pb-20">
+            <div class="col-span-2">
+                <h2 class="serif text-5xl mb-8 tracking-tighter">Hagamos realidad <br>su visión.</h2>
+                <a href="mailto:info@eliterealty.com" class="text-2xl border-b border-[#b89650] pb-2 hover:text-[#b89650] transition">info@eliterealty.com</a>
+            </div>
+            <div>
+                <h4 class="uppercase tracking-widest text-xs mb-8 text-[#b89650]">Ubicaciones</h4>
+                <ul class="space-y-4 text-gray-400 text-sm font-light">
+                    <li>Madrid, ES</li>
+                    <li>Miami, FL</li>
+                    <li>Dubai, UAE</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="uppercase tracking-widest text-xs mb-8 text-[#b89650]">Legales</h4>
+                <ul class="space-y-4 text-gray-400 text-sm font-light">
+                    <li>Privacidad</li>
+                    <li>Términos</li>
+                    <li>Cookies</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-10 flex justify-between text-[10px] uppercase tracking-widest text-gray-600">
+            <p>© 2026 Elite Realty Group</p>
+            <p>Design by AI Luxury Lab</p>
+        </div>
+    </footer>
+
+    <script>
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            document.getElementById('bar').style.width = '100%';
+            setTimeout(() => {
+                document.getElementById('preloader').style.display = 'none';
+                document.getElementById('heroImg').style.transform = 'scale(1)';
+            }, 1200);
+        });
+
+        // ScrollReveal Config
+        ScrollReveal().reveal('.reveal-up', { distance: '60px', origin: 'bottom', duration: 1200, delay: 200, easing: 'cubic-bezier(0.5, 0, 0, 1)' });
+        ScrollReveal().reveal('.reveal-left', { distance: '80px', origin: 'left', duration: 1200, easing: 'ease-in-out' });
+        ScrollReveal().reveal('.reveal-right', { distance: '80px', origin: 'right', duration: 1200, easing: 'ease-in-out' });
+    </script>
+</body>
+</html>
