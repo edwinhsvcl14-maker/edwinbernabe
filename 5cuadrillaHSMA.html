@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 CUADRILLA HSMA | ACCIÓN</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
+        
+        :root {
+            --morado-oscuro: #1A002E;
+            --morado-nazareno: #4B0082;
+            --oro-brillante: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* PRELOADER */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0a;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #4B0082;
+            padding: 5px;
+            animation: pulse-purple 2s infinite;
+        }
+
+        @keyframes pulse-purple {
+            0% { box-shadow: 0 0 0 0 rgba(75, 0, 130, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(75, 0, 130, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(75, 0, 130, 0); }
+        }
+
+        /* LOGO CUADRILLA EN NAV */
+        .squad-logo-container {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid rgba(187, 103, 255, 0.3);
+            overflow: hidden;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(75, 0, 130, 0.3);
+        }
+
+        /* SECCIÓN MORADA CON IMÁGENES */
+        .bg-premium-gradient {
+            background: radial-gradient(circle at center, var(--morado-nazareno) 0%, #0a0a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sacred-image {
+            position: absolute;
+            bottom: 0;
+            height: 85vh;
+            opacity: 0.45;
+            pointer-events: none;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+        }
+
+        .img-left { 
+            left: -5%; 
+            mask-image: linear-gradient(to right, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 40%, transparent 100%);
+        }
+
+        .img-right { 
+            right: -5%; 
+            mask-image: linear-gradient(to left, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to left, black 40%, transparent 100%);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #BB67FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            line-height: 0.85;
+            z-index: 10;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3.5rem !important; }
+            .sacred-image { height: 45vh; opacity: 0.3; }
+            .img-left { left: -15%; }
+            .img-right { right: -15%; }
+        }
+
+        .card-custom {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(187, 103, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease;
+        }
+
+        .gold-icon {
+            background: var(--oro-brillante);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 5px rgba(191, 149, 63, 0.4));
+            transition: all 0.4s ease;
+        }
+
+        .reveal { opacity: 0; transform: translateY(30px); }
+
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(187, 103, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="loader-icon">
+            <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/5cuadrillahsma.png" alt="Logo Cuadrilla" class="w-full h-full object-cover rounded-full">
+        </div>
+        <p class="mt-4 text-[10px] tracking-[0.5em] uppercase text-purple-400 font-bold">5 Cuadrilla "Acción"</p>
+    </div>
+
+    <nav class="glass-nav fixed w-full z-50 py-3 md:py-4 px-6 md:px-10 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <div class="squad-logo-container">
+                <img src="https://via.placeholder.com/50/4B0082/FFFFFF?text=C" alt="Logo Cuadrilla" class="w-full h-full object-cover">
+            </div>
+            <div class="text-xl md:text-2xl font-black italic tracking-tighter">HSM<span class="text-purple-500">.</span></div>
+        </div>
+
+        <div class="hidden md:flex space-x-12 text-xs uppercase tracking-[0.3em] font-bold">
+            <a href="#" class="hover:text-purple-400 transition text-white">Historia</a>
+            <a href="#" class="hover:text-purple-400 transition text-white">Cuadrillas</a>
+            <a href="#" class="bg-gradient-to-r from-purple-700 to-indigo-600 px-8 py-2 rounded-full shadow-lg text-white">En Vivo</a>
+        </div>
+        
+        <div class="md:hidden text-purple-400 text-2xl"><i class="fas fa-bars"></i></div>
+    </nav>
+
+    <section class="bg-premium-gradient overflow-hidden">
+        <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/sdlma.png" alt="Señor de los Milagros" class="sacred-image img-left">
+        <img src="https://via.placeholder.com/800x1200?text=Virgen+de+la+Nube" alt="Virgen de la Nube" class="sacred-image img-right">
+
+        <div class="relative z-20 text-center px-6">
+            <p class="uppercase tracking-[0.6em] text-purple-400 mb-4 text-[10px] md:text-sm reveal">Octubre Morado 2026</p>
+            <h1 class="hero-title text-5xl md:text-[9rem] font-black mb-6 reveal text-gradient uppercase">
+                5 CUADRILLA <br> ACCION
+            </h1>
+            <p class="text-sm md:text-xl font-light max-w-2xl mx-auto text-purple-100/60 reveal mb-10">
+               Unidos por una sola fe.
+            </p>
+            <div class="reveal">
+                <a href="#historia" class="inline-block border border-purple-500/50 text-white px-10 md:px-14 py-3 md:py-4 rounded-full hover:bg-purple-600 transition tracking-widest uppercase text-[10px] font-bold shadow-xl">Explorar Legado</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="historia" class="py-20 md:py-32 px-6 md:px-10 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+            <div class="card-custom p-10 rounded-[40px] reveal">
+                <i class="fas fa-cross text-purple-400 text-2xl mb-6"></i>
+                <h3 class="text-xl font-bold mb-4 text-white">Fe Inquebrantable</h3>
+                <p class="text-purple-100/50 text-sm">.</p>
+            </div>
+            <div class="card-custom p-10 rounded-[40px] reveal" style="background: rgba(75, 0, 130, 0.15);">
+                <i class="fas fa-hands-holding-heart text-purple-300 text-2xl mb-6"></i>
+                <h3 class="text-xl font-bold mb-4 text-purple-200">Obra Social</h3>
+                <p class="text-purple-100/70 text-sm">Somos comunidad, entrega y apoyo permanente a quienes más lo necesitan.</p>
+            </div>
+            <div class="card-custom p-10 rounded-[40px] reveal">
+                <i class="fas fa-users text-purple-400 text-2xl mb-6"></i>
+                <h3 class="text-xl font-bold mb-4 text-white">5 Cuadrilla</h3>
+                <p class="text-purple-100/50 text-sm">.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-[#050505] text-center px-6 border-t border-white/5">
+        <h2 class="text-3xl md:text-5xl font-black mb-12 reveal uppercase tracking-tight">Síguenos</h2>
+        <div class="flex justify-center items-center space-x-10 md:space-x-20 reveal">
+            <a href="#"><i class="fa-brands fa-facebook-f gold-icon text-4xl"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram gold-icon text-4xl"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok gold-icon text-4xl"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube gold-icon text-4xl"></i></a>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center border-t border-purple-900/10">
+        <h3 class="text-gradient text-3xl font-black italic">HSM.</h3>
+        <p class="text-[9px] text-gray-700 uppercase tracking-[0.5em] mt-6">© 2026 Lima, Perú | Devoción y Tradición</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            // Eliminar Preloader
+            gsap.to("#preloader", {
+                opacity: 0,
+                duration: 1,
+                onComplete: () => document.getElementById("preloader").style.display = "none"
+            });
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Animación Reveal
+            gsap.to(".reveal", {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                stagger: 0.15,
+                ease: "power3.out",
+                scrollTrigger: { trigger: ".reveal", start: "top 92%" }
+            });
+
+            // Interacción del fondo con el mouse
+            document.addEventListener("mousemove", (e) => {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                gsap.to(".bg-premium-gradient", {
+                    background: `radial-gradient(circle at ${x}% ${y}%, #4B0082 0%, #0a0a0a 100%)`,
+                    duration: 2.5
+                });
+            });
+        });
+    </script>
+</body>
+</html>
