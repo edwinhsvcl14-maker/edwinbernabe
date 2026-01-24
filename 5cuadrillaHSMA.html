@@ -54,7 +54,6 @@
             100% { box-shadow: 0 0 0 0 rgba(75, 0, 130, 0); }
         }
 
-        /* LOGO CUADRILLA EN NAV */
         .squad-logo-container {
             width: 45px;
             height: 45px;
@@ -66,38 +65,6 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 15px rgba(75, 0, 130, 0.3);
-        }
-
-        /* SECCIÓN MORADA CON IMÁGENES */
-        .bg-premium-gradient {
-            background: radial-gradient(circle at center, var(--morado-nazareno) 0%, #0a0a0a 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sacred-image {
-            position: absolute;
-            bottom: 0;
-            height: 85vh;
-            opacity: 0.45;
-            pointer-events: none;
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
-        }
-
-        .img-left { 
-            left: -5%; 
-            mask-image: linear-gradient(to right, black 40%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, black 40%, transparent 100%);
-        }
-
-        .img-right { 
-            right: -5%; 
-            mask-image: linear-gradient(to left, black 40%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to left, black 40%, transparent 100%);
         }
 
         .text-gradient {
@@ -112,12 +79,8 @@
             z-index: 10;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 768px) {
             .hero-title { font-size: 3.5rem !important; }
-            .sacred-image { height: 45vh; opacity: 0.3; }
-            .img-left { left: -15%; }
-            .img-right { right: -15%; }
         }
 
         .card-custom {
@@ -168,14 +131,14 @@
 
         <div class="relative z-20 text-center px-6 max-w-7xl mx-auto">
             
-            <div class="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-20 mb-12 reveal px-4">
+            <div class="flex flex-row justify-center items-center gap-4 md:gap-20 mb-12 reveal px-4">
                 <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/sdlma.png" 
                      alt="Señor de los Milagros" 
-                     class="w-64 h-64 md:w-[32rem] md:h-[32rem] object-contain drop-shadow-[0_0_35px_rgba(192,132,252,0.7)] transform hover:scale-105 transition-transform duration-500">
+                     class="w-36 h-36 md:w-[32rem] md:h-[32rem] object-contain drop-shadow-[0_0_35px_rgba(192,132,252,0.7)] transform hover:scale-105 transition-transform duration-500">
                 
                 <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/5cuadrillahsma.png" 
                      alt="Escudo Quinta Cuadrilla" 
-                     class="w-64 h-64 md:w-[32rem] md:h-[32rem] object-contain drop-shadow-[0_0_35px_rgba(192,132,252,0.7)] transform hover:scale-105 transition-transform duration-500">
+                     class="w-36 h-36 md:w-[32rem] md:h-[32rem] object-contain drop-shadow-[0_0_35px_rgba(192,132,252,0.7)] transform hover:scale-105 transition-transform duration-500">
             </div>
 
             <p class="uppercase tracking-[0.6em] text-purple-300 mb-4 text-[10px] md:text-sm reveal font-bold">Octubre Morado 2026</p>
@@ -273,11 +236,6 @@
             gsap.to("#preloader", { opacity: 0, duration: 1, onComplete: () => document.getElementById("preloader").style.display = "none" });
             gsap.registerPlugin(ScrollTrigger);
             gsap.to(".reveal", { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power3.out", scrollTrigger: { trigger: ".reveal", start: "top 92%" } });
-            document.addEventListener("mousemove", (e) => {
-                const x = (e.clientX / window.innerWidth) * 100;
-                const y = (e.clientY / window.innerHeight) * 100;
-                gsap.to(".bg-premium-gradient", { background: `radial-gradient(circle at ${x}% ${y}%, #4B0082 0%, #0a0a0a 100%)`, duration: 2.5 });
-            });
         });
     </script>
 </body>
