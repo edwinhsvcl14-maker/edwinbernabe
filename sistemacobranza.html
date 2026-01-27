@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORION V3 | Enterprise Financial Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #0f172a;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --success: #22c55e;
+            --danger: #ef4444;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
+
+        /* --- LOGIN --- */
+        #login-page {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+            position: fixed; width: 100%; z-index: 1000;
+        }
+        .login-box {
+            background: var(--surface); padding: 3rem; border-radius: 2rem;
+            border: 1px solid var(--border); width: 100%; max-width: 400px; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- ESTRUCTURA DASHBOARD --- */
+        #main-app { display: none; grid-template-columns: 280px 1fr; height: 100vh; }
+
+        aside { 
+            background: #0b0f1a; border-right: 1px solid var(--border); 
+            padding: 2rem; display: flex; flex-direction: column;
+        }
+        .nav-menu { flex-grow: 1; margin-top: 2.5rem; }
+        .nav-link {
+            display: flex; align-items: center; padding: 1rem; color: var(--text-dim);
+            text-decoration: none; border-radius: 1rem; margin-bottom: 0.8rem; 
+            transition: all 0.3s; cursor: pointer; border: 1px solid transparent;
+        }
+        .nav-link:hover { color: white; background: rgba(255,255,255,0.03); }
+        .nav-link.active { 
+            background: var(--accent); color: #020617; font-weight: 700;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        main { padding: 2.5rem; overflow-y: auto; position: relative; }
+
+        /* --- PANTALLAS (DIVS) --- */
+        .view-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- COMPONENTES --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { 
+            background: var(--surface); padding: 1.5rem; border-radius: 1.5rem; 
+            border: 1px solid var(--border);
+        }
+        
+        .action-panel {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 2rem; border-radius: 1.5rem; border: 1px solid var(--accent);
+            margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: flex-end;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .form-group label { font-size: 0.75rem; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
+        .form-group input, .form-group select {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+            padding: 0.8rem; border-radius: 0.6rem; color: white; outline: none;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1rem; color: var(--text-dim); font-size: 0.8rem; border-bottom: 2px solid var(--border); }
+        td { padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.02); }
+
+        .tag { padding: 0.3rem 0.7rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 800; }
+        .tag-in { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+        .tag-out { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .btn {
+            padding: 0.8rem 1.5rem; border-radius: 0.6rem; border: none;
+            font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .btn-primary { background: var(--accent); color: #020617; }
+        .btn-logout { background: none; border: 1px solid var(--danger); color: var(--danger); margin-top: auto; }
+        .btn-logout:hover { background: var(--danger); color: white; }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-page">
+        <div class="login-box">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">ORION<span style="color: var(--accent);">.</span></h1>
+            <p style="color: var(--text-dim); margin-bottom: 2.5rem;">Gestión de Cobranzas Empresariales</p>
+            <form id="login-form">
+                <input type="text" class="form-group input" placeholder="ID de Usuario" style="width:100%; padding:1rem; margin-bottom:1rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; border-radius:10px;" required>
+                <input type="password" placeholder="Clave de Seguridad" style="width:100%; padding:1rem; margin-bottom:2rem; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; border-radius:10px;" required>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">AUTORIZAR ACCESO</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-app">
+        <aside>
+            <h2 style="letter-spacing: -1px;">NEXUS <span style="color: var(--accent);">CORE</span></h2>
+            <nav class="nav-menu">
+                <div class="nav-link active" onclick="showSection('flujo', this)">Control de Flujo</div>
+                <div class="nav-link" onclick="showSection('reportes', this)">Libro de Reportes</div>
+                <div class="nav-link" onclick="showSection('config', this)">Configuración</div>
+            </nav>
+            <button class="btn btn-logout" onclick="location.reload()">CERRAR SISTEMA</button>
+        </aside>
+
+        <main>
+            <section id="sec-flujo" class="view-section active">
+                <header style="margin-bottom: 2.5rem;">
+                    <h1 style="font-size: 2rem;">Consola de Cobranzas</h1>
+                    <p style="color: var(--text-dim);">Registra y gestiona los movimientos financieros del día.</p>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="card"><h4>Balance Neto</h4><p id="bal-neto" style="font-size: 2rem; font-weight: 800;">$ 0.00</p></div>
+                    <div class="card"><h4>Ingresos</h4><p id="bal-in" style="font-size: 2rem; font-weight: 800; color: var(--success);">$ 0.00</p></div>
+                    <div class="card"><h4>Egresos</h4><p id="bal-out" style="font-size: 2rem; font-weight: 800; color: var(--danger);">$ 0.00</p></div>
+                </div>
+
+                <div class="action-panel">
+                    <div class="form-group">
+                        <label>Cliente / Concepto</label>
+                        <input type="text" id="concepto" placeholder="Ej: Microsoft Corp">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Flujo</label>
+                        <select id="tipo">
+                            <option value="ingreso">Cobranza (Ingreso)</option>
+                            <option value="egreso">Gasto (Egreso)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Monto USD</label>
+                        <input type="number" id="monto" placeholder="0.00">
+                    </div>
+                    <button class="btn btn-primary" onclick="procesarPago()">REGISTRAR</button>
+                </div>
+            </section>
+
+            <section id="sec-reportes" class="view-section">
+                <header style="margin-bottom: 2.5rem;">
+                    <h1 style="font-size: 2rem;">Historial Transaccional</h1>
+                    <p style="color: var(--text-dim);">Auditoría detallada de todos los ingresos y egresos registrados.</p>
+                </header>
+
+                <div class="card" style="padding: 0;">
+                    <table id="tabla-movimientos">
+                        <thead>
+                            <tr>
+                                <th>FECHA</th>
+                                <th>ENTIDAD / CONCEPTO</th>
+                                <th>TIPO</th>
+                                <th>VALOR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="sec-config" class="view-section">
+                <header style="margin-bottom: 2.5rem;">
+                    <h1 style="font-size: 2rem;">Ajustes del Sistema</h1>
+                    <p style="color: var(--text-dim);">Configuración de seguridad y parámetros de la empresa.</p>
+                </header>
+                <div class="card">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display:block; margin-bottom: 0.5rem;">Nombre de la Empresa</label>
+                        <input type="text" value="Enterprise Global S.A." class="form-group" style="width:100%; background:var(--bg); border:1px solid var(--border); color:white; padding:0.8rem; border-radius:10px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display:block; margin-bottom: 0.5rem;">Moneda Principal</label>
+                        <select style="width:100%; background:var(--bg); border:1px solid var(--border); color:white; padding:0.8rem; border-radius:10px;">
+                            <option>Dólar Estadounidense (USD)</option>
+                            <option>Euro (EUR)</option>
+                            <option>Soles (PEN)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary">GUARDAR CAMBIOS</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // BASE DE DATOS LOCAL VOLÁTIL
+        let db = [
+            { fecha: '2026-01-27', concepto: 'Pago Factura #992 - Coca Cola', tipo: 'ingreso', monto: 15000 },
+            { fecha: '2026-01-27', concepto: 'Mantenimiento de Servidores', tipo: 'egreso', monto: 2400 },
+            { fecha: '2026-01-26', concepto: 'Servicios de Consultoría Tech', tipo: 'ingreso', monto: 8500 }
+        ];
+
+        // NAVEGACIÓN SPA
+        function showSection(sectionId, element) {
+            // Ocultar todas
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+            // Mostrar seleccionada
+            document.getElementById('sec-' + sectionId).classList.add('active');
+            element.classList.add('active');
+
+            if(sectionId === 'reportes') renderTabla();
+        }
+
+        // LOGIN
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-app').style.display = 'grid';
+            actualizarCalculos();
+        });
+
+        // LÓGICA FINANCIERA
+        function procesarPago() {
+            const con = document.getElementById('concepto').value;
+            const tip = document.getElementById('tipo').value;
+            const mon = parseFloat(document.getElementById('monto').value);
+
+            if(!con || isNaN(mon)) return alert("Datos insuficientes.");
+
+            db.unshift({
+                fecha: new Date().toISOString().split('T')[0],
+                concepto: con,
+                tipo: tip,
+                monto: mon
+            });
+
+            document.getElementById('concepto').value = '';
+            document.getElementById('monto').value = '';
+            
+            actualizarCalculos();
+            alert("Registro completado con éxito.");
+        }
+
+        function actualizarCalculos() {
+            let ingresos = 0;
+            let egresos = 0;
+
+            db.forEach(item => {
+                if(item.tipo === 'ingreso') ingresos += item.monto;
+                else egresos += item.monto;
+            });
+
+            document.getElementById('bal-in').innerText = `$ ${ingresos.toLocaleString()}`;
+            document.getElementById('bal-out').innerText = `$ ${egresos.toLocaleString()}`;
+            document.getElementById('bal-neto').innerText = `$ ${(ingresos - egresos).toLocaleString()}`;
+        }
+
+        function renderTabla() {
+            const tableBody = document.querySelector('#tabla-movimientos tbody');
+            tableBody.innerHTML = db.map(item => `
+                <tr>
+                    <td>${item.fecha}</td>
+                    <td><strong>${item.concepto}</strong></td>
+                    <td><span class="tag ${item.tipo === 'ingreso' ? 'tag-in' : 'tag-out'}">${item.tipo.toUpperCase()}</span></td>
+                    <td style="font-weight:700; color: ${item.tipo === 'ingreso' ? 'var(--success)' : 'var(--danger)'}">
+                        ${item.tipo === 'ingreso' ? '+' : '-'} $${item.monto.toLocaleString()}
+                    </td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
