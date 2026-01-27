@@ -108,6 +108,13 @@
     </style>
 </head>
 <body>
+     <audio id="bgMusic" loop>
+    <source src="https://edwinhsvcl14-maker.github.io/edwinbernabe/mardegalilea.mp3" type="audio/mpeg">
+</audio>
+
+<button onclick="toggleMusic()" style="position:fixed; bottom:20px; right:20px; z-index:100; background:#4B0082; color:white; border:1px solid #BF953F; border-radius:50%; width:50px; height:50px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+    <i class="fas fa-music"></i>
+</button>
 
     <div id="preloader">
         <div class="loader-icon">
@@ -141,14 +148,14 @@
                      class="w-36 h-36 md:w-[32rem] md:h-[32rem] object-contain drop-shadow-[0_0_35px_rgba(192,132,252,0.7)] transform hover:scale-105 transition-transform duration-500">
             </div>
 
-            <p class="uppercase tracking-[0.6em] text-purple-300 mb-4 text-[10px] md:text-sm reveal font-bold">Octubre Morado 2026</p>
+            <p class="uppercase tracking-[0.6em] text-purple-300 mb-4 text-[10px] md:text-sm reveal font-bold">NOVIEMBRE MORADO 2026</p>
             
             <h1 class="hero-title text-5xl md:text-[9rem] font-black mb-6 reveal text-white uppercase drop-shadow-2xl">
                 QUINTA CUADRILLA <br> <span class="text-purple-400">ACCION</span>
             </h1>
             
             <p class="text-sm md:text-xl font-light max-w-3xl mx-auto text-purple-100/90 reveal mb-10 leading-relaxed bg-purple-900/30 p-6 rounded-2xl backdrop-blur-sm border border-purple-500/20">
-                Unidos siempre acompañando a Jesus, a través de Maria
+                 Siempre acompañando a Jesús, a través de María
             </p>
         </div>
     </section>
@@ -237,6 +244,12 @@
             gsap.registerPlugin(ScrollTrigger);
             gsap.to(".reveal", { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power3.out", scrollTrigger: { trigger: ".reveal", start: "top 92%" } });
         });
+
+        const audio = document.getElementById('bgMusic');
+function toggleMusic() {
+    return audio.paused ? audio.play() : audio.pause();
+}
     </script>
 </body>
+   
 </html>
