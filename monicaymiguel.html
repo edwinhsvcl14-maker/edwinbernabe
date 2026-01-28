@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Amor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at center, #2b0035 0%, #0f0014 100%);
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .text-romantic {
+            font-family: 'Dancing Script', cursive;
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .step-content { display: none; opacity: 0; }
+        .step-content.active { display: block; opacity: 1; }
+
+        .floating-heart {
+            position: absolute;
+            color: #ff4d6d;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #ff4d6d, #c9184a);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05) translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .list-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 77, 109, 0.2);
+            font-size: 0.85rem;
+        }
+
+        #musicBtn {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none"></div>
+
+    <audio id="miMusica" loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <button onclick="toggleMusic()" id="musicBtn" class="fixed bottom-5 right-5 z-50 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-full text-white hover:bg-white/20 shadow-lg">
+        <i id="musicIcon" class="fas fa-volume-mute"></i>
+    </button>
+
+    <main id="main-card" class="glass w-[90%] max-w-md p-8 md:p-10 text-center relative z-10">
+        
+        <div id="step1" class="step-content active">
+            <div class="mb-6 inline-block">
+                <i class="fas fa-heart text-6xl text-red-500 animate-bounce"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-4">Hola, mi amor...</h1>
+            <p class="text-gray-300 mb-8 italic">He construido este pequeño viaje para recordarte lo especial que eres para mí.</p>
+            <button onclick="nextStep(1, 2)" class="btn-action px-10 py-4 rounded-full font-bold uppercase tracking-widest text-[10px]">Comenzar viaje</button>
+        </div>
+
+        <div id="step2" class="step-content">
+            <h2 class="text-3xl font-bold mb-6 text-romantic">Nuestra Historia</h2>
+            <div class="glass p-6 rounded-3xl mb-8 border-dashed border-pink-500/30">
+                <p class="text-sm text-gray-200 leading-relaxed italic">
+                    "Desde aquel primer momento hasta hoy, cada segundo contigo es un tesoro que guardo en mi alma."
+                </p>
+            </div>
+            <button onclick="nextStep(2, 3)" class="btn-action px-10 py-4 rounded-full font-bold uppercase tracking-widest text-[10px]">Ver más</button>
+        </div>
+
+        <div id="step3" class="step-content">
+            <i class="fas fa-music text-4xl text-pink-400 mb-4"></i>
+            <h2 class="text-2xl font-bold mb-6">Nuestra Melodía</h2>
+            <div class="space-y-3 mb-8 text-left">
+                <div class="list-item flex items-center gap-3">
+                    <i class="fas fa-play text-xs text-red-400"></i> <span>La canción de nuestra primera cita</span>
+                </div>
+                <div class="list-item flex items-center gap-3">
+                    <i class="fas fa-play text-xs text-red-400"></i> <span>Esa que siempre cantamos juntos</span>
+                </div>
+                <div class="list-item flex items-center gap-3">
+                    <i class="fas fa-play text-xs text-red-400"></i> <span>La que siempre me hace pensar en ti</span>
+                </div>
+            </div>
+            <button onclick="nextStep(3, 4)" class="btn-action px-10 py-4 rounded-full font-bold uppercase tracking-widest text-[10px]">Continuar</button>
+        </div>
+
+        <div id="step4" class="step-content">
+            <i class="fas fa-infinity text-5xl text-red-500 mb-6"></i>
+            <h2 class="text-2xl font-bold mb-4 text-romantic">Mi Promesa</h2>
+            <p class="text-gray-300 mb-8 text-sm leading-relaxed">
+                Prometo ser tu apoyo, tu risa y tu refugio. Prometo elegirte hoy, mañana y siempre. Eres mi lugar seguro.
+            </p>
+            <button onclick="nextStep(4, 5)" class="btn-action px-10 py-4 rounded-full font-bold uppercase tracking-widest text-[10px]">Un secreto más...</button>
+        </div>
+
+        <div id="step5" class="step-content">
+            <h2 class="text-2xl font-bold mb-6 text-romantic">¿Por qué tú?</h2>
+            <div class="text-left space-y-3 mb-8">
+                <p class="text-xs flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Por cómo me haces reír incluso sin querer.</p>
+                <p class="text-xs flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Por tu forma tan única de ver la vida.</p>
+                <p class="text-xs flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Por ser mi mejor amigo, cómplice y novio.</p>
+                <p class="text-xs flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Simplemente por ser TÚ, así de perfecto.</p>
+            </div>
+            <button onclick="nextStep(5, 6)" class="btn-action px-10 py-4 rounded-full font-bold uppercase tracking-widest text-[10px]">Llegar al final</button>
+        </div>
+
+        <div id="step6" class="step-content">
+            <h2 class="text-6xl font-black text-romantic mb-6">¡TE AMO!</h2>
+            <p class="text-gray-300 mb-8">Gracias por ser lo mejor que me ha pasado en la vida.</p>
+            <a href="https://wa.me/TU_NUMERO_AQUI?text=¡Me encantó la sorpresa! Te amo demasiado ❤️" 
+               class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg text-sm">
+                <i class="fab fa-whatsapp text-xl"></i>
+                Díselo ahora
+            </a>
+        </div>
+    </main>
+
+    <script>
+        const musica = document.getElementById('miMusica');
+        const musicIcon = document.getElementById('musicIcon');
+
+        function toggleMusic() {
+            if (musica.paused) {
+                musica.play().catch(e => console.log("Esperando interacción..."));
+                musicIcon.classList.remove('fa-volume-mute');
+                musicIcon.classList.add('fa-volume-up');
+            } else {
+                musica.pause();
+                musicIcon.classList.remove('fa-volume-up');
+                musicIcon.classList.add('fa-volume-mute');
+            }
+        }
+
+        function createHeart() {
+            const container = document.getElementById('hearts-container');
+            const heart = document.createElement('i');
+            heart.classList.add('fas', 'fa-heart', 'floating-heart');
+            const startX = Math.random() * window.innerWidth;
+            heart.style.left = startX + 'px';
+            heart.style.top = window.innerHeight + 'px';
+            heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            container.appendChild(heart);
+            gsap.to(heart, {
+                y: -window.innerHeight - 100,
+                x: startX + (Math.random() - 0.5) * 200,
+                rotation: Math.random() * 360,
+                duration: Math.random() * 3 + 4,
+                ease: "none",
+                onComplete: () => heart.remove()
+            });
+        }
+        setInterval(createHeart, 400);
+
+        function nextStep(currentId, nextId) {
+            // Activar música al primer click si está pausada
+            if(currentId === 1 && musica.paused) {
+                toggleMusic();
+            }
+
+            const current = document.getElementById('step' + currentId);
+            const next = document.getElementById('step' + nextId);
+            
+            gsap.to(current, {
+                opacity: 0, scale: 0.9, duration: 0.4,
+                onComplete: () => {
+                    current.classList.remove('active');
+                    next.classList.add('active');
+                    gsap.fromTo(next, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.4 });
+                }
+            });
+        }
+
+        window.onload = () => {
+            gsap.from("#main-card", { opacity: 0, y: 50, duration: 1 });
+        };
+    </script>
+</body>
+</html>
