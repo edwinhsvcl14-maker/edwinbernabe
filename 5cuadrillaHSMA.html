@@ -172,19 +172,44 @@
                         <span class="text-xs italic text-purple-200/70">Capataz</span>
                     </div>
                     <ul class="space-y-3">
-                        <li class="flex flex-col border-l-2 border-purple-500/20 pl-4"><span class="text-white font-semibold text-sm">ZARATE OSORES, Julio Néstor</span><span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Sub Capataz</span></li>
-                        <li class="flex flex-col border-l-2 border-purple-500/20 pl-4"><span class="text-white font-semibold text-sm">YGLESIAS PASTOR, Carlos Alberto</span><span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Fiscal</span></li>
-                        <li class="flex flex-col border-l-2 border-purple-500/20 pl-4"><span class="text-white font-semibold text-sm">LA ROSA ARCE, Amilcar Amado Antonio</span><span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Tesorero</span></li>
-                        <li class="flex flex-col border-l-2 border-purple-500/20 pl-4"><span class="text-white font-semibold text-sm">MARCELO PORRO, Nicolás Alberto</span><span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Pro Secretario</span></li>
-                        <li class="flex flex-col border-l-2 border-purple-500/20 pl-4"><span class="text-white font-semibold text-sm">MEJIA LAYNES, Manuel Alberto</span><span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Pro Tesorero</span></li>
-                    </ul>
+    <li class="flex flex-col border-l-2 border-purple-500/20 pl-4">
+        <span class="text-white font-semibold text-sm">ZARATE OSORES, Julio Néstor</span>
+        <span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Sub Capataz</span>
+    </li>
+    <li class="flex flex-col border-l-2 border-purple-500/20 pl-4">
+        <span class="text-white font-semibold text-sm">MEJIA LAYNES, Manuel Alberto</span>
+        <span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Fiscal</span>
+    </li>
+    <li class="flex flex-col border-l-2 border-purple-500/20 pl-4">
+        <span class="text-white font-semibold text-sm">AMAYA ZARATE, Axel</span>
+        <span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Secretario</span>
+    </li>
+    <li class="flex flex-col border-l-2 border-purple-500/20 pl-4">
+        <span class="text-white font-semibold text-sm">LA ROSA ARCE, Amílcar Amado Antonio</span>
+        <span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Tesorero</span>
+    </li>
+    <li class="flex flex-col border-l-2 border-purple-500/20 pl-4">
+        <span class="text-white font-semibold text-sm">ARRIAGA LOZANO, Edwin Thomas</span>
+        <span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Pro Secretario</span>
+    </li>
+    <li class="flex flex-col border-l-2 border-purple-500/20 pl-4">
+        <span class="text-white font-semibold text-sm">YGLESIAS PASTOR, Carlos Alberto</span>
+        <span class="text-[10px] uppercase text-purple-400/80 tracking-wider">Pro Tesorero</span>
+    </li>
+</ul>
                 </div>
             </div>
 
             <div class="card-custom p-10 rounded-[40px] reveal" style="background: rgba(75, 0, 130, 0.15);">
                 <i class="fas fa-users text-purple-400 text-2xl mb-6"></i>
                 <h3 class="text-xl font-bold mb-4 text-purple-200">Integrantes</h3>
-                <p class="text-purple-100/70 text-sm">.</p>
+                <p class="text-purple-100/70 text-sm">Ser parte de la Quinta Cuadrilla es mucho más que vestir el hábito morado; es un compromiso de vida al servicio de nuestro Señor de los Milagros. En cada procesión, no solo entregamos el hombro, sino también el corazón, representando con orgullo la fe de todo el distrito de El Agustino.
+
+Somos una hermandad unida por la tradición y la devoción. Nuestra misión es custodiar con amor y respeto el paso de nuestro Señor, manteniendo viva la llama de la fe que nos heredaron nuestros mayores. Bajo el amparo de la Virgen de la Nube, caminamos juntos, hermanos en la oración y en el sacrificio, renovando cada año nuestra promesa de lealtad.
+
+Ellos son los integrantes que hoy lideran nuestra Quinta Cuadrilla con entrega y humildad:</p>
+                                <button onclick="document.getElementById('modal-integrantes').classList.remove('hidden')" class="text-purple-400 hover:text-purple-300 ml-2 font-bold underline transition-colors">Ver más</button></p>
+
             </div>
 
             <div class="card-custom p-10 rounded-[40px] reveal">
@@ -237,7 +262,67 @@
             </div>
         </div>
     </div>
+<div id="modal-integrantes" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="card-custom max-w-4xl w-full max-h-[80vh] overflow-y-auto rounded-[40px] p-8 md:p-12 relative border border-purple-500/30 shadow-2xl">
+        
+        <button onclick="document.getElementById('modal-integrantes').classList.add('hidden')" class="absolute top-6 right-6 text-purple-400 hover:text-white text-2xl">
+            <i class="fas fa-times"></i>
+        </button>
 
+        <div class="text-left">
+            <h2 class="text-3xl font-black mb-2 text-gradient uppercase tracking-tighter">Nuestra Cuadrilla</h2>
+            <p class="text-purple-400/80 text-xs uppercase tracking-[0.2em] mb-8 italic">"La Quinta siempre está en Acción"</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-purple-100/80 text-sm md:text-base">
+                
+                <ul class="space-y-3">
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">01</span> ANGELES YATACO, Ángel Eduardo</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">02</span> AMAYA ZARATE, Axel</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">03</span> ARRIAGA LOZANO, Edwin Thomas</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">04</span> BALDEON CRISTOBAL, Erick Javier</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">05</span> BALDEON YATACO, Alexander Logans</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">06</span> BALDEON YATACO, Marcelo Zenobio</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">07</span> BALDEON YATACO, Marco Antonio</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">08</span> CASTILLO ALCANTARA, Jorge Ernesto</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">09</span> CASTILLO CUBAS, Oscar Javier</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">10</span> CASTILLO HUERTAS, Anthony Jefryn</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">11</span> DELGADO ZARATE, Jairo Rodrigo</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">12</span> JANANPA CAVERO, Abrahán Rickson</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">13</span> LA ROSA ARCE, Amílcar Amado Antonio</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">14</span> LA ROSA ARCE, Lenyn Omar Antonio</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">15</span> LAZARO MARTINEZ, Hugo</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">16</span> LONDOÑO PELÁEZ, Andrés Nicolás</li>
+                </ul>
+
+                <ul class="space-y-3">
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">17</span> LOPEZ MORENO, Waldo Teodoro</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">18</span> LOPEZ SOLANO, Martin Octavio</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">19</span> MARCELO PORRO, Nicolás Alberto</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">20</span> MEJIA LAYNES, Manuel Alberto</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">21</span> MELGARJE AUQUI, Sandro Frank</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">22</span> MELGARJE URUETA, Gerardo Miguel</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">23</span> NAUPA NAVARRO, Luis Ever</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">24</span> PACHAS CORDOVA, Luis</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">25</span> QUIROZ LEDESMA, Víctor Eduard</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">26</span> RISCO GUEVARA, Brayan Guillermo</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">27</span> RISCO GUEVARA, Jesús Gabriel</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">28</span> VELASQUEZ CUSIHUAMAN, Guillermo</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">29</span> YAÑEZ LA ROSA, Juan Luis</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">30</span> YGLESIAS PASTOR, Carlos Alberto</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">31</span> ZARATE OSORES, Julio Néstor</li>
+                    <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">32</span> ZEGARRA NECIOSUP, Fabián André</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-10">
+            <button onclick="document.getElementById('modal-integrantes').classList.add('hidden')" 
+                    class="bg-purple-600/20 border border-purple-500/50 text-white px-8 py-2 rounded-full hover:bg-purple-600 transition uppercase text-[10px] font-bold tracking-widest">
+                Cerrar Lista
+            </button>
+        </div>
+    </div>
+</div>
     <script>
         window.addEventListener('load', () => {
             gsap.to("#preloader", { opacity: 0, duration: 1, onComplete: () => document.getElementById("preloader").style.display = "none" });
