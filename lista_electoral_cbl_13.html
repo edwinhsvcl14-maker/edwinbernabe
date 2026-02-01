@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elecciones 13ra Cuadrilla - El Carmen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --marron-habito: #4a2c2a;
+            --marron-claro: #633d3a;
+            --dorado-oro: #c5a059;
+            --crema-seda: #fdf5e6;
+        }
+
+        body {
+            background-color: var(--crema-seda);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--marron-habito);
+            scroll-behavior: smooth;
+        }
+
+        .font-serif-lux { font-family: 'Cormorant Garamond', serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+
+        .gold-gradient {
+            background: linear-gradient(135deg, #c5a059 0%, #f9f295 50%, #c5a059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Degradado Profesional para el Hero */
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(74, 44, 42, 0.9) 0%, rgba(74, 44, 42, 0.6) 50%, var(--crema-seda) 100%);
+        }
+
+        .card-premium {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            transition: all 0.4s ease;
+        }
+
+        .card-premium:hover {
+            transform: translateY(-10px);
+            border-color: var(--dorado-oro);
+            box-shadow: 0 20px 40px rgba(74, 44, 42, 0.1);
+        }
+
+        .btn-gold {
+            background: linear-gradient(to right, #4a2c2a, #633d3a);
+            color: #c5a059;
+            border: 1px solid var(--dorado-oro);
+            transition: 0.3s;
+        }
+
+        .btn-gold:hover {
+            background: var(--dorado-oro);
+            color: white;
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.5);
+        }
+
+        /* Estilos del Carrusel */
+        .carousel-item {
+            display: none;
+            animation: fadeImg 1.5s ease-in-out;
+        }
+        .carousel-item.active { display: block; }
+
+        @keyframes fadeImg {
+            from { opacity: 0; transform: scale(1.05); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--marron-habito);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .loader-icon {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--dorado-oro);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <div id="loader">
+        <div class="text-center">
+    <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/logo_13c.png" alt="Logo Cuadrilla" class="loader-img mx-auto mb-4 h-24 w-auto object-contain">
+    <p class="font-cinzel text-white tracking-[0.3em] text-xs uppercase">13RA CUADRILLA</p>
+</div>
+    </div>
+
+    <nav class="fixed w-full z-50 px-4 md:px-10 py-3 flex justify-between items-center bg-white/95 backdrop-blur-md border-b border-gold-oro/20 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-[var(--marron-habito)] rounded-full flex items-center justify-center border border-[var(--dorado-oro)]">
+                <span class="text-[var(--dorado-oro)] font-cinzel text-xs">13</span>
+            </div>
+            <div class="font-cinzel text-lg font-bold tracking-tighter">
+                <span class="text-[var(--marron-habito)]">DECIMA</span><span class="gold-gradient">TERCERA</span>
+            </div>
+        </div>
+        <div class="hidden lg:flex space-x-8 uppercase text-[10px] font-semibold tracking-widest">
+            <a href="#inicio" class="hover:text-[var(--dorado-oro)] transition">Inicio</a>
+            <a href="#propuestas" class="hover:text-[var(--dorado-oro)] transition">Propuestas</a>
+            <a href="#equipo" class="hover:text-[var(--dorado-oro)] transition">Integrantes</a>
+        </div>
+        <button class="btn-gold px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest">Vota 2026</button>
+    </nav>
+
+    <header id="inicio" class="relative min-h-screen flex items-center justify-center text-center px-6 pt-24 pb-32">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 hero-overlay z-10"></div>
+            <img src="https://images.unsplash.com/photo-1623063051415-46e7f5569420?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="relative z-20 max-w-5xl w-full flex flex-col items-center">
+            <div class="relative w-full max-w-md h-48 md:h-64 mb-8 flex justify-center items-center">
+                <div class="carousel-item active w-full h-full">
+                    <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/logo_13c.png" alt="Virgen del Carmen" class="h-full mx-auto object-contain drop-shadow-[0_0_30px_rgba(197,160,89,0.4)]">
+                </div>
+                <div class="carousel-item w-full h-full">
+                    <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/vdc_13.png" alt="Señor de los Milagros" class="h-full mx-auto object-contain drop-shadow-[0_0_30px_rgba(197,160,89,0.4)]">
+                </div>
+            </div>
+
+            <h4 class="font-cinzel text-white md:text-[var(--marron-habito)] tracking-[0.4em] text-[10px] md:text-xs mb-4 uppercase opacity-90">Elecciones Generales 2026-2028</h4>
+            <h1 class="font-serif-lux text-4xl md:text-7xl lg:text-8xl text-[var(--marron-habito)] md:text-white italic leading-tight mb-8 drop-shadow-sm">
+                Tradición que se <span class="gold-gradient">Renueva</span>
+            </h1>
+            <p class="text-[var(--marron-habito)] font-medium md:font-light tracking-widest text-xs md:text-base max-w-2xl mx-auto mb-12 leading-relaxed">
+                Bajo el amparo de Nuestra Madre del Carmen, presentamos un plan de gestión basado en la transparencia y la hermandad incondicional.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-5 justify-center w-full sm:w-auto mt-4 mb-10">
+                <a href="#propuestas" class="btn-gold text-white px-10 py-4 rounded-full font-bold uppercase text-[10px] tracking-widest hover:scale-105 shadow-xl">Ver Propuestas</a>
+                <a href="#equipo" class="bg-white border-2 border-[var(--marron-habito)] text-[var(--marron-habito)] px-10 py-4 rounded-full font-bold uppercase text-[10px] tracking-widest hover:bg-[var(--marron-habito)] hover:text-white transition shadow-xl">Nuestro Equipo</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="propuestas" class="py-24 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-cinzel text-3xl md:text-5xl text-[var(--marron-habito)] mb-4 uppercase">Nuestras <span class="gold-gradient">Propuestas</span></h2>
+                <div class="w-20 h-1 bg-[var(--dorado-oro)] mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-premium p-10 rounded-3xl text-center">
+                    <span class="material-icons text-4xl text-[var(--dorado-oro)] mb-6">account_balance</span>
+                    <h3 class="font-cinzel text-lg mb-4 font-bold">Gestión Transparente</h3>
+                    <p class="text-xs leading-relaxed text-gray-600 italic">"Cuentas claras y procesos digitalizados para el beneficio de todos."</p>
+                </div>
+                <div class="card-premium p-10 rounded-3xl text-center">
+                    <span class="material-icons text-4xl text-[var(--dorado-oro)] mb-6">volunteer_activism</span>
+                    <h3 class="font-cinzel text-lg mb-4 font-bold">Bienestar</h3>
+                    <p class="text-xs leading-relaxed text-gray-600 italic">"Atención integral al hermano y su familia en momentos de necesidad."</p>
+                </div>
+                <div class="card-premium p-10 rounded-3xl text-center">
+                    <span class="material-icons text-4xl text-[var(--dorado-oro)] mb-6">auto_awesome</span>
+                    <h3 class="font-cinzel text-lg mb-4 font-bold">Culto y Tradición</h3>
+                    <p class="text-xs leading-relaxed text-gray-600 italic">"Preservar nuestro patrimonio espiritual con la mayor excelencia."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="equipo" class="py-24 px-6 bg-[var(--crema-seda)]">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="font-cinzel text-3xl mb-16 uppercase tracking-widest">Plan <span class="gold-gradient">Directivo</span></h2>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="group relative overflow-hidden rounded-2xl aspect-[3/4] shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[var(--marron-habito)] to-transparent flex flex-col justify-end p-4 text-left">
+                        <p class="text-white font-cinzel text-[10px] md:text-sm uppercase">Mayordomo</p>
+                        <p class="text-[var(--dorado-oro)] text-[9px] font-bold">NOMBRE APELLIDO</p>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-2xl aspect-[3/4] shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[var(--marron-habito)] to-transparent flex flex-col justify-end p-4 text-left">
+                        <p class="text-white font-cinzel text-[10px] md:text-sm uppercase">Primer Capataz</p>
+                        <p class="text-[var(--dorado-oro)] text-[9px] font-bold">NOMBRE APELLIDO</p>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </section>
+
+    <footer class="py-12 bg-[var(--marron-habito)] text-white text-center">
+        <div class="font-cinzel text-xl mb-6 gold-gradient tracking-[0.2em]">13RA CUADRILLA - EL CARMEN</div>
+        <p class="text-[var(--dorado-oro)] text-[10px] uppercase tracking-[0.3em] mb-8">Lima, Perú | 2026</p>
+        <div class="w-full h-px bg-white/10 max-w-xs mx-auto mb-6"></div>
+        <p class="text-white/20 text-[8px] uppercase tracking-widest">© Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Lógica del Carrusel
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        
+        function showSlides() {
+            slides.forEach(slide => slide.classList.remove('active'));
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+            setTimeout(showSlides, 4000); // Cambia cada 4 segundos
+        }
+        showSlides();
+
+        // Preloader
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1000);
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</body>
+</html>
