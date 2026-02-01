@@ -105,16 +105,25 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(187, 103, 255, 0.1);
         }
+
+        /* ESTILOS NUEVOS PARA EL MENÚ */
+        #mobileMenu {
+            transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+            transform: translateX(100%);
+        }
+        #mobileMenu.active {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body>
-     <audio id="bgMusic" loop>
-    <source src="https://edwinhsvcl14-maker.github.io/edwinbernabe/mardegalilea.mp3" type="audio/mpeg">
-</audio>
+    <audio id="bgMusic" loop>
+        <source src="https://edwinhsvcl14-maker.github.io/edwinbernabe/mardegalilea.mp3" type="audio/mpeg">
+    </audio>
 
-<button onclick="toggleMusic()" style="position:fixed; bottom:20px; right:20px; z-index:100; background:#4B0082; color:white; border:1px solid #BF953F; border-radius:50%; width:50px; height:50px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
-    <i class="fas fa-music"></i>
-</button>
+    <button onclick="toggleMusic()" style="position:fixed; bottom:20px; right:20px; z-index:110; background:#4B0082; color:white; border:1px solid #BF953F; border-radius:50%; width:50px; height:50px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+        <i class="fas fa-music"></i>
+    </button>
 
     <div id="preloader">
         <div class="loader-icon">
@@ -123,15 +132,37 @@
         <p class="mt-4 text-[10px] tracking-[0.5em] uppercase text-purple-400 font-bold">5 Cuadrilla "Acción"</p>
     </div>
 
-    <nav class="glass-nav fixed w-full z-50 py-3 md:py-4 px-6 md:px-10 flex justify-between items-center">
+    <nav class="glass-nav fixed w-full z-[100] py-3 md:py-4 px-6 md:px-10 flex justify-between items-center">
         <div class="flex items-center space-x-4">
             <div class="squad-logo-container">
                 <img src="https://edwinhsvcl14-maker.github.io/edwinbernabe/5cuadrillahsma.png" alt="Logo Cuadrilla" class="w-full h-full object-cover">
             </div>
             <div class="text-xl md:text-2xl font-black italic tracking-tighter">HSMA<span class="text-purple-500">.</span></div>
         </div>
-        <div class="md:hidden text-purple-400 text-2xl"><i class="fas fa-bars"></i></div>
+        <button onclick="toggleMenu()" class="text-purple-400 text-2xl z-[110] focus:outline-none">
+            <i id="menuIcon" class="fas fa-bars"></i>
+        </button>
     </nav>
+
+    <div id="mobileMenu" class="fixed inset-0 bg-black/95 z-[90] flex flex-col items-center justify-center">
+        <ul class="text-center space-y-8">
+           <ul class="flex flex-col gap-6 items-center">
+    <li><a href="#inicio" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Inicio</a></li>
+    <li><a href="#nosotros" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nosotros</a></li>
+    <li><a href="#obras-sociales" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Obras Sociales</a></li>
+    <li><a href="#plan-2026" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Plan de trabajo 2026</a></li>
+    <li><a href="#deportes" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Eventos Deportivos</a></li>
+    <li><a href="#hermandad" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Hermandad</a></li>
+    <li><a href="#parroquia" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Parroquia</a></li>
+    <li><a href="#orden-jesuita" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Orden Jesuita</a></li>
+    <li><a href="#orden-jesuita" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition"> Relaciones Institucionales</a></li>
+    <li><a href="#creciendo" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Creciendo juntos</a></li>
+    <li><a href="#creciendo" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Galeria</a></li>
+    <li><a href="#contacto" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Contáctanos</a></li>
+</ul>
+            <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfK17Mr3D2dqTHaV_UtkSGVPWPOstVpClG8ouXIgRq4c_Xb_w/viewform?usp=publish-editor" target="_blank" class="text-2xl font-black text-yellow-500 uppercase tracking-widest transition">Inscribirse</a></li>
+        </ul>
+    </div>
 
     <section class="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-900 via-purple-950 to-black overflow-hidden py-20">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-600/20 via-transparent to-transparent"></div>
@@ -155,7 +186,7 @@
             </h1>
             
             <p class="text-sm md:text-xl font-light max-w-3xl mx-auto text-purple-100/90 reveal mb-10 leading-relaxed bg-purple-900/30 p-6 rounded-2xl backdrop-blur-sm border border-purple-500/20">
-                 Siempre acompañando a Jesús, a través de María
+                  Siempre acompañando a Jesús, a través de María
             </p>
         </div>
     </section>
@@ -290,7 +321,7 @@ Ellos son los integrantes que hoy lideran nuestra Quinta Cuadrilla con entrega y
                         allowfullscreen>
                     </iframe>
                 </div>
-                <p class="text-center text-purple-200/60 text-xs italic mt-6 italic">"Momentos de reflexión y hermandad bajo la bendición del Señor."</p>
+                <p class="text-center text-purple-200/60 text-xs italic mt-6">"Momentos de reflexión y hermandad bajo la bendición del Señor."</p>
             </div>
         </div>
     </section>
@@ -315,7 +346,7 @@ Ellos son los integrantes que hoy lideran nuestra Quinta Cuadrilla con entrega y
         <p class="text-white/40 text-[10px] uppercase tracking-[0.3em] mt-4">Únete a nuestra hermandad y tradición</p>
     </div>
 </section>
-   
+    
 
     <footer class="py-12 text-center border-t border-purple-900/10">
         <h3 class="text-gradient text-3xl font-black italic">HSMA.</h3>
@@ -350,17 +381,13 @@ Ellos son los integrantes que hoy lideran nuestra Quinta Cuadrilla con entrega y
     </div>
 <div id="modal-integrantes" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="card-custom max-w-4xl w-full max-h-[80vh] overflow-y-auto rounded-[40px] p-8 md:p-12 relative border border-purple-500/30 shadow-2xl">
-        
-        <button onclick="document.getElementById('modal-integrantes').classList.add('hidden')" class="absolute top-6 right-6 text-purple-400 hover:text-white text-2xl">
-            <i class="fas fa-times"></i>
-        </button>
+        <button onclick="document.getElementById('modal-integrantes').classList.add('hidden')" class="absolute top-6 right-6 text-purple-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
 
         <div class="text-left">
             <h2 class="text-3xl font-black mb-2 text-gradient uppercase tracking-tighter">Nuestra Cuadrilla</h2>
             <p class="text-purple-400/80 text-xs uppercase tracking-[0.2em] mb-8 italic">"La Quinta siempre está en Acción"</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-purple-100/80 text-sm md:text-base">
-                
                 <ul class="space-y-3">
                     <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">01</span> ANGELES YATACO, Ángel Eduardo</li>
                     <li class="flex gap-3 border-b border-purple-500/10 pb-2"><span class="text-purple-500 font-bold">02</span> AMAYA ZARATE, Axel</li>
@@ -409,6 +436,7 @@ Ellos son los integrantes que hoy lideran nuestra Quinta Cuadrilla con entrega y
         </div>
     </div>
 </div>
+
     <script>
         window.addEventListener('load', () => {
             gsap.to("#preloader", { opacity: 0, duration: 1, onComplete: () => document.getElementById("preloader").style.display = "none" });
@@ -417,10 +445,24 @@ Ellos son los integrantes que hoy lideran nuestra Quinta Cuadrilla con entrega y
         });
 
         const audio = document.getElementById('bgMusic');
-function toggleMusic() {
-    return audio.paused ? audio.play() : audio.pause();
-}
+        function toggleMusic() {
+            return audio.paused ? audio.play() : audio.pause();
+        }
+
+        // LÓGICA DEL MENÚ
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            menu.classList.toggle('active');
+            
+            if (menu.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+                document.body.style.overflow = 'hidden';
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+                document.body.style.overflow = 'auto';
+            }
+        }
     </script>
 </body>
-   
 </html>
