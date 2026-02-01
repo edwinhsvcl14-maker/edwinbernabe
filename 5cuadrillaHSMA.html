@@ -144,25 +144,32 @@
         </button>
     </nav>
 
-    <div id="mobileMenu" class="fixed inset-0 bg-black/95 z-[90] flex flex-col items-center justify-center">
-        <ul class="text-center space-y-8">
-           <ul class="flex flex-col gap-6 items-center">
-    <li><a href="#inicio" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Inicio</a></li>
-    <li><a href="#nosotros" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nosotros</a></li>
-    <li><a href="#obras-sociales" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Obras Sociales</a></li>
-    <li><a href="#plan-2026" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Plan de trabajo 2026</a></li>
-    <li><a href="#deportes" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Eventos Deportivos</a></li>
-    <li><a href="#hermandad" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Hermandad</a></li>
-    <li><a href="#parroquia" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Parroquia</a></li>
-    <li><a href="#orden-jesuita" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Orden Jesuita</a></li>
-    <li><a href="#orden-jesuita" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition"> Relaciones Institucionales</a></li>
-    <li><a href="#creciendo" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Creciendo juntos</a></li>
-    <li><a href="#creciendo" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Galeria</a></li>
-    <li><a href="#contacto" onclick="toggleMenu()" class="text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Contáctanos</a></li>
-</ul>
-            <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfK17Mr3D2dqTHaV_UtkSGVPWPOstVpClG8ouXIgRq4c_Xb_w/viewform?usp=publish-editor" target="_blank" class="text-2xl font-black text-yellow-500 uppercase tracking-widest transition">Inscribirse</a></li>
+    <div id="mobileMenu" class="fixed inset-0 bg-black/95 z-[90] flex flex-col items-center overflow-y-auto">
+    <div class="w-full min-h-full flex flex-col items-center justify-center py-24 px-6">
+        <ul class="flex flex-col gap-4 md:gap-6 items-center text-center">
+            <li><a href="#inicio" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Inicio</a></li>
+            <li><a href="#nosotros" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nosotros</a></li>
+            <li><a href="#obras-sociales" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Obras Sociales</a></li>
+            <li><a href="#plan-2026" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Plan de trabajo 2026</a></li>
+            <li><a href="#deportes" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Eventos Deportivos</a></li>
+            <li><a href="#hermandad" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Hermandad</a></li>
+            <li><a href="#parroquia" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Parroquia</a></li>
+            <li><a href="#orden-jesuita" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Orden Jesuita</a></li>
+            <li><a href="#relaciones" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Relaciones Institucionales</a></li>
+            <li><a href="#creciendo" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Creciendo juntos</a></li>
+            <li><a href="#galeria" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Galería</a></li>
+            <li><a href="#contacto" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Contáctanos</a></li>
+            
+            <li class="pt-4">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfK17Mr3D2dqTHaV_UtkSGVPWPOstVpClG8ouXIgRq4c_Xb_w/viewform?usp=publish-editor" 
+                   target="_blank" 
+                   class="text-xl md:text-2xl font-black text-yellow-500 border-2 border-yellow-500 py-2 px-6 rounded-full hover:bg-yellow-500 hover:text-black transition uppercase tracking-widest">
+                    Inscribirse
+                </a>
+            </li>
         </ul>
     </div>
+</div>
 
     <section class="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-900 via-purple-950 to-black overflow-hidden py-20">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-600/20 via-transparent to-transparent"></div>
