@@ -144,26 +144,52 @@
         </button>
     </nav>
 
-    <div id="mobileMenu" class="fixed inset-0 bg-black/95 z-[90] flex flex-col items-center overflow-y-auto">
-    <div class="w-full min-h-full flex flex-col items-center justify-center py-24 px-6">
-        <ul class="flex flex-col gap-4 md:gap-6 items-center text-center">
-            <li><a href="#inicio" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Inicio</a></li>
-            <li><a href="#nosotros" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nosotros</a></li>
-            <li><a href="#obras-sociales" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Obras Sociales</a></li>
-            <li><a href="#plan-2026" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Plan de trabajo 2026</a></li>
-            <li><a href="#deportes" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Eventos Deportivos</a></li>
-            <li><a href="#hermandad" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Hermandad</a></li>
-            <li><a href="#parroquia" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Nuestra Parroquia</a></li>
-            <li><a href="#orden-jesuita" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Orden Jesuita</a></li>
-            <li><a href="#relaciones" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Relaciones Institucionales</a></li>
-            <li><a href="#creciendo" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Creciendo juntos</a></li>
-            <li><a href="#galeria" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Galería</a></li>
-            <li><a href="#contacto" onclick="toggleMenu()" class="text-xl md:text-2xl font-black hover:text-purple-400 uppercase tracking-widest transition">Contáctanos</a></li>
+  <div id="mobileMenu" class="fixed inset-0 bg-black/95 z-[90] overflow-y-auto">
+    <div class="min-h-screen w-full flex flex-col items-center justify-center py-20 px-4">
+        
+        <ul class="grid grid-cols-2 gap-x-4 gap-y-6 md:gap-x-12 md:gap-y-8 w-full max-w-4xl mx-auto">
             
-            <li class="pt-4">
+            <li class="flex justify-center">
+                <a href="#inicio" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Inicio</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#nosotros" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Nosotros</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#obras-sociales" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Obras Sociales</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#plan-2026" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Plan de trabajo</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#deportes" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">E. Deportivos</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#hermandad" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Hermandad</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#parroquia" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Parroquia</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#orden-jesuita" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Orden Jesuita</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#relaciones" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Relaciones Inst.</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#creciendo" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Creciendo Juntos</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#galeria" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Galería</a>
+            </li>
+            <li class="flex justify-center">
+                <a href="#contacto" onclick="toggleMenu()" class="text-[11px] md:text-xl font-black hover:text-purple-400 uppercase tracking-tighter md:tracking-widest transition text-center">Contáctanos</a>
+            </li>
+
+            <li class="col-span-2 flex justify-center pt-6">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSfK17Mr3D2dqTHaV_UtkSGVPWPOstVpClG8ouXIgRq4c_Xb_w/viewform?usp=publish-editor" 
                    target="_blank" 
-                   class="text-xl md:text-2xl font-black text-yellow-500 border-2 border-yellow-500 py-2 px-6 rounded-full hover:bg-yellow-500 hover:text-black transition uppercase tracking-widest">
+                   class="text-[12px] md:text-xl font-black text-yellow-500 border border-yellow-500 py-3 px-8 rounded-full hover:bg-yellow-500 hover:text-black transition uppercase tracking-widest">
                     Inscribirse
                 </a>
             </li>
